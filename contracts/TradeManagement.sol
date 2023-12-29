@@ -364,9 +364,7 @@ contract TradeManagement is IERC721Receiver {
         rawMaterials = new RMInPP[](rawMaterialIDs.length);
         for (uint256 i = 0; i < rawMaterials.length; i++) {
             // 根据原材料ID获取原材料URI
-            rawMaterials[i].name = RawMaterialsSmartContract.tokenURI(
-                rawMaterialIDs[i]
-            );
+            rawMaterials[i].name = RawMaterialNFTMapping[rawMaterialIDs[i]].name;
             rawMaterials[i].tokenID = rawMaterialIDs[i];
         }
         return (
@@ -617,7 +615,7 @@ contract TradeManagement is IERC721Receiver {
     /** 列表查询 **/
 
     // 产品
-    function list(address owner, string memory type_)
+    function list(bool isOwner, string memory type_)
     public
     view
     returns (ListElement[] memory result)
@@ -628,11 +626,11 @@ contract TradeManagement is IERC721Receiver {
         else if (compareStrings(type_, "RawMaterial")) tag = 2;
         else if (compareStrings(type_, "Package")) tag = 3;
         // 判断是否只需要查询自己的
-        if (owner != address(0)) {
+        if (isOwner) {
             // 获取自己的所有产品NFT
-            if (tag == 1) tokenIDs = PackagedProductsSmartContract.getTokensFromOwner(owner);
-            else if (tag == 2) tokenIDs = RawMaterialsSmartContract.getTokensFromOwner(owner);
-            else if (tag == 3) tokenIDs = LotSmartContract.getTokensFromOwner(owner);
+            if (tag == 1) tokenIDs = PackagedProductsSmartContract.getTokensFromOwner(msg.sender);
+            else if (tag == 2) tokenIDs = RawMaterialsSmartContract.getTokensFromOwner(msg.sender);
+            else if (tag == 3) tokenIDs = LotSmartContract.getTokensFromOwner(msg.sender);
         } else {
             // 获取所有产品NFT
             if (tag == 1) tokenIDs = PackagedProductsSmartContract.getTokens();
@@ -657,7 +655,11 @@ contract TradeManagement is IERC721Receiver {
                 result[i].owner = PackagedProductNFTMapping[tokenIDs[i]].owner;
             } else if (tag == 2) {
                 result[i].name = RawMaterialNFTMapping[tokenIDs[i]].name;
-                result[i].owner = RawMaterialNFTMapping[tokenIDs[i]].producerName;
+                if (isEmptyString(RawMaterialNFTMapping[tokenIDs[i]].producerName)) {
+                    result[i].owner = RawMaterialNFTMapping[tokenIDs[i]].supplierName;
+                } else {
+                    result[i].owner = RawMaterialNFTMapping[tokenIDs[i]].producerName;
+                }
             } else if (tag == 3) {
                 result[i].name = PackagedLotNFTMapping[tokenIDs[i]].name;
                 result[i].owner = PackagedLotNFTMapping[tokenIDs[i]].owner;
