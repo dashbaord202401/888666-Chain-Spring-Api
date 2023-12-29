@@ -1,5 +1,7 @@
 package cn.org.gry.chainmaker.domain.entity;
 
+import cn.org.gry.chainmaker.base.BaseContractEvm;
+import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractLotEvm;
 import cn.org.gry.chainmaker.utils.Result;
 import lombok.Getter;
@@ -30,23 +32,24 @@ import java.util.List;
 @Component
 @Getter
 @Setter
-public class Lot {
-    @Autowired
+public class Lot extends ERC721 {
     private ContractLotEvm contractLotEvm;
 
-    public Result mintForPackages (String tokenURI, List<BigInteger> _childIDs) {
+    @Autowired
+    public Lot(ContractLotEvm contractLotEvm) {
+        this.contractLotEvm = contractLotEvm;
+        setBaseContractEvm(contractLotEvm);
+    }
+
+    public Result mintForPackages (String tokenURI, String name, List<BigInteger> _childIDs) {
         List<Uint256> childIDs = new ArrayList<>();
         for (BigInteger childID : _childIDs) {
             childIDs.add(new Uint256(childID));
         }
         DynamicArray<Uint256> dynamicArray = new DynamicArray<>(Uint256.class, childIDs);
         return contractLotEvm.invokeContract("mintForPackages",
-                Arrays.asList(new Utf8String(tokenURI), dynamicArray),
+                Arrays.asList(new Utf8String(tokenURI), new Utf8String(name), dynamicArray),
                 Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("tokenId"));
-    }
-
-    public Result balanceOf (String owner) {
-        return contractLotEvm.invokeContract("balanceOf", Collections.singletonList(new Address(owner)), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("balance"));
     }
 
     public Result transferPackageFrom (String from, String to, BigInteger tokenId) {
@@ -57,7 +60,8 @@ public class Lot {
         return contractLotEvm.invokeContract("transferPackage", Arrays.asList(new Address(to), new Uint256(tokenId)), Arrays.asList(), Arrays.asList());
     }
 
-    public Result totalSupply () {
-        return contractLotEvm.invokeContract("totalSupply", Collections.emptyList(), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("totalSupply"));
+    @Override
+    public void setBaseContractEvm(BaseContractEvm baseContractEvm) {
+        super.baseContractEvm = baseContractEvm;
     }
 }

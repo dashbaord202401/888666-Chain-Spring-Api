@@ -1,5 +1,7 @@
 package cn.org.gry.chainmaker.domain.entity;
 
+import cn.org.gry.chainmaker.base.BaseContractEvm;
+import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractRawMaterialsEvm;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
@@ -24,47 +26,44 @@ import java.util.Collections;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @Component
-public class RM {
-    @Autowired
+public class RM extends ERC721 {
     private ContractRawMaterialsEvm contractRawMaterialsEvm;
 
-    public Result mint (String tokenURI, String initSum) {
+    @Autowired
+    public RM (ContractRawMaterialsEvm contractRawMaterialsEvm) {
+        this.contractRawMaterialsEvm = contractRawMaterialsEvm;
+        setBaseContractEvm(contractRawMaterialsEvm);
+    }
+
+    public Result mint (String tokenURI, String initSum, String name) {
         return contractRawMaterialsEvm.invokeContract(
                 "mint",
-                Arrays.asList(new Utf8String(tokenURI), new Uint128(ChainMakerUtils.doubleString2BigInteger(initSum))),
+                Arrays.asList(
+                        new Utf8String(tokenURI),
+                        new Uint128(ChainMakerUtils.doubleString2BigInteger(initSum)),
+                        new Utf8String(name)),
                 Arrays.asList(TypeReference.create(Uint256.class)),
                 Arrays.asList("token"));
     }
 
-    public Result transferFrom (String from, String to, BigInteger tokenId) {
+    public Result transferFrom (String from, String to, BigInteger tokenId, String lotName) {
         return contractRawMaterialsEvm.invokeContract(
                 "transferFrom",
-                Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId)),
+                Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId), new Utf8String(lotName)),
                 Arrays.asList(),
                 Arrays.asList());
     }
 
-    public Result transfer (String to, BigInteger tokenId) {
+    public Result transfer (String to, BigInteger tokenId, String lotName) {
         return contractRawMaterialsEvm.invokeContract(
                 "transfer",
-                Arrays.asList(new Address(to), new Uint256(tokenId)),
+                Arrays.asList(new Address(to), new Uint256(tokenId), new Utf8String(lotName)),
                 Arrays.asList(),
                 Arrays.asList());
     }
 
-    public Result ownerOf (BigInteger tokenId) {
-        return contractRawMaterialsEvm.invokeContract(
-                "ownerOf",
-                Arrays.asList(new Uint256(tokenId)),
-                Arrays.asList(TypeReference.create(Address.class)),
-                Arrays.asList("owner"));
-    }
-
-    public Result balanceOf (String owner) {
-        return contractRawMaterialsEvm.invokeContract("balanceOf", Collections.singletonList(new Address(owner)), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("balance"));
-    }
-
-    public Result totalSupply () {
-        return contractRawMaterialsEvm.invokeContract("totalSupply", Collections.emptyList(), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("totalSupply"));
+    @Override
+    public void setBaseContractEvm(BaseContractEvm baseContractEvm) {
+        super.baseContractEvm = baseContractEvm;
     }
 }

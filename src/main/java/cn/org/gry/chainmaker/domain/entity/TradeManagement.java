@@ -57,22 +57,6 @@ public class TradeManagement {
         contractTradeManagementEvm.invokeContract("RegisterProducer", Arrays.asList(new Address(producerAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
     }
 
-    public void RegisterDealer (String dealerAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterDealer", Arrays.asList(new Address(dealerAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
-    }
-
-    public void RegisterWholesaler (String wholesalerAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterWholesaler", Arrays.asList(new Address(wholesalerAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
-    }
-
-    public void RegisterRetailer (String retailerAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterRetailer", Arrays.asList(new Address(retailerAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
-    }
-
-    public void RegisterCustomer (String customerAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterCustomer", Arrays.asList(new Address(customerAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
-    }
-
     public void RegisterUser (String userAddress, String name) {
         contractTradeManagementEvm.invokeContract("RegisterUser", Arrays.asList(new Address(userAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
     }
@@ -85,19 +69,19 @@ public class TradeManagement {
                         TypeReference.create(Bool.class),
                         TypeReference.create(Utf8String.class),
                         TypeReference.create(RMNFT.class),
+                        TypeReference.create(Utf8String.class),
                         new TypeReference<DynamicArray<Uint256>>() {
                         },
                         new TypeReference<DynamicArray<Uint128>>() {
-                        },
-                        TypeReference.create(Utf8String.class)
+                        }
                 ),
                 Arrays.asList(
                         "success",
                         "msg",
                         "NFT",
+                        "name",
                         "productLots",
-                        "resumes",
-                        "tokenURI"
+                        "resumes"
                 ));
         List<BigInteger> _resumes = (List<BigInteger>)result.getData().get("resumes");
         List<String> resumes = new ArrayList<>();
@@ -118,6 +102,7 @@ public class TradeManagement {
                         new TypeReference<PPNFT>() {
                         },
                         TypeReference.create(Utf8String.class),
+                        TypeReference.create(Utf8String.class),
                         new TypeReference<DynamicArray<TradeUser>>() {
                         },
                         new TypeReference<DynamicArray<RMInPP>>() {
@@ -128,6 +113,7 @@ public class TradeManagement {
                         "success",
                         "msg",
                         "NFT",
+                        "name",
                         "producerName",
                         "tradeUsers",
                         "rawMaterials",
@@ -141,10 +127,11 @@ public class TradeManagement {
                 Collections.singletonList(new Uint256(tokenId)),
                 Arrays.asList(
                         TypeReference.create(Uint256.class),
+                        TypeReference.create(Uint256.class),
                         TypeReference.create(Bool.class),
                         new TypeReference<DynamicArray<Uint256>>() {
                         }),
-                Arrays.asList("tokenId", "isBinding", "childIDs"));
+                Arrays.asList("tokenId", "name", "isBinding", "childIDs"));
     }
 
     public Result getStatist () {
@@ -161,37 +148,18 @@ public class TradeManagement {
                 Arrays.asList("totalRM", "totalPP", "totalPKL", "balanceOfRM", "balanceOfPP", "balanceOfPKL"));
     }
 
-    public Result listProducts (String owner, BigInteger tokenID) {
+    public Result list (String owner, String type) {
         Result result = contractTradeManagementEvm.invokeContract(
-                "listProducts",
+                "list",
                 Arrays.asList(
                         new Address(owner),
-                        new Uint256(tokenID)),
+                        new Utf8String(type)),
                 Arrays.asList(
                         new TypeReference<DynamicArray<ListElem>>() {
                         }),
                 Arrays.asList("list"));
         Pageable pageable = PageRequest.of(1, 10);
         result.getData().put("list", new PageImpl<>((List<ListElem>)result.getData().get("list"), pageable, ((List<ListElem>)result.getData().get("list")).size()));
-        return result;
-    }
-
-    public Result listRawMaterials (String owner, BigInteger tokenID) {
-        Result result = contractTradeManagementEvm.invokeContract(
-                "listRawMaterials",
-                Arrays.asList(
-                        new Address(owner),
-                        new Uint256(tokenID)),
-                Arrays.asList(
-                        new TypeReference<DynamicArray<ListElem>>() {
-                        }),
-                Arrays.asList("list"));
-        Pageable pageable = PageRequest.of(1, 10);
-        List<ListElem> list = (List<ListElem>)result.getData().get("list");
-        for (ListElem elem : list) {
-            elem.setTotalSum(ChainMakerUtils.bigInteger2DoubleString(new BigInteger(elem.getTotalSum())));
-        }
-        result.getData().put("list", new PageImpl<>(list, pageable, list.size()));
         return result;
     }
 
@@ -207,6 +175,8 @@ public class TradeManagement {
         private Date supplierTime;
         private String producerName;
         private String totalSum;
+        private String name;
+        private String lotName;
 
         public RMNFT (
             Uint256 tokenID,
@@ -215,10 +185,12 @@ public class TradeManagement {
             Utf8String supplierName,
             Uint256 supplierTime,
             Utf8String producerName,
-            Uint128 totalSum
+            Uint128 totalSum,
+            Utf8String name,
+            Utf8String lotName
         )
         {
-            super(tokenID, lotId, produceTime, supplierName, supplierTime, producerName, totalSum);
+            super(tokenID, lotId, produceTime, supplierName, supplierTime, producerName, totalSum, name, lotName);
             this.tokenID = tokenID.getValue();
             this.lotId = lotId.getValue();
             this.produceTime = new Date(produceTime.getValue().longValue() * 1000);
@@ -226,6 +198,8 @@ public class TradeManagement {
             if (!supplierTime.getValue().equals(BigInteger.valueOf(0))) this.supplierTime = new Date(supplierTime.getValue().longValue() * 1000);
             this.producerName = producerName.getValue();
             this.totalSum = ChainMakerUtils.bigInteger2DoubleString(totalSum.getValue());
+            this.name = name.getValue();
+            this.lotName = lotName.getValue();
         }
     }
 
@@ -238,20 +212,23 @@ public class TradeManagement {
         private BigInteger packageLotID;
         private Boolean isBinding;
         private String owner;
+        private String name;
 
         public PPNFT (
             Uint256 tokenID,
             Uint256 productLotID,
             Uint256 packageLotID,
             Bool isBinding,
-            Utf8String owner
+            Utf8String owner,
+            Utf8String name
         ) {
-            super(tokenID, productLotID, packageLotID, isBinding, owner);
+            super(tokenID, productLotID, packageLotID, isBinding, owner, name);
             this.tokenID = tokenID.getValue();
             this.productLotID = productLotID.getValue();
             this.packageLotID = packageLotID.getValue();
             this.isBinding = isBinding.getValue();
             this.owner = owner.getValue();
+            this.name = name.getValue();
         }
     }
 

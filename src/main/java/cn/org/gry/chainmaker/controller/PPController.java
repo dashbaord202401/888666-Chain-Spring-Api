@@ -28,12 +28,13 @@ public class PPController {
     public Result mint (
             @RequestParam("numberOfTokens") BigInteger numberOfTokens,
             @RequestParam("tokenURI") String tokenURI,
+            @RequestParam("name") String name,
             @RequestParam("productLot") String productLot,
             @RequestParam("childIDs") List<BigInteger> childIDs,
             @RequestParam("resumes") List<String> resumes
     )
     {
-        return pp.mint(numberOfTokens, tokenURI, productLot, childIDs, resumes);
+        return pp.mint(numberOfTokens, tokenURI, name, productLot, childIDs, resumes);
     }
 
     @RequestMapping(params = "action=transferFrom")

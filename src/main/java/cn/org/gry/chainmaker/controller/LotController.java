@@ -32,10 +32,11 @@ public class LotController {
     @RequestMapping(params = "action=mintForPackages")
     public Result mintForPackages (
             @RequestParam("tokenURI") String tokenURI,
-            @RequestParam("childIDs") List<BigInteger> childIDs
+            @RequestParam("childIDs") List<BigInteger> childIDs,
+            @RequestParam("name") String name
     )
     {
-        return lot.mintForPackages(tokenURI, childIDs);
+        return lot.mintForPackages(tokenURI, name, childIDs);
     }
 
     @RequestMapping(params = "balanceOf")

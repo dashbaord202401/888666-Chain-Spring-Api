@@ -24,22 +24,28 @@ public class RMController {
     private RM rm;
 
     @RequestMapping(params = "action=mint")
-    public Result mint (@RequestParam("tokenURI") String tokenURI, @RequestParam("initSum") String initSum) {
-        return rm.mint(tokenURI, initSum);
+    public Result mint (@RequestParam("tokenURI") String tokenURI,
+                        @RequestParam("initSum") String initSum,
+                        @RequestParam("name") String name) {
+        return rm.mint(tokenURI, initSum, name);
     }
 
     @RequestMapping(params = "action=transferFrom")
-    public Result transferFrom (@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("tokenId") BigInteger tokenId) {
-        return rm.transferFrom(from, to, tokenId);
+    public Result transferFrom (@RequestParam("from") String from,
+                                @RequestParam("to") String to,
+                                @RequestParam("tokenId") BigInteger tokenId,
+                                @RequestParam("lotName") String lotName) {
+        return rm.transferFrom(from, to, tokenId, lotName);
     }
 
     @RequestMapping(params = "action=transfer")
     public Result transfer (
             @RequestParam("to") String to,
-            @RequestParam("tokenId") BigInteger tokenId
+            @RequestParam("tokenId") BigInteger tokenId,
+            @RequestParam("lotName") String lotName
     )
     {
-        return rm.transfer(to, tokenId);
+        return rm.transfer(to, tokenId, lotName);
     }
 
     @RequestMapping(params = "action=ownerOf")

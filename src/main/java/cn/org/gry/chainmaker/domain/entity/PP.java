@@ -1,5 +1,7 @@
 package cn.org.gry.chainmaker.domain.entity;
 
+import cn.org.gry.chainmaker.base.BaseContractEvm;
+import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractPackagedProductsEvm;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
@@ -25,13 +27,19 @@ import java.util.List;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @Component
-public class PP {
-    @Autowired
+public class PP extends ERC721 {
     private ContractPackagedProductsEvm contractPackagedProductsEvm;
+
+    @Autowired
+    public PP(ContractPackagedProductsEvm contractPackagedProductsEvm) {
+        this.contractPackagedProductsEvm = contractPackagedProductsEvm;
+        setBaseContractEvm(contractPackagedProductsEvm);
+    }
 
     public Result mint (
             BigInteger numberOfTokens,
             String tokenURI,
+            String name,
             String productLot,
             List<BigInteger> childIDs,
             List<String> resumes) {
@@ -47,6 +55,7 @@ public class PP {
                 "mint",
                 Arrays.asList(
                         new Uint256(numberOfTokens),
+                        new Utf8String(name),
                         new Utf8String(tokenURI),
                         new Utf8String(productLot),
                         new DynamicArray<Uint256>(Uint256.class, _childIDs),
@@ -83,15 +92,12 @@ public class PP {
         );
     }
 
-    public Result balanceOf (String owner) {
-        return contractPackagedProductsEvm.invokeContract("balanceOf", Collections.singletonList(new Address(owner)), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("balance"));
-    }
-
     public Result approvalTMForAll (boolean approved) {
         return contractPackagedProductsEvm.invokeContract("approvalTMForAll", Arrays.asList(new Bool(approved)), Arrays.asList(), Arrays.asList());
     }
 
-    public Result totalSupply () {
-        return contractPackagedProductsEvm.invokeContract("totalSupply", Collections.emptyList(), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("totalSupply"));
+    @Override
+    public void setBaseContractEvm(BaseContractEvm baseContractEvm) {
+        super.baseContractEvm = baseContractEvm;
     }
 }
