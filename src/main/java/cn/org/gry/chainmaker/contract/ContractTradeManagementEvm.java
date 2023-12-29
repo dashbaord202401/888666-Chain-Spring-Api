@@ -18,7 +18,4 @@ public class ContractTradeManagementEvm extends BaseContractEvm {
         this.EVM_CONTRACT_FILE_PATH = "src/main/resources/contract/TradeManagement.bin";
     }
 
-    public void addVersion (String version) {
-        super.contractName += version;
-    }
 }

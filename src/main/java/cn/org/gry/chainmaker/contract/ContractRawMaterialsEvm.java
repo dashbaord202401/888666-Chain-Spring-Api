@@ -17,8 +17,4 @@ public class ContractRawMaterialsEvm extends BaseContractEvm {
         this.contractName = "RawMaterials" + super.version;
         this.EVM_CONTRACT_FILE_PATH = "src/main/resources/contract/RawMaterials.bin";
     }
-
-    public void addVersion (String version) {
-        super.contractName += version;
-    }
 }

@@ -17,8 +17,4 @@ public class ContractPackagedProductsEvm extends BaseContractEvm {
         this.contractName = "PackagedProducts" + super.version;
         this.EVM_CONTRACT_FILE_PATH = "src/main/resources/contract/PackagedProducts.bin";
     }
-
-    public void addVersion (String version) {
-        super.contractName += version;
-    }
 }

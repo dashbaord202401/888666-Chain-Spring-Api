@@ -18,7 +18,4 @@ public class ContractLotEvm extends BaseContractEvm {
         this.EVM_CONTRACT_FILE_PATH = "src/main/resources/contract/Lot.bin";
     }
 
-    public void addVersion (String version) {
-        super.contractName += version;
-    }
 }
