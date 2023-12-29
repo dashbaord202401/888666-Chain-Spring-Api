@@ -55,8 +55,8 @@ public class PP extends ERC721 {
                 "mint",
                 Arrays.asList(
                         new Uint256(numberOfTokens),
-                        new Utf8String(name),
                         new Utf8String(tokenURI),
+                        new Utf8String(name),
                         new Utf8String(productLot),
                         new DynamicArray<Uint256>(Uint256.class, _childIDs),
                         new DynamicArray<Uint128>(Uint128.class, _resumes)
