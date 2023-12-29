@@ -69,10 +69,16 @@ public class TradeManagementController {
 
     @RequestMapping(params = "action=list")
     public Result list (
-            @RequestParam("owner") String owner,
+            @RequestParam("isOwner") Boolean isOwner,
             @RequestParam("type") String type
     )
     {
-        return tradeManagement.list(owner, type);
+        return tradeManagement.list(isOwner, type);
+    }
+
+    @RequestMapping(params = "action=getStatist")
+    public Result getStatist ()
+    {
+        return tradeManagement.getStatist();
     }
 }
