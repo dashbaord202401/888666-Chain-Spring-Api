@@ -106,8 +106,7 @@ public class TradeManagement {
                         new TypeReference<DynamicArray<TradeUser>>() {
                         },
                         new TypeReference<DynamicArray<RMInPP>>() {
-                        },
-                        TypeReference.create(Utf8String.class)
+                        }
                 ),
                 Arrays.asList(
                         "success",
@@ -116,8 +115,7 @@ public class TradeManagement {
                         "name",
                         "producerName",
                         "tradeUsers",
-                        "rawMaterials",
-                        "tokenURI"
+                        "rawMaterials"
                 ));
     }
 
@@ -212,23 +210,20 @@ public class TradeManagement {
         private BigInteger packageLotID;
         private Boolean isBinding;
         private String owner;
-        private String name;
 
         public PPNFT (
             Uint256 tokenID,
             Uint256 productLotID,
             Uint256 packageLotID,
             Bool isBinding,
-            Utf8String owner,
-            Utf8String name
+            Utf8String owner
         ) {
-            super(tokenID, productLotID, packageLotID, isBinding, owner, name);
+            super(tokenID, productLotID, packageLotID, isBinding, owner);
             this.tokenID = tokenID.getValue();
             this.productLotID = productLotID.getValue();
             this.packageLotID = packageLotID.getValue();
             this.isBinding = isBinding.getValue();
             this.owner = owner.getValue();
-            this.name = name.getValue();
         }
     }
 
