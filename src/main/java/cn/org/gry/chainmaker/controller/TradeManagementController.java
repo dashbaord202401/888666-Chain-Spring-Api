@@ -49,26 +49,6 @@ public class TradeManagementController {
         tradeManagement.RegisterProducer(producerAddress, name);
     }
 
-    @RequestMapping(params = "action=RegisterDealer")
-    public void RegisterDealer (@RequestParam("dealerAddress") String dealerAddress, @RequestParam("name") String name) {
-        tradeManagement.RegisterDealer(dealerAddress, name);
-    }
-
-    @RequestMapping(params = "action=RegisterWholesaler")
-    public void RegisterWholesaler (@RequestParam("wholesalerAddress") String wholesalerAddress, @RequestParam("name") String name) {
-        tradeManagement.RegisterWholesaler(wholesalerAddress, name);
-    }
-
-    @RequestMapping(params = "action=RegisterRetailer")
-    public void RegisterRetailer (@RequestParam("retailerAddress") String retailerAddress, @RequestParam("name") String name) {
-        tradeManagement.RegisterRetailer(retailerAddress, name);
-    }
-
-    @RequestMapping(params = "action=RegisterCustomer")
-    public void RegisterConsumer (@RequestParam("customerAddress") String customerAddress, @RequestParam("name") String name) {
-        tradeManagement.RegisterCustomer(customerAddress, name);
-    }
-
     @RequestMapping(params = "action=getRawMaterialsNFT")
     public Result getRawMaterialsNFT (@RequestParam("rawMaterialsId") BigInteger rawMaterialsId) {
         return tradeManagement.getRawMaterialsNFT(rawMaterialsId);
@@ -87,27 +67,12 @@ public class TradeManagementController {
         return tradeManagement.getProductsFromPackage(tokenId);
     }
 
-    @RequestMapping(params = "action=listProducts")
-    public Result listProducts (
+    @RequestMapping(params = "action=list")
+    public Result list (
             @RequestParam("owner") String owner,
-            @RequestParam("tokenID") BigInteger tokenID
+            @RequestParam("type") String type
     )
     {
-        return tradeManagement.listProducts(owner, tokenID);
-    }
-
-    @RequestMapping(params = "action=getStatist")
-    public Result getStatist ()
-    {
-        return tradeManagement.getStatist();
-    }
-
-    @RequestMapping(params = "action=listRawMaterials")
-    public Result listRawMaterials (
-            @RequestParam("owner") String owner,
-            @RequestParam("tokenID") BigInteger tokenID
-    )
-    {
-        return tradeManagement.listRawMaterials(owner, tokenID);
+        return tradeManagement.list(owner, type);
     }
 }
