@@ -52,16 +52,32 @@ public class ChainMakerUtils {
     }
 
     public static String bigInteger2DoubleString(BigInteger value) {
-        if (value == null || value.toString().length() < 10) {
-            return null;
+        if (value == null || value.equals(BigInteger.ZERO)) {
+            return "0";
         }
-        // 获取value字符串的后十位
-        String low = value.toString().substring(value.toString().length() - 10);
-        // 获取value字符串的前面部分
-        String high = value.toString().substring(0, value.toString().length() - 10);
+        String result = "";
+        // 如果value的长度小于10
+        if (value.toString().length() < 10) {
+            // 在前面补0
+            result = "0." + StringUtils.repeat("0", 10 - value.toString().length()) + value;
+            result = StringUtils.stripEnd(result, "0");
+        } else {
+            // 获取value字符串的后十位
+            String low = value.toString().substring(value.toString().length() - 10);
+            // 获取value字符串的前面部分
+            String high = value.toString().substring(0, value.toString().length() - 10);
+            // 去除低位后面的0
+            low = StringUtils.stripEnd(low, "0");
+            if (low.isEmpty()) {
+                low = "0";
+            }
+            if (high.isEmpty()) {
+                high = "0";
+            }
+            result = high + "." + low;
+        }
         // 去除小数部分后面的0
-        low = StringUtils.stripEnd(low, "0");
-        return high + "." + low;
+        return result;
     }
 
     // 将类型转换为map
