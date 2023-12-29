@@ -127,7 +127,7 @@ public class TradeManagement {
                 Collections.singletonList(new Uint256(tokenId)),
                 Arrays.asList(
                         TypeReference.create(Uint256.class),
-                        TypeReference.create(Uint256.class),
+                        TypeReference.create(Utf8String.class),
                         TypeReference.create(Bool.class),
                         new TypeReference<DynamicArray<Uint256>>() {
                         }),
@@ -148,11 +148,11 @@ public class TradeManagement {
                 Arrays.asList("totalRM", "totalPP", "totalPKL", "balanceOfRM", "balanceOfPP", "balanceOfPKL"));
     }
 
-    public Result list (String owner, String type) {
+    public Result list (Boolean owner, String type) {
         Result result = contractTradeManagementEvm.invokeContract(
                 "list",
                 Arrays.asList(
-                        new Address(owner),
+                        new Bool(owner),
                         new Utf8String(type)),
                 Arrays.asList(
                         new TypeReference<DynamicArray<ListElem>>() {
