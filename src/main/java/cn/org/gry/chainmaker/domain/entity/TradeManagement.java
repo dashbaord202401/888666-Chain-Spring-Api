@@ -162,6 +162,24 @@ public class TradeManagement {
         return result;
     }
 
+    public Result getProductsLotNFT(BigInteger lotId) {
+        return contractTradeManagementEvm.invokeContract(
+                "getProductsLotNFT",
+                Arrays.asList(new Uint256(lotId)),
+                Arrays.asList(
+                        TypeReference.create(PLNFT.class),
+                        new TypeReference<DynamicArray<Uint256>>() {
+                        },
+                        new TypeReference<DynamicArray<Uint256>>() {
+                        }
+                ),
+                Arrays.asList(
+                        "nft",
+                        "rawMaterials",
+                        "products"
+                ));
+    }
+
     @Getter
     @Setter
     public static class RMNFT extends BaseDynamicStruct {
@@ -259,6 +277,33 @@ public class TradeManagement {
         {
             super(tokenID, name);
             this.tokenID = tokenID.getValue();
+            this.name = name.getValue();
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class PLNFT extends BaseDynamicStruct {
+        private BigInteger tokenID;
+        private String lotName;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+        private Date produceTime;
+        private String producerName;
+        private String name;
+
+        public PLNFT (
+            Uint256 tokenID,
+            Utf8String lotName,
+            Uint256 produceTime,
+            Utf8String producerName,
+            Utf8String name
+        )
+        {
+            super(tokenID, lotName, produceTime, producerName, name);
+            this.tokenID = tokenID.getValue();
+            this.lotName = lotName.getValue();
+            if (!produceTime.getValue().equals(BigInteger.valueOf(0))) this.produceTime = new Date(produceTime.getValue().longValue() * 1000);
+            this.producerName = producerName.getValue();
             this.name = name.getValue();
         }
     }

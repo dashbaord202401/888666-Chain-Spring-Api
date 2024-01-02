@@ -81,4 +81,9 @@ public class TradeManagementController {
     {
         return tradeManagement.getStatist();
     }
+
+    @RequestMapping(params = "action=getProductsLotNFT")
+    public Result getProductsLotNFT (@RequestParam("lotId") BigInteger lotId) {
+        return tradeManagement.getProductsLotNFT(lotId);
+    }
 }
