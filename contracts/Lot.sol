@@ -13,7 +13,8 @@ contract Lot is ERC721Enumerable, ERC721URIStorage, Ownable {
 
     constructor() ERC721("Lot", "LOT") Ownable(msg.sender) {}
 
-    uint256 countPKL = 0;
+    mapping(address => uint256[]) PackagedLotMapping;
+    uint256[] PackagedLots;
 
     // 批次枚举类型
     enum LotType {
@@ -106,32 +107,23 @@ contract Lot is ERC721Enumerable, ERC721URIStorage, Ownable {
                 msg.sender,
                 _childIDs
             );
-            tradeManagement.LinkParentNFT2Packages(ts, name, _childIDs);
-            countPKL = countPKL + 1;
+            tradeManagement.LinkParentNFT2Packages(msg.sender, ts, name, _childIDs);
+            PackagedLotMapping[msg.sender].push(ts);
+            PackagedLots.push(ts);
         }
         return ts;
     }
 
-    function getTokensFromOwner (address owner) view external onlyTM returns (uint256[] memory tokens) {
-        uint256 count = balanceOf(owner);
-        tokens = new uint256[](count);
-        for (uint i = 0; i < count; i++) {
-            tokens[i] = tokenOfOwnerByIndex(owner, i);
-        }
-        return tokens;
+    function getPKLTokensFromOwner (address owner) view external onlyTM returns (uint256[] memory tokens) {
+        return PackagedLotMapping[owner];
     }
 
-    function getTokens () view external onlyTM returns (uint256[] memory tokens) {
-        uint256 count = totalSupply();
-        tokens = new uint256[](count);
-        for (uint i = 0; i < count; i++) {
-            tokens[i] = tokenByIndex(i);
-        }
-        return tokens;
+    function getPKLTokens () view external onlyTM returns (uint256[] memory tokens) {
+        return PackagedLots;
     }
 
     function getPKLcount () public view returns (uint) {
-        return countPKL;
+        return PackagedLots.length;
     }
 
     modifier onlyTM() {
