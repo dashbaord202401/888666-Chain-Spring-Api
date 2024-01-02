@@ -51,8 +51,6 @@ contract TradeManagement is IERC721Receiver {
         bool isBinding;
         // 所有者
         string owner;
-        // 名称
-        string name;
         // 交易对象记录
         TradeUser[] tradeUsers;
     }
@@ -364,7 +362,8 @@ contract TradeManagement is IERC721Receiver {
         rawMaterials = new RMInPP[](rawMaterialIDs.length);
         for (uint256 i = 0; i < rawMaterials.length; i++) {
             // 根据原材料ID获取原材料URI
-            rawMaterials[i].name = RawMaterialNFTMapping[rawMaterialIDs[i]].name;
+            rawMaterials[i].name = RawMaterialNFTMapping[rawMaterialIDs[i]]
+                .name;
             rawMaterials[i].tokenID = rawMaterialIDs[i];
         }
         return (
@@ -376,6 +375,11 @@ contract TradeManagement is IERC721Receiver {
             nft.tradeUsers,
             rawMaterials
         );
+    }
+
+    // 获取指定下生产批次的信息
+    function getProductsLotNFT (uint256 tokenID) public view returns (ProductsLotNFT memory, uint256[] memory, uint256[] memory) {
+        return (ProductsLotNFTMapping[tokenID], ProductsLotNFTMapping[tokenID].rawMaterials, ProductsLotNFTMapping[tokenID].products);
     }
 
     /** 原料业务逻辑 **/
@@ -557,13 +561,20 @@ contract TradeManagement is IERC721Receiver {
     }
 
     // 关联包装批次和成品
-    function LinkParentNFT2Packages(uint256 tokenID, string memory name, uint256[] memory _childIDs)
-    external
-    {
+    function LinkParentNFT2Packages(
+        address from,
+        uint256 tokenID,
+        string memory name,
+        uint256[] memory _childIDs
+    ) external {
         // 包装未拆开
         PackagedLotNFTMapping[tokenID].isBinding = true;
         PackagedLotNFTMapping[tokenID].tokenID = tokenID;
         PackagedLotNFTMapping[tokenID].name = name;
+        // 打包只能由生产商打包
+        if (!isEmptyString(Producer[from]))
+            PackagedLotNFTMapping[tokenID].owner = Producer[from];
+        else PackagedLotNFTMapping[tokenID].owner = User[from];
         for (uint256 i = 0; i < _childIDs.length; i++) {
             // 产品nft记录包装批次
             PackagedProductNFTMapping[_childIDs[i]].packageLotID = tokenID;
@@ -579,12 +590,13 @@ contract TradeManagement is IERC721Receiver {
     returns (
         uint256,
         string memory,
+        string memory,
         bool,
         uint256[] memory
     )
     {
         PackagedLotNFT memory nft = PackagedLotNFTMapping[tokenID];
-        return (nft.tokenID, nft.name, nft.isBinding, nft.products);
+        return (nft.tokenID, nft.name, nft.owner, nft.isBinding, nft.products);
     }
 
     /** 交易记录 **/
@@ -609,6 +621,9 @@ contract TradeManagement is IERC721Receiver {
         for (uint256 i = 0; i < tokenIDs.length; i++) {
             PackagedProductsSmartContract.transferFrom(from, to, tokenIDs[i]);
         }
+        if (!isEmptyString(Producer[to]))
+            PackagedLotNFTMapping[tokenID].owner = Producer[to];
+        else PackagedLotNFTMapping[tokenID].owner = User[to];
         PackagedLotNFTMapping[tokenID].isBinding = true;
     }
 
@@ -621,44 +636,51 @@ contract TradeManagement is IERC721Receiver {
     returns (ListElement[] memory result)
     {
         uint256[] memory tokenIDs;
-        uint tag = 0;
+        uint256 tag = 0;
         if (compareStrings(type_, "Product")) tag = 1;
         else if (compareStrings(type_, "RawMaterial")) tag = 2;
         else if (compareStrings(type_, "Package")) tag = 3;
         // 判断是否只需要查询自己的
         if (isOwner) {
             // 获取自己的所有产品NFT
-            if (tag == 1) tokenIDs = PackagedProductsSmartContract.getTokensFromOwner(msg.sender);
-            else if (tag == 2) tokenIDs = RawMaterialsSmartContract.getTokensFromOwner(msg.sender);
-            else if (tag == 3) tokenIDs = LotSmartContract.getTokensFromOwner(msg.sender);
+            if (tag == 1)
+                tokenIDs = PackagedProductsSmartContract.getTokensFromOwner(
+                    msg.sender
+                );
+            else if (tag == 2)
+                tokenIDs = RawMaterialsSmartContract.getTokensFromOwner(
+                    msg.sender
+                );
+            else if (tag == 3)
+                tokenIDs = LotSmartContract.getPKLTokensFromOwner(msg.sender);
         } else {
             // 获取所有产品NFT
             if (tag == 1) tokenIDs = PackagedProductsSmartContract.getTokens();
             else if (tag == 2) tokenIDs = RawMaterialsSmartContract.getTokens();
-            else if (tag == 3) {
-                uint256[] memory temp = LotSmartContract.getTokens();
-                tokenIDs = new uint256[](temp.length);
-                uint val1 = 0;
-                for (uint i = 0; i<temp.length; i++) {
-                    if (PackagedLotNFTMapping[temp[i]].tokenID != 0x0) {
-                        tokenIDs[val1] = temp[i];
-                        val1 = val1 + 1;
-                    }
-                }
-            }
+            else if (tag == 3) tokenIDs = LotSmartContract.getPKLTokens();
         }
         result = new ListElement[](tokenIDs.length);
         for (uint256 i = 0; i < tokenIDs.length; i++) {
             result[i].tokenID = tokenIDs[i];
             if (tag == 1) {
-                result[i].name = PackagedProductNFTMapping[tokenIDs[i]].name;
+                result[i].name = ProductsLotNFTMapping[
+                                    PackagedProductNFTMapping[tokenIDs[i]].productLotID
+                    ].name;
                 result[i].owner = PackagedProductNFTMapping[tokenIDs[i]].owner;
             } else if (tag == 2) {
                 result[i].name = RawMaterialNFTMapping[tokenIDs[i]].name;
-                if (isEmptyString(RawMaterialNFTMapping[tokenIDs[i]].producerName)) {
-                    result[i].owner = RawMaterialNFTMapping[tokenIDs[i]].supplierName;
+                result[i].totalSum = RawMaterialNFTMapping[tokenIDs[i]]
+                    .totalSum;
+                if (
+                    isEmptyString(
+                    RawMaterialNFTMapping[tokenIDs[i]].producerName
+                )
+                ) {
+                    result[i].owner = RawMaterialNFTMapping[tokenIDs[i]]
+                        .supplierName;
                 } else {
-                    result[i].owner = RawMaterialNFTMapping[tokenIDs[i]].producerName;
+                    result[i].owner = RawMaterialNFTMapping[tokenIDs[i]]
+                        .producerName;
                 }
             } else if (tag == 3) {
                 result[i].name = PackagedLotNFTMapping[tokenIDs[i]].name;
@@ -680,14 +702,6 @@ contract TradeManagement is IERC721Receiver {
         uint256
     )
     {
-        uint256[] memory lotTokens = LotSmartContract.getTokensFromOwner(
-            msg.sender
-        );
-        uint256 count = 0;
-        for (uint256 i = 0; i < lotTokens.length; i++) {
-            if (PackagedLotNFTMapping[lotTokens[i]].tokenID != 0x0)
-                count = count + 1;
-        }
         return (
         // 原材料NFT总数量
             RawMaterialsSmartContract.totalSupply(),
@@ -700,7 +714,7 @@ contract TradeManagement is IERC721Receiver {
         // 发送者拥有的产品NFT数量
             PackagedProductsSmartContract.balanceOf(msg.sender),
         // 发送者拥有的包装NFT数量
-            count
+            LotSmartContract.getPKLTokensFromOwner(msg.sender).length
         );
     }
 
