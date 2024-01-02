@@ -1,7 +1,6 @@
 package cn.org.gry.chainmaker.domain.entity;
 
 import cn.org.gry.chainmaker.base.BaseDynamicStruct;
-import cn.org.gry.chainmaker.base.dynamicarray.Uint256DynamicArray;
 import cn.org.gry.chainmaker.contract.ContractTradeManagementEvm;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
