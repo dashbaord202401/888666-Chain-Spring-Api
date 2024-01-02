@@ -3,6 +3,7 @@ package cn.org.gry.chainmaker.base;
 import cn.org.gry.chainmaker.config.SdkConfigPool;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
+import cn.org.gry.chainmaker.utils.TokenHolder;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.lang3.StringUtils;
@@ -58,11 +59,11 @@ public abstract class BaseContractEvm {
     @Autowired
     private SdkConfigPool sdkConfigPool;
 
-    protected String version = "_0.53";
+    protected String version = "_1.73";
 
     // 通过用户id获取链客户端
     public ChainClient getChainClient () throws Exception {
-        String user = "2";
+        String user = TokenHolder.getToken();
         String USER_TLS_KEY_PATH = "src/main/resources/crypto-config/TestCMorg" + user + "/certs/user/TlsKey.key";
         String USER_TLS_CERT_PATH = "src/main/resources/crypto-config/TestCMorg" + user + "/certs/user/TlsCert.crt";
         String USER_KEY_PATH = "src/main/resources/crypto-config/TestCMorg" + user + "/certs/user/SignKey.key";
