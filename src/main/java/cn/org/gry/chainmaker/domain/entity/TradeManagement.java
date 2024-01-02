@@ -126,10 +126,11 @@ public class TradeManagement {
                 Arrays.asList(
                         TypeReference.create(Uint256.class),
                         TypeReference.create(Utf8String.class),
+                        TypeReference.create(Utf8String.class),
                         TypeReference.create(Bool.class),
                         new TypeReference<DynamicArray<Uint256>>() {
                         }),
-                Arrays.asList("tokenId", "name", "isBinding", "childIDs"));
+                Arrays.asList("tokenId", "name", "owner", "isBinding", "childIDs"));
     }
 
     public Result getStatist () {
@@ -281,7 +282,7 @@ public class TradeManagement {
             this.tokenID = tokenID.getValue();
             this.name = name.getValue();
             this.owner = owner.getValue();
-            this.totalSum = totalSum.getValue().toString();
+            this.totalSum = ChainMakerUtils.bigInteger2DoubleString(totalSum.getValue());
         }
     }
 
