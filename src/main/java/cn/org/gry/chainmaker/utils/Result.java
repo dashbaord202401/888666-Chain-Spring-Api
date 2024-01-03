@@ -3,9 +3,7 @@ package cn.org.gry.chainmaker.utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.web3j.abi.datatypes.Type;
 
-import java.util.List;
 import java.util.Map;
 
 /**

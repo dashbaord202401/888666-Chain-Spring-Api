@@ -1,6 +1,5 @@
 package cn.org.gry.chainmaker.base;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.web3j.abi.datatypes.DynamicArray;

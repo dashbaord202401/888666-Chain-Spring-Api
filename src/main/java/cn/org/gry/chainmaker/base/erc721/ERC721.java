@@ -2,7 +2,6 @@ package cn.org.gry.chainmaker.base.erc721;
 
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.utils.Result;
-import lombok.Getter;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.generated.Uint256;

@@ -15,7 +15,6 @@ import org.web3j.abi.datatypes.generated.Uint256;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
