@@ -18,6 +18,7 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  */
 @Component
 public class PP extends ERC721 {
-    private ContractPackagedProductsEvm contractPackagedProductsEvm;
+    private final ContractPackagedProductsEvm contractPackagedProductsEvm;
 
     @Autowired
     public PP(ContractPackagedProductsEvm contractPackagedProductsEvm) {
@@ -38,7 +39,7 @@ public class PP extends ERC721 {
         setBaseContractEvm(contractPackagedProductsEvm);
     }
 
-    public Result mint (
+    public Result mint(
             BigInteger numberOfTokens,
             String tokenURI,
             String name,
@@ -62,14 +63,14 @@ public class PP extends ERC721 {
                         new Utf8String(productLot),
                         new DynamicArray<Uint256>(Uint256.class, _childIDs),
                         new DynamicArray<Uint128>(Uint128.class, _resumes)
-                        ),
-                Arrays.asList(new TypeReference<DynamicArray<Uint256>>() {
+                ),
+                Collections.singletonList(new TypeReference<DynamicArray<Uint256>>() {
                 }),
-                Arrays.asList("tokens")
+                Collections.singletonList("tokens")
         );
     }
 
-    public Result transferFrom (String from, String to, BigInteger tokenId) {
+    public Result transferFrom(String from, String to, BigInteger tokenId) {
         return contractPackagedProductsEvm.invokeContract(
                 "transferFrom",
                 Arrays.asList(
@@ -77,25 +78,25 @@ public class PP extends ERC721 {
                         new Address(to),
                         new Uint256(tokenId)
                 ),
-                Arrays.asList(),
-                Arrays.asList()
+                Collections.emptyList(),
+                Collections.emptyList()
         );
     }
 
-    public Result transfer (String to, BigInteger tokenId) {
+    public Result transfer(String to, BigInteger tokenId) {
         return contractPackagedProductsEvm.invokeContract(
                 "transfer",
                 Arrays.asList(
                         new Address(to),
                         new Uint256(tokenId)
                 ),
-                Arrays.asList(),
-                Arrays.asList()
+                Collections.emptyList(),
+                Collections.emptyList()
         );
     }
 
-    public Result approvalTMForAll (boolean approved) {
-        return contractPackagedProductsEvm.invokeContract("approvalTMForAll", Arrays.asList(new Bool(approved)), Arrays.asList(), Arrays.asList());
+    public Result approvalTMForAll(boolean approved) {
+        return contractPackagedProductsEvm.invokeContract("approvalTMForAll", Collections.singletonList(new Bool(approved)), Collections.emptyList(), Collections.emptyList());
     }
 
     @Override

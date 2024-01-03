@@ -56,18 +56,15 @@ public abstract class BaseContractEvm {
     protected String contractName;
     // 合约文件路径
     protected String EVM_CONTRACT_FILE_PATH = "";
-
+    protected String version = "_1.85";
     // 配置类池
     @Autowired
     private SdkConfigPool sdkConfigPool;
-
     @Autowired
     private UserInfoRepository certKeyOrgReposity;
 
-    protected String version = "_1.85";
-
     // 通过用户id获取链客户端
-    public ChainClient getChainClient () throws Exception {
+    public ChainClient getChainClient() throws Exception {
         UserInfo certKeyOrgEntity = certKeyOrgReposity.findByUid(Integer.valueOf(TokenHolder.getToken()));
 
         // 获取配置类
@@ -93,7 +90,7 @@ public abstract class BaseContractEvm {
     }
 
     // 创建合约
-    public ContractOuterClass.Contract createEvmContract (User user, User[] users) {
+    public ContractOuterClass.Contract createEvmContract(User user, User[] users) {
         // 获取链客户端
         ChainClient chainClient = null;
         try {
@@ -137,7 +134,7 @@ public abstract class BaseContractEvm {
     }
 
     // 获取合约信息
-    public ContractOuterClass.Contract getContractInfoByName (){
+    public ContractOuterClass.Contract getContractInfoByName() {
         // 获取链客户端
         ChainClient chainClient = null;
         try {
@@ -172,7 +169,7 @@ public abstract class BaseContractEvm {
         // 发送合约执行请求
         try {
             responseInfo = chainClient.invokeContract(Utils.calcContractName(contractName), method,
-                    null, param,rpcCallTimeout, syncResultTimeout);
+                    null, param, rpcCallTimeout, syncResultTimeout);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

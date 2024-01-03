@@ -21,7 +21,7 @@ public class ToolController {
     private Tool tool;
 
     @RequestMapping(params = "action=getAddress")
-    public Result getAddress () {
+    public Result getAddress() {
         return tool.getAddress();
     }
 }

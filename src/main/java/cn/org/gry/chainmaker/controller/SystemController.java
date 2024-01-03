@@ -22,12 +22,12 @@ public class SystemController {
     private SystemContract systemContract;
 
     @RequestMapping(params = "action=getBlockByHeight")
-    public Result getOwner (@RequestParam("height") Long height, @RequestParam("withRWSet") Boolean withRWSet) {
+    public Result getOwner(@RequestParam("height") Long height, @RequestParam("withRWSet") Boolean withRWSet) {
         return systemContract.getBlockByHeight(height, withRWSet);
     }
 
     @RequestMapping(params = "action=getTxByTxId")
-    public Result getTxByTxId (@RequestParam("txId") String txId) {
+    public Result getTxByTxId(@RequestParam("txId") String txId) {
         return systemContract.getTxByTxId(txId);
     }
 }

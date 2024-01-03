@@ -24,37 +24,36 @@ public class RMController {
     private RM rm;
 
     @RequestMapping(params = "action=mint")
-    public Result mint (@RequestParam("tokenURI") String tokenURI,
-                        @RequestParam("initSum") String initSum,
-                        @RequestParam("name") String name) {
+    public Result mint(@RequestParam("tokenURI") String tokenURI,
+                       @RequestParam("initSum") String initSum,
+                       @RequestParam("name") String name) {
         return rm.mint(tokenURI, initSum, name);
     }
 
     @RequestMapping(params = "action=transferFrom")
-    public Result transferFrom (@RequestParam("from") String from,
-                                @RequestParam("to") String to,
-                                @RequestParam("tokenId") BigInteger tokenId,
-                                @RequestParam("lotName") String lotName) {
+    public Result transferFrom(@RequestParam("from") String from,
+                               @RequestParam("to") String to,
+                               @RequestParam("tokenId") BigInteger tokenId,
+                               @RequestParam("lotName") String lotName) {
         return rm.transferFrom(from, to, tokenId, lotName);
     }
 
     @RequestMapping(params = "action=transfer")
-    public Result transfer (
+    public Result transfer(
             @RequestParam("to") String to,
             @RequestParam("tokenId") BigInteger tokenId,
             @RequestParam("lotName") String lotName
-    )
-    {
+    ) {
         return rm.transfer(to, tokenId, lotName);
     }
 
     @RequestMapping(params = "action=ownerOf")
-    public Result ownerOf (@RequestParam("tokenId") BigInteger tokenId) {
+    public Result ownerOf(@RequestParam("tokenId") BigInteger tokenId) {
         return rm.ownerOf(tokenId);
     }
 
     @RequestMapping(params = "action=balanceOf")
-    public Result balanceOf (@RequestParam("owner") String owner) {
+    public Result balanceOf(@RequestParam("owner") String owner) {
         return rm.balanceOf(owner);
     }
 }

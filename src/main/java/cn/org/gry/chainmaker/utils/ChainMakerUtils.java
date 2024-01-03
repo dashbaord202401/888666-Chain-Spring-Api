@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class ChainMakerUtils {
     // 从证书中获取地址
-    public static Address makeAddrFromCert (User user) {
+    public static Address makeAddrFromCert(User user) {
         try {
             return new Address(CryptoUtils.certToAddrStr(user.getCertificate(), ChainConfigOuterClass.AddrType.ETHEREUM));
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -36,7 +36,7 @@ public class ChainMakerUtils {
     }
 
     // 从公钥中获取地址
-    public static Address makeAddrFromKey (User user) {
+    public static Address makeAddrFromKey(User user) {
         return new Address(CryptoUtils.pkToAddrStr(user.getPublicKey(), ChainConfigOuterClass.AddrType.ETHEREUM, "SHA256"));
     }
 
@@ -84,31 +84,31 @@ public class ChainMakerUtils {
     }
 
     // 将类型转换为map
-    public static Map<String, Object> convertTypeToMap (List<String> keys, List<Type> values) {
+    public static Map<String, Object> convertTypeToMap(List<String> keys, List<Type> values) {
         // 将keys和values转换为map
-         Map<String, Object> map = new HashMap<>();
-         for (int i = 0; i < keys.size(); i++) {
-             if (values.get(i) instanceof DynamicStruct) {
-                 map.put(keys.get(i), values.get(i));
-             } else {
-                 if (values.get(i) instanceof DynamicArray) {
-                     // 如果不为空
-                     if (!((List<?>)values.get(i).getValue()).isEmpty()) {
-                         // 如果元素是基础类型
-                         if (!(((List<?>) values.get(i).getValue()).get(0) instanceof DynamicStruct)) {
-                             // 新建一个list接收转换后的值
-                             List<Object> list = new ArrayList<>();
-                             for (Type type : (List<Type>)values.get(i).getValue()) {
-                                 list.add(type.getValue());
-                             }
-                             map.put(keys.get(i), list);
-                             continue;
-                         }
-                     }
-                 }
-                 map.put(keys.get(i), values.get(i).getValue());
-             }
-         }
-         return map;
+        Map<String, Object> map = new HashMap<>();
+        for (int i = 0; i < keys.size(); i++) {
+            if (values.get(i) instanceof DynamicStruct) {
+                map.put(keys.get(i), values.get(i));
+            } else {
+                if (values.get(i) instanceof DynamicArray) {
+                    // 如果不为空
+                    if (!((List<?>) values.get(i).getValue()).isEmpty()) {
+                        // 如果元素是基础类型
+                        if (!(((List<?>) values.get(i).getValue()).get(0) instanceof DynamicStruct)) {
+                            // 新建一个list接收转换后的值
+                            List<Object> list = new ArrayList<>();
+                            for (Type type : (List<Type>) values.get(i).getValue()) {
+                                list.add(type.getValue());
+                            }
+                            map.put(keys.get(i), list);
+                            continue;
+                        }
+                    }
+                }
+                map.put(keys.get(i), values.get(i).getValue());
+            }
+        }
+        return map;
     }
 }

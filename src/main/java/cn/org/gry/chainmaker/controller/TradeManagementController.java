@@ -24,65 +24,62 @@ public class TradeManagementController {
     private TradeManagement tradeManagement;
 
     @RequestMapping(params = "action=setPackageLotContract")
-    public void setLotContract (@RequestParam("lotAddress") String lotAddress) {
+    public void setLotContract(@RequestParam("lotAddress") String lotAddress) {
         tradeManagement.setPackageLotContract(lotAddress);
     }
 
     @RequestMapping(params = "action=setRawMaterialsContract")
-    public void setRawMaterialsContract (@RequestParam("rawMaterialsAddress") String rawMaterialsAddress) {
+    public void setRawMaterialsContract(@RequestParam("rawMaterialsAddress") String rawMaterialsAddress) {
         tradeManagement.setRawMaterialsContract(rawMaterialsAddress);
     }
 
     @RequestMapping(params = "action=setPackagedProductsContract")
-    public void setPackagedProductsContract (@RequestParam("packagedProductsAddress") String packagedProductsAddress) {
+    public void setPackagedProductsContract(@RequestParam("packagedProductsAddress") String packagedProductsAddress) {
         tradeManagement.setPackagedProductsContract(packagedProductsAddress);
     }
 
     @RequestMapping(params = "action=RegisterSupplier")
-    public void RegisterSupplier (@RequestParam("supplierAddress") String supplierAddress, @RequestParam("name") String name) {
+    public void RegisterSupplier(@RequestParam("supplierAddress") String supplierAddress, @RequestParam("name") String name) {
         tradeManagement.RegisterSupplier(supplierAddress, name);
     }
 
     @RequestMapping(params = "action=RegisterProducer")
-    public void RegisterProducer (@RequestParam("producerAddress") String producerAddress, @RequestParam("name") String name) {
+    public void RegisterProducer(@RequestParam("producerAddress") String producerAddress, @RequestParam("name") String name) {
         tradeManagement.RegisterProducer(producerAddress, name);
     }
 
     @RequestMapping(params = "action=getRawMaterialsNFT")
-    public Result getRawMaterialsNFT (@RequestParam("rawMaterialsId") BigInteger rawMaterialsId) {
+    public Result getRawMaterialsNFT(@RequestParam("rawMaterialsId") BigInteger rawMaterialsId) {
         return tradeManagement.getRawMaterialsNFT(rawMaterialsId);
     }
 
     @RequestMapping(params = "action=getPackagedProductsNFT")
-    public Result getPackagedProductsNFT (@RequestParam("packagedProductsId") BigInteger packagedProductsId) {
+    public Result getPackagedProductsNFT(@RequestParam("packagedProductsId") BigInteger packagedProductsId) {
         return tradeManagement.getPackagedProductsNFT(packagedProductsId);
     }
 
     @RequestMapping(params = "action=getProductsFromPackage")
-    public Result getProductsFromPackage (
+    public Result getProductsFromPackage(
             @RequestParam("tokenId") BigInteger tokenId
-    )
-    {
+    ) {
         return tradeManagement.getProductsFromPackage(tokenId);
     }
 
     @RequestMapping(params = "action=list")
-    public Result list (
+    public Result list(
             @RequestParam("isOwner") Boolean isOwner,
             @RequestParam("type") String type
-    )
-    {
+    ) {
         return tradeManagement.list(isOwner, type);
     }
 
     @RequestMapping(params = "action=getStatist")
-    public Result getStatist ()
-    {
+    public Result getStatist() {
         return tradeManagement.getStatist();
     }
 
     @RequestMapping(params = "action=getProductsLotNFT")
-    public Result getProductsLotNFT (@RequestParam("lotId") BigInteger lotId) {
+    public Result getProductsLotNFT(@RequestParam("lotId") BigInteger lotId) {
         return tradeManagement.getProductsLotNFT(lotId);
     }
 }

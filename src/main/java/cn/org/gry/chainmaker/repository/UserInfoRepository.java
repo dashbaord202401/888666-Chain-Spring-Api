@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
-    UserInfo findByUid (Integer uid);
+    UserInfo findByUid(Integer uid);
 
     @Override
     <S extends UserInfo> S save(S entity);

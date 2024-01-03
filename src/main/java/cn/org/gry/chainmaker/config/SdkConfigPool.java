@@ -24,9 +24,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
 public class SdkConfigPool {
+    private static final String SDK_CONFIG = "sdk_config.yml";
     private final BlockingQueue<SdkConfig> objectPool;
     private final Semaphore semaphore;
-    private static final String SDK_CONFIG = "sdk_config.yml";
 
     public SdkConfigPool(int poolSize) throws UtilsException, IOException {
         objectPool = new ArrayBlockingQueue<>(poolSize);

@@ -21,40 +21,34 @@ public class InitSystemClient {
     // 管理员1签名证书及密钥
     static final String ADMIN1_KEY_PATH = "src/main/resources/crypto-config/TestCMorg1/certs/user/SignKey.key";
     static final String ADMIN1_CERT_PATH = "src/main/resources/crypto-config/TestCMorg1/certs/user/SignCert.crt";
-    // 管理员1TSL证书及密钥
-    static String ADMIN1_TLS_KEY_PATH = "src/main/resources/crypto-config/TestCMorg1/certs/user/TlsKey.key";
-    static String ADMIN1_TLS_CERT_PATH = "src/main/resources/crypto-config/TestCMorg1/certs/user/TlsCert.crt";
-
     // 管理员2签名证书及密钥
     static final String ADMIN2_KEY_PATH = "src/main/resources/crypto-config/TestCMorg2/certs/user/SignKey.key";
     static final String ADMIN2_CERT_PATH = "src/main/resources/crypto-config/TestCMorg2/certs/user/SignCert.crt";
-    // 管理员2TSL证书及密钥
-    static String ADMIN2_TLS_KEY_PATH = "src/main/resources/crypto-config/TestCMorg2/certs/user/TlsKey.key";
-    static String ADMIN2_TLS_CERT_PATH = "src/main/resources/crypto-config/TestCMorg2/certs/user/TlsCert.crt";
-
     // 管理员3签名证书及密钥
     static final String ADMIN3_KEY_PATH = "src/main/resources/crypto-config/TestCMorg3/certs/user/SignKey.key";
     static final String ADMIN3_CERT_PATH = "src/main/resources/crypto-config/TestCMorg3/certs/user/SignCert.crt";
-
-    // 管理员3TSL证书及密钥
-    static String ADMIN3_TLS_KEY_PATH = "src/main/resources/crypto-config/TestCMorg3/certs/user/TlsKey.key";
-    static String ADMIN3_TLS_CERT_PATH = "src/main/resources/crypto-config/TestCMorg3/certs/user/TlsCert.crt";
-
     // 管理员1所属组织名
     static final String ORG_ID1 = "TestCMorg1";
     // 管理员2所属组织名
     static final String ORG_ID2 = "TestCMorg2";
     // 管理员3所属组织名
     static final String ORG_ID3 = "TestCMorg3";
-
-    // 配置文件地址
-    static String SDK_CONFIG = "sdk_config.yml";
-
-    static ChainClient chainClient;
-    static ChainManager chainManager;
     public static User admin1;
     public static User admin2;
     public static User admin3;
+    // 管理员1TSL证书及密钥
+    static String ADMIN1_TLS_KEY_PATH = "src/main/resources/crypto-config/TestCMorg1/certs/user/TlsKey.key";
+    static String ADMIN1_TLS_CERT_PATH = "src/main/resources/crypto-config/TestCMorg1/certs/user/TlsCert.crt";
+    // 管理员2TSL证书及密钥
+    static String ADMIN2_TLS_KEY_PATH = "src/main/resources/crypto-config/TestCMorg2/certs/user/TlsKey.key";
+    static String ADMIN2_TLS_CERT_PATH = "src/main/resources/crypto-config/TestCMorg2/certs/user/TlsCert.crt";
+    // 管理员3TSL证书及密钥
+    static String ADMIN3_TLS_KEY_PATH = "src/main/resources/crypto-config/TestCMorg3/certs/user/TlsKey.key";
+    static String ADMIN3_TLS_CERT_PATH = "src/main/resources/crypto-config/TestCMorg3/certs/user/TlsCert.crt";
+    // 配置文件地址
+    static String SDK_CONFIG = "sdk_config.yml";
+    static ChainClient chainClient;
+    static ChainManager chainManager;
 
     @Bean
     public static ChainClient InItSystemChainClient() throws Exception {

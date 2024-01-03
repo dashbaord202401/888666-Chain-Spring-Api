@@ -15,6 +15,7 @@ import org.web3j.abi.datatypes.generated.Uint256;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
@@ -26,39 +27,39 @@ import java.util.Arrays;
  */
 @Component
 public class RM extends ERC721 {
-    private ContractRawMaterialsEvm contractRawMaterialsEvm;
+    private final ContractRawMaterialsEvm contractRawMaterialsEvm;
 
     @Autowired
-    public RM (ContractRawMaterialsEvm contractRawMaterialsEvm) {
+    public RM(ContractRawMaterialsEvm contractRawMaterialsEvm) {
         this.contractRawMaterialsEvm = contractRawMaterialsEvm;
         setBaseContractEvm(contractRawMaterialsEvm);
     }
 
-    public Result mint (String tokenURI, String initSum, String name) {
+    public Result mint(String tokenURI, String initSum, String name) {
         return contractRawMaterialsEvm.invokeContract(
                 "mint",
                 Arrays.asList(
                         new Utf8String(tokenURI),
                         new Uint128(ChainMakerUtils.doubleString2BigInteger(initSum)),
                         new Utf8String(name)),
-                Arrays.asList(TypeReference.create(Uint256.class)),
-                Arrays.asList("token"));
+                Collections.singletonList(TypeReference.create(Uint256.class)),
+                Collections.singletonList("token"));
     }
 
-    public Result transferFrom (String from, String to, BigInteger tokenId, String lotName) {
+    public Result transferFrom(String from, String to, BigInteger tokenId, String lotName) {
         return contractRawMaterialsEvm.invokeContract(
                 "transferFrom",
                 Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId), new Utf8String(lotName)),
-                Arrays.asList(),
-                Arrays.asList());
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
-    public Result transfer (String to, BigInteger tokenId, String lotName) {
+    public Result transfer(String to, BigInteger tokenId, String lotName) {
         return contractRawMaterialsEvm.invokeContract(
                 "transfer",
                 Arrays.asList(new Address(to), new Uint256(tokenId), new Utf8String(lotName)),
-                Arrays.asList(),
-                Arrays.asList());
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
     @Override

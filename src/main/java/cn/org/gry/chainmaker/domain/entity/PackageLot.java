@@ -40,7 +40,7 @@ public class PackageLot extends ERC721 {
         setBaseContractEvm(contractLotEvm);
     }
 
-    public Result mint (String tokenURI, String name, List<BigInteger> _childIDs) {
+    public Result mint(String tokenURI, String name, List<BigInteger> _childIDs) {
         List<Uint256> childIDs = new ArrayList<>();
         for (BigInteger childID : _childIDs) {
             childIDs.add(new Uint256(childID));
@@ -51,12 +51,12 @@ public class PackageLot extends ERC721 {
                 Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("tokenId"));
     }
 
-    public Result transferFrom (String from, String to, BigInteger tokenId) {
-        return contractLotEvm.invokeContract("transferFrom", Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId)), Arrays.asList(), Arrays.asList());
+    public Result transferFrom(String from, String to, BigInteger tokenId) {
+        return contractLotEvm.invokeContract("transferFrom", Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public Result transfer (String to, BigInteger tokenId) {
-        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(to), new Uint256(tokenId)), Arrays.asList(), Arrays.asList());
+    public Result transfer(String to, BigInteger tokenId) {
+        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(to), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
     }
 
     @Override

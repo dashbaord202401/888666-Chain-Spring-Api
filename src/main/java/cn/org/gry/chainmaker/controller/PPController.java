@@ -25,42 +25,38 @@ public class PPController {
     private PP pp;
 
     @RequestMapping(params = "action=mint")
-    public Result mint (
+    public Result mint(
             @RequestParam("numberOfTokens") BigInteger numberOfTokens,
             @RequestParam("tokenURI") String tokenURI,
             @RequestParam("name") String name,
             @RequestParam("productLot") String productLot,
             @RequestParam("childIDs") List<BigInteger> childIDs,
             @RequestParam("resumes") List<String> resumes
-    )
-    {
+    ) {
         return pp.mint(numberOfTokens, tokenURI, name, productLot, childIDs, resumes);
     }
 
     @RequestMapping(params = "action=transferFrom")
-    public Result transferFrom (
+    public Result transferFrom(
             @RequestParam("from") String from,
             @RequestParam("to") String to,
             @RequestParam("tokenId") BigInteger tokenId
-    )
-    {
+    ) {
         return pp.transferFrom(from, to, tokenId);
     }
 
     @RequestMapping(params = "action=balanceOf")
-    public Result balanceOf (
+    public Result balanceOf(
             @RequestParam("owner") String owner
-    )
-    {
+    ) {
         return pp.balanceOf(owner);
     }
 
     @RequestMapping(params = "action=transfer")
-    public Result transfer (
+    public Result transfer(
             @RequestParam("to") String to,
             @RequestParam("tokenId") BigInteger tokenId
-    )
-    {
+    ) {
         return pp.transfer(to, tokenId);
     }
 }

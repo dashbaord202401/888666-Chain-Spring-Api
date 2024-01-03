@@ -18,10 +18,9 @@ import java.util.Map;
 
 @Component
 public class SystemContract {
+    private final Long rpcCallTimeOut = 10000L;
     @Autowired
     private ChainClient chainClient;
-
-    private final Long rpcCallTimeOut = 10000L;
 
     public Result getBlockByHeight(Long height, Boolean withRWSet) {
         ChainmakerBlock.BlockInfo blockInfo = null;
@@ -39,7 +38,7 @@ public class SystemContract {
         // 根据时间戳格式化为年月日
         long timestamp = blockInfo.getBlock().getHeader().getBlockTimestamp();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        data.put("blockTime", dateFormat.format(new Date(timestamp*=1000)));
+        data.put("blockTime", dateFormat.format(new Date(timestamp *= 1000)));
         Result result = Result.success("区块信息", blockInfo.getBlock().getTxs(0).getPayload().getTxId(), data);
 
         return result;

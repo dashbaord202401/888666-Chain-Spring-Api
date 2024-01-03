@@ -29,40 +29,36 @@ public class PKLotController {
     private PP pp;
 
     @RequestMapping(params = "action=mint")
-    public Result mint (
+    public Result mint(
             @RequestParam("tokenURI") String tokenURI,
             @RequestParam("name") String name,
             @RequestParam("childIDs") List<BigInteger> childIDs
-    )
-    {
+    ) {
         return lot.mint(tokenURI, name, childIDs);
     }
 
     @RequestMapping(params = "balanceOf")
-    public Result balanceOf (
+    public Result balanceOf(
             @RequestParam("owner") String owner
-    )
-    {
+    ) {
         return lot.balanceOf(owner);
     }
 
     @RequestMapping(params = "action=transferFrom")
-    public Result transferFrom (
+    public Result transferFrom(
             @RequestParam("from") String from,
             @RequestParam("to") String to,
             @RequestParam("tokenId") BigInteger tokenId
-    )
-    {
+    ) {
         pp.approvalTMForAll(true);
         return lot.transferFrom(from, to, tokenId);
     }
 
     @RequestMapping(params = "action=transfer")
-    public Result transfer (
+    public Result transfer(
             @RequestParam("to") String to,
             @RequestParam("tokenId") BigInteger tokenId
-    )
-    {
+    ) {
         pp.approvalTMForAll(true);
         return lot.transfer(to, tokenId);
     }

@@ -31,39 +31,39 @@ public abstract class BaseArchive {
 
     // 风险提示!!!!,本方法是删除区块，使用前需用归档工具将对应区块归档!!!
     // 数据归档
-     public ResultOuterClass.TxResponse Archive(Long targetBlockHeight) throws ChainMakerCryptoSuiteException {
+    public ResultOuterClass.TxResponse Archive(Long targetBlockHeight) throws ChainMakerCryptoSuiteException {
         Request.Payload payload = chainClient.createArchiveBlockPayload(targetBlockHeight);
         ResultOuterClass.TxResponse responseInfo = null;
         try {
             responseInfo = chainClient.sendArchiveBlockRequest(payload, rpcCallTimeout);
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
         if (responseInfo != null) {
-         System.out.println("归档结果：");
-         System.out.println(responseInfo);
+            System.out.println("归档结果：");
+            System.out.println(responseInfo);
         }
-         return responseInfo;
-     }
+        return responseInfo;
+    }
 
     //归档恢复
-     public void Restore(Long targetBlockHeight) {
+    public void Restore(Long targetBlockHeight) {
         ResultOuterClass.TxResponse responseInfo = null;
         try {
             Store.BlockWithRWSet fullBlock = chainClient.getArchivedFullBlockByHeight(targetBlockHeight);
             Request.Payload payload = chainClient.createRestoreBlockPayload(fullBlock.toByteArray());
             responseInfo = chainClient.sendRestoreBlockRequest(payload, rpcCallTimeout);
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
-         if (responseInfo != null) {
-             System.out.println("归档恢复结果：");
-             System.out.println(responseInfo);
-         }
-     }
+        if (responseInfo != null) {
+            System.out.println("归档恢复结果：");
+            System.out.println(responseInfo);
+        }
+    }
 
     //归档查询
-     public ChainmakerTransaction.TransactionInfo GetFromArchiveStore(Long targetBlockHeight) {
+    public ChainmakerTransaction.TransactionInfo GetFromArchiveStore(Long targetBlockHeight) {
         ChainmakerBlock.BlockInfo blockInfo = null;
         ChainmakerTransaction.TransactionInfo transactionInfo = null;
 
@@ -73,7 +73,7 @@ public abstract class BaseArchive {
             String txid = blockInfo.getBlock().getTxs(0).getPayload().getTxId();
             transactionInfo = chainClient.getArchivedTxByTxId(txid, rpcCallTimeout);
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
 
         if (transactionInfo != null) {
@@ -82,10 +82,10 @@ public abstract class BaseArchive {
         }
 
         return transactionInfo;
-     }
+    }
 
 
-     public void getChainGenesisHash(Long targetBlockHeight) {
+    public void getChainGenesisHash(Long targetBlockHeight) {
         ChainmakerBlock.BlockInfo block = null;
         try {
             block = chainClient.getBlockByHeight(targetBlockHeight, false, rpcCallTimeout);
@@ -93,14 +93,14 @@ public abstract class BaseArchive {
             System.out.println(genesisHash);
         } catch (Exception e) {
             e.printStackTrace();
-         }
+        }
     }
 
     public void archiveStore(Long targetArchiveHeight) {
         try {
             chainClient.archiveBlocks(targetArchiveHeight, new BaseNotice(), rpcCallTimeout);
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -108,17 +108,17 @@ public abstract class BaseArchive {
         try {
             chainClient.restoreBlocks(restoreHeight, new BaseNotice(), rpcCallTimeout);
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
-     public void getArchiveStatus() {
+    public void getArchiveStatus() {
         Store.ArchiveStatus status = null;
         try {
             status = chainClient.getArchiveStatus(rpcCallTimeout);
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
         System.out.println(status);
-     }
+    }
 }

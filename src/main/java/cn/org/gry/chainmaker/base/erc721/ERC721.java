@@ -21,21 +21,21 @@ import java.util.Collections;
 public abstract class ERC721 {
     protected BaseContractEvm baseContractEvm;
 
-    public abstract void setBaseContractEvm (BaseContractEvm baseContractEvm);
+    public abstract void setBaseContractEvm(BaseContractEvm baseContractEvm);
 
-    public Result ownerOf (BigInteger tokenId) {
+    public Result ownerOf(BigInteger tokenId) {
         return baseContractEvm.invokeContract(
                 "ownerOf",
-                Arrays.asList(new Uint256(tokenId)),
-                Arrays.asList(TypeReference.create(Address.class)),
-                Arrays.asList("owner"));
+                Collections.singletonList(new Uint256(tokenId)),
+                Collections.singletonList(TypeReference.create(Address.class)),
+                Collections.singletonList("owner"));
     }
 
-    public Result balanceOf (String owner) {
+    public Result balanceOf(String owner) {
         return baseContractEvm.invokeContract("balanceOf", Collections.singletonList(new Address(owner)), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("balance"));
     }
 
-    public Result totalSupply () {
+    public Result totalSupply() {
         return baseContractEvm.invokeContract("totalSupply", Collections.emptyList(), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("totalSupply"));
     }
 }

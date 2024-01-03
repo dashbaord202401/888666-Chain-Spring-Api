@@ -17,7 +17,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class Result <T> {
+public class Result<T> {
     private Integer code;
     private String txId;
     private String message;
@@ -30,11 +30,11 @@ public class Result <T> {
         this.data = data;
     }
 
-    public static <T> Result success (String message, String txId, Map<String, T> data) {
+    public static <T> Result success(String message, String txId, Map<String, T> data) {
         return new Result(ResultCode.SUCCESS, message, txId, data);
     }
 
-    public static <T> Result fail (String message, String txId, Map<String, T> data) {
+    public static <T> Result fail(String message, String txId, Map<String, T> data) {
         return new Result(ResultCode.FAIL, message, txId, data);
     }
 }

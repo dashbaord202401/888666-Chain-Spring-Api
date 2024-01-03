@@ -8,6 +8,7 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
@@ -22,7 +23,7 @@ public class Tool {
     @Autowired
     private ContractToolEvm contractToolEvm;
 
-    public Result getAddress () {
-        return contractToolEvm.invokeContract("getAddress", Arrays.asList(), Arrays.asList(TypeReference.create(Address.class)), Arrays.asList("address"));
+    public Result getAddress() {
+        return contractToolEvm.invokeContract("getAddress", Collections.emptyList(), Collections.singletonList(TypeReference.create(Address.class)), Collections.singletonList("address"));
     }
 }

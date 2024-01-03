@@ -38,38 +38,38 @@ public class TradeManagement {
     @Autowired
     private ContractTradeManagementEvm contractTradeManagementEvm;
 
-    public void setPackageLotContract (String lotAddress) {
-        contractTradeManagementEvm.invokeContract("setPackageLotContract", Arrays.asList(new Address(lotAddress)), Arrays.asList(), Arrays.asList());
+    public void setPackageLotContract(String lotAddress) {
+        contractTradeManagementEvm.invokeContract("setPackageLotContract", Collections.singletonList(new Address(lotAddress)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void setProductLotContract (String lotAddress) {
-        contractTradeManagementEvm.invokeContract("setProductLotContract", Arrays.asList(new Address(lotAddress)), Arrays.asList(), Arrays.asList());
+    public void setProductLotContract(String lotAddress) {
+        contractTradeManagementEvm.invokeContract("setProductLotContract", Collections.singletonList(new Address(lotAddress)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void setRawMaterialsContract (String rawMaterialsAddress) {
-        contractTradeManagementEvm.invokeContract("setRawMaterialsContract", Arrays.asList(new Address(rawMaterialsAddress)), Arrays.asList(), Arrays.asList());
+    public void setRawMaterialsContract(String rawMaterialsAddress) {
+        contractTradeManagementEvm.invokeContract("setRawMaterialsContract", Collections.singletonList(new Address(rawMaterialsAddress)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void setPackagedProductsContract (String packagedProductsAddress) {
-        contractTradeManagementEvm.invokeContract("setPackagedProductsContract", Arrays.asList(new Address(packagedProductsAddress)), Arrays.asList(), Arrays.asList());
+    public void setPackagedProductsContract(String packagedProductsAddress) {
+        contractTradeManagementEvm.invokeContract("setPackagedProductsContract", Collections.singletonList(new Address(packagedProductsAddress)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void RegisterSupplier (String supplierAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterSupplier", Arrays.asList(new Address(supplierAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
+    public void RegisterSupplier(String supplierAddress, String name) {
+        contractTradeManagementEvm.invokeContract("RegisterSupplier", Arrays.asList(new Address(supplierAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void RegisterProducer (String producerAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterProducer", Arrays.asList(new Address(producerAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
+    public void RegisterProducer(String producerAddress, String name) {
+        contractTradeManagementEvm.invokeContract("RegisterProducer", Arrays.asList(new Address(producerAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void RegisterUser (String userAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterUser", Arrays.asList(new Address(userAddress), new Utf8String(name)), Arrays.asList(), Arrays.asList());
+    public void RegisterUser(String userAddress, String name) {
+        contractTradeManagementEvm.invokeContract("RegisterUser", Arrays.asList(new Address(userAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public Result getRawMaterialsNFT (BigInteger rawMaterialsId) {
+    public Result getRawMaterialsNFT(BigInteger rawMaterialsId) {
         Result result = contractTradeManagementEvm.invokeContract(
                 "getRawMaterialsNFT",
-                Arrays.asList(new Uint256(rawMaterialsId)),
+                Collections.singletonList(new Uint256(rawMaterialsId)),
                 Arrays.asList(
                         TypeReference.create(Bool.class),
                         TypeReference.create(Utf8String.class),
@@ -88,7 +88,7 @@ public class TradeManagement {
                         "productLots",
                         "resumes"
                 ));
-        List<BigInteger> _resumes = (List<BigInteger>)result.getData().get("resumes");
+        List<BigInteger> _resumes = (List<BigInteger>) result.getData().get("resumes");
         List<String> resumes = new ArrayList<>();
         for (BigInteger _resume : _resumes) {
             resumes.add(ChainMakerUtils.bigInteger2DoubleString(_resume));
@@ -97,10 +97,10 @@ public class TradeManagement {
         return result;
     }
 
-    public Result getPackagedProductsNFT (BigInteger packagedProductsId) {
+    public Result getPackagedProductsNFT(BigInteger packagedProductsId) {
         return contractTradeManagementEvm.invokeContract(
                 "getPackagedProductsNFT",
-                Arrays.asList(new Uint256(packagedProductsId)),
+                Collections.singletonList(new Uint256(packagedProductsId)),
                 Arrays.asList(
                         TypeReference.create(Bool.class),
                         TypeReference.create(Utf8String.class),
@@ -124,7 +124,7 @@ public class TradeManagement {
                 ));
     }
 
-    public Result getProductsFromPackage (BigInteger tokenId) {
+    public Result getProductsFromPackage(BigInteger tokenId) {
         return contractTradeManagementEvm.invokeContract(
                 "getProductsFromPackages",
                 Collections.singletonList(new Uint256(tokenId)),
@@ -138,10 +138,10 @@ public class TradeManagement {
                 Arrays.asList("tokenId", "name", "owner", "isBinding", "childIDs"));
     }
 
-    public Result getStatist () {
+    public Result getStatist() {
         return contractTradeManagementEvm.invokeContract(
                 "getStatist",
-                Arrays.asList(),
+                Collections.emptyList(),
                 Arrays.asList(
                         TypeReference.create(Uint256.class),
                         TypeReference.create(Uint256.class),
@@ -152,25 +152,25 @@ public class TradeManagement {
                 Arrays.asList("totalRM", "totalPP", "totalPKL", "balanceOfRM", "balanceOfPP", "balanceOfPKL"));
     }
 
-    public Result list (Boolean owner, String type) {
+    public Result list(Boolean owner, String type) {
         Result result = contractTradeManagementEvm.invokeContract(
                 "list",
                 Arrays.asList(
                         new Bool(owner),
                         new Utf8String(type)),
-                Arrays.asList(
+                Collections.singletonList(
                         new TypeReference<DynamicArray<ListElem>>() {
                         }),
-                Arrays.asList("list"));
+                Collections.singletonList("list"));
         Pageable pageable = PageRequest.of(1, 10);
-        result.getData().put("list", new PageImpl<>((List<ListElem>)result.getData().get("list"), pageable, ((List<ListElem>)result.getData().get("list")).size()));
+        result.getData().put("list", new PageImpl<>((List<ListElem>) result.getData().get("list"), pageable, ((List<ListElem>) result.getData().get("list")).size()));
         return result;
     }
 
     public Result getProductsLotNFT(BigInteger lotId) {
         return contractTradeManagementEvm.invokeContract(
                 "getProductsLotNFT",
-                Arrays.asList(new Uint256(lotId)),
+                Collections.singletonList(new Uint256(lotId)),
                 Arrays.asList(
                         TypeReference.create(PLNFT.class),
                         new TypeReference<DynamicArray<Uint256>>() {
@@ -200,24 +200,24 @@ public class TradeManagement {
         private String name;
         private String lotName;
 
-        public RMNFT (
-            Uint256 tokenID,
-            Uint256 lotId,
-            Uint256 produceTime,
-            Utf8String supplierName,
-            Uint256 supplierTime,
-            Utf8String producerName,
-            Uint128 totalSum,
-            Utf8String name,
-            Utf8String lotName
-        )
-        {
+        public RMNFT(
+                Uint256 tokenID,
+                Uint256 lotId,
+                Uint256 produceTime,
+                Utf8String supplierName,
+                Uint256 supplierTime,
+                Utf8String producerName,
+                Uint128 totalSum,
+                Utf8String name,
+                Utf8String lotName
+        ) {
             super(tokenID, lotId, produceTime, supplierName, supplierTime, producerName, totalSum, name, lotName);
             this.tokenID = tokenID.getValue();
             this.lotId = lotId.getValue();
             this.produceTime = new Date(produceTime.getValue().longValue() * 1000);
             this.supplierName = supplierName.getValue();
-            if (!supplierTime.getValue().equals(BigInteger.valueOf(0))) this.supplierTime = new Date(supplierTime.getValue().longValue() * 1000);
+            if (!supplierTime.getValue().equals(BigInteger.valueOf(0)))
+                this.supplierTime = new Date(supplierTime.getValue().longValue() * 1000);
             this.producerName = producerName.getValue();
             this.totalSum = ChainMakerUtils.bigInteger2DoubleString(totalSum.getValue());
             this.name = name.getValue();
@@ -235,12 +235,12 @@ public class TradeManagement {
         private Boolean isBinding;
         private String owner;
 
-        public PPNFT (
-            Uint256 tokenID,
-            Uint256 productLotID,
-            Uint256 packageLotID,
-            Bool isBinding,
-            Utf8String owner
+        public PPNFT(
+                Uint256 tokenID,
+                Uint256 productLotID,
+                Uint256 packageLotID,
+                Bool isBinding,
+                Utf8String owner
         ) {
             super(tokenID, productLotID, packageLotID, isBinding, owner);
             this.tokenID = tokenID.getValue();
@@ -258,11 +258,10 @@ public class TradeManagement {
         private Date timestamp;
         private String name;
 
-        public TradeUser (
-            Uint256 timestamp,
-            Utf8String name
-        )
-        {
+        public TradeUser(
+                Uint256 timestamp,
+                Utf8String name
+        ) {
             super(timestamp, name);
             this.timestamp = new Date(timestamp.getValue().longValue() * 1000);
             this.name = name.getValue();
@@ -275,11 +274,10 @@ public class TradeManagement {
         private BigInteger tokenID;
         private String name;
 
-        public RMInPP (
-            Uint256 tokenID,
-            Utf8String name
-        )
-        {
+        public RMInPP(
+                Uint256 tokenID,
+                Utf8String name
+        ) {
             super(tokenID, name);
             this.tokenID = tokenID.getValue();
             this.name = name.getValue();
@@ -296,18 +294,18 @@ public class TradeManagement {
         private String producerName;
         private String name;
 
-        public PLNFT (
-            Uint256 tokenID,
-            Utf8String lotName,
-            Uint256 produceTime,
-            Utf8String producerName,
-            Utf8String name
-        )
-        {
+        public PLNFT(
+                Uint256 tokenID,
+                Utf8String lotName,
+                Uint256 produceTime,
+                Utf8String producerName,
+                Utf8String name
+        ) {
             super(tokenID, lotName, produceTime, producerName, name);
             this.tokenID = tokenID.getValue();
             this.lotName = lotName.getValue();
-            if (!produceTime.getValue().equals(BigInteger.valueOf(0))) this.produceTime = new Date(produceTime.getValue().longValue() * 1000);
+            if (!produceTime.getValue().equals(BigInteger.valueOf(0)))
+                this.produceTime = new Date(produceTime.getValue().longValue() * 1000);
             this.producerName = producerName.getValue();
             this.name = name.getValue();
         }
@@ -321,13 +319,12 @@ public class TradeManagement {
         private String name;
         private String totalSum;
 
-        public ListElem (
-            Uint256 tokenID,
-            Utf8String name,
-            Utf8String owner,
-            Uint256 totalSum
-        )
-        {
+        public ListElem(
+                Uint256 tokenID,
+                Utf8String name,
+                Utf8String owner,
+                Uint256 totalSum
+        ) {
             super(tokenID, name, owner, totalSum);
             this.tokenID = tokenID.getValue();
             this.name = name.getValue();
