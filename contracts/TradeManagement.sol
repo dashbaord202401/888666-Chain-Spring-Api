@@ -2,15 +2,14 @@
 pragma solidity ^0.8.16;
 
 import "./@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "./PackagedProducts.sol";
-import "./RawMaterials.sol";
-import "./Lot.sol";
+import "./Base.sol";
 
 contract TradeManagement is IERC721Receiver {
     //** 三个合约 **//
-    RawMaterials public RawMaterialsSmartContract;
-    PackagedProducts public PackagedProductsSmartContract;
-    Lot public LotSmartContract;
+    Base public RawMaterialSmartContract;
+    Base public PackagedProductSmartContract;
+    Base public ProductLotSmartContract;
+    Base public PackageLotSmartContract;
 
     // 授权者 -> 合约创建者
     address public FoodAuthority;
@@ -141,9 +140,20 @@ contract TradeManagement is IERC721Receiver {
     }
 
     // 设置批次合约
-    function setLotContract(address lotAddress) public onlyFoodAuthority {
-        LotSmartContract = Lot(lotAddress);
-        LotSmartContract.SetTradeManagementSC(address(this));
+    function setPackageLotContract(address packageLotAddress)
+    public
+    onlyFoodAuthority
+    {
+        PackageLotSmartContract = Base(packageLotAddress);
+        PackageLotSmartContract.setTradeManagementSC(address(this));
+    }
+
+    function setProductLotContract(address productLotAddress)
+    public
+    onlyFoodAuthority
+    {
+        ProductLotSmartContract = Base(productLotAddress);
+        ProductLotSmartContract.setTradeManagementSC(address(this));
     }
 
     // 设置成品合约
@@ -151,10 +161,8 @@ contract TradeManagement is IERC721Receiver {
     public
     onlyFoodAuthority
     {
-        PackagedProductsSmartContract = PackagedProducts(
-            packagedProductAddress
-        );
-        PackagedProductsSmartContract.SetTradeManagementSC(address(this));
+        PackagedProductSmartContract = Base(packagedProductAddress);
+        PackagedProductSmartContract.setTradeManagementSC(address(this));
     }
 
     // 设置原材料合约
@@ -162,8 +170,8 @@ contract TradeManagement is IERC721Receiver {
     public
     onlyFoodAuthority
     {
-        RawMaterialsSmartContract = RawMaterials(rawMaterialsAddress);
-        RawMaterialsSmartContract.SetTradeManagementSC(address(this));
+        RawMaterialSmartContract = Base(rawMaterialsAddress);
+        RawMaterialSmartContract.setTradeManagementSC(address(this));
     }
 
     //** Modifiers **//
@@ -248,7 +256,7 @@ contract TradeManagement is IERC721Receiver {
         uint128[] memory resumes
     ) external {
         // 打包生产批次NFT
-        uint256 lotID = LotSmartContract.mintForProducts(productLot, tokenIDs);
+        uint256 lotID = ProductLotSmartContract.mint(productLot, "", tokenIDs);
 
         // 初始化生产批次NFT
         ProductsLotNFT storage productsLotNft = ProductsLotNFTMapping[lotID];
@@ -341,7 +349,7 @@ contract TradeManagement is IERC721Receiver {
         // 若当前调用者不在白名单内 且 商品已被绑定 且 拥有者不是当前调用者 则取消
         if (
             nft.isBinding &&
-            PackagedProductsSmartContract.ownerOf(tokenID) != msg.sender &&
+            PackagedProductSmartContract.ownerOf(tokenID) != msg.sender &&
             !whiteList[msg.sender]
         ) {
             return (
@@ -378,8 +386,20 @@ contract TradeManagement is IERC721Receiver {
     }
 
     // 获取指定下生产批次的信息
-    function getProductsLotNFT (uint256 tokenID) public view returns (ProductsLotNFT memory, uint256[] memory, uint256[] memory) {
-        return (ProductsLotNFTMapping[tokenID], ProductsLotNFTMapping[tokenID].rawMaterials, ProductsLotNFTMapping[tokenID].products);
+    function getProductsLotNFT(uint256 tokenID)
+    public
+    view
+    returns (
+        ProductsLotNFT memory,
+        uint256[] memory,
+        uint256[] memory
+    )
+    {
+        return (
+            ProductsLotNFTMapping[tokenID],
+            ProductsLotNFTMapping[tokenID].rawMaterials,
+            ProductsLotNFTMapping[tokenID].products
+        );
     }
 
     /** 原料业务逻辑 **/
@@ -408,7 +428,7 @@ contract TradeManagement is IERC721Receiver {
         string memory lotName
     ) external {
         require(
-            from == RawMaterialsSmartContract.ownerOf(tokenID),
+            from == RawMaterialSmartContract.ownerOf(tokenID),
             "this token is not belong this user"
         );
         RawMaterialNFT storage nft = RawMaterialNFTMapping[tokenID];
@@ -424,7 +444,7 @@ contract TradeManagement is IERC721Receiver {
     {
         for (uint256 i = 0; i < tokenIDs.length; i++) {
             require(
-                RawMaterialsSmartContract.ownerOf(tokenIDs[i]) == sender,
+                RawMaterialSmartContract.ownerOf(tokenIDs[i]) == sender,
                 "The user isn't owner of raw material"
             );
         }
@@ -492,7 +512,7 @@ contract TradeManagement is IERC721Receiver {
             uint256 tokenID = RawMaterialNFTMapping[_childIDs[i]].tokenID;
             require(tokenID != 0x0, "RawMaterials not exist");
             require(
-                RawMaterialsSmartContract.ownerOf(tokenID) == owner,
+                RawMaterialSmartContract.ownerOf(tokenID) == owner,
                 "user is not owner"
             );
             require(
@@ -549,7 +569,7 @@ contract TradeManagement is IERC721Receiver {
             require(tokenID != 0x0, "PackagedProducts not exist");
             // 检查用户是否为TOKEN的所有者
             require(
-                PackagedProductsSmartContract.ownerOf(tokenID) == owner,
+                PackagedProductSmartContract.ownerOf(tokenID) == owner,
                 "user is not owner"
             );
             // 检查该TOKEN是否已绑定其他批次
@@ -619,10 +639,9 @@ contract TradeManagement is IERC721Receiver {
         uint256[] memory tokenIDs = PackagedLotNFTMapping[tokenID].products;
         // 批量转移产品NFT
         for (uint256 i = 0; i < tokenIDs.length; i++) {
-            PackagedProductsSmartContract.transferFrom(from, to, tokenIDs[i]);
+            PackagedProductSmartContract.transferFrom(from, to, tokenIDs[i]);
         }
-        if (!isEmptyString(Producer[to]))
-            PackagedLotNFTMapping[tokenID].owner = Producer[to];
+        if (!isEmptyString(Producer[to])) PackagedLotNFTMapping[tokenID].owner = Producer[to];
         else PackagedLotNFTMapping[tokenID].owner = User[to];
         PackagedLotNFTMapping[tokenID].isBinding = true;
     }
@@ -644,20 +663,22 @@ contract TradeManagement is IERC721Receiver {
         if (isOwner) {
             // 获取自己的所有产品NFT
             if (tag == 1)
-                tokenIDs = PackagedProductsSmartContract.getTokensFromOwner(
+                tokenIDs = PackagedProductSmartContract.getTokensFromOwner(
                     msg.sender
                 );
             else if (tag == 2)
-                tokenIDs = RawMaterialsSmartContract.getTokensFromOwner(
+                tokenIDs = RawMaterialSmartContract.getTokensFromOwner(
                     msg.sender
                 );
             else if (tag == 3)
-                tokenIDs = LotSmartContract.getPKLTokensFromOwner(msg.sender);
+                tokenIDs = PackageLotSmartContract.getTokensFromOwner(
+                    msg.sender
+                );
         } else {
             // 获取所有产品NFT
-            if (tag == 1) tokenIDs = PackagedProductsSmartContract.getTokens();
-            else if (tag == 2) tokenIDs = RawMaterialsSmartContract.getTokens();
-            else if (tag == 3) tokenIDs = LotSmartContract.getPKLTokens();
+            if (tag == 1) tokenIDs = PackagedProductSmartContract.getTokens();
+            else if (tag == 2) tokenIDs = RawMaterialSmartContract.getTokens();
+            else if (tag == 3) tokenIDs = PackageLotSmartContract.getTokens();
         }
         result = new ListElement[](tokenIDs.length);
         for (uint256 i = 0; i < tokenIDs.length; i++) {
@@ -704,17 +725,17 @@ contract TradeManagement is IERC721Receiver {
     {
         return (
         // 原材料NFT总数量
-            RawMaterialsSmartContract.totalSupply(),
+            RawMaterialSmartContract.totalSupply(),
         // 产品NFT总数量
-            PackagedProductsSmartContract.totalSupply(),
+            PackagedProductSmartContract.totalSupply(),
         // 包装批次总数量
-            LotSmartContract.getPKLcount(),
+            PackageLotSmartContract.totalSupply(),
         // 发送者拥有的原材料NFT数量
-            RawMaterialsSmartContract.balanceOf(msg.sender),
+            RawMaterialSmartContract.balanceOf(msg.sender),
         // 发送者拥有的产品NFT数量
-            PackagedProductsSmartContract.balanceOf(msg.sender),
+            PackagedProductSmartContract.balanceOf(msg.sender),
         // 发送者拥有的包装NFT数量
-            LotSmartContract.getPKLTokensFromOwner(msg.sender).length
+            PackageLotSmartContract.balanceOf(msg.sender)
         );
     }
 

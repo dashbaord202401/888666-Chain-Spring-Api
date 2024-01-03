@@ -1,6 +1,5 @@
 package cn.org.gry.chainmaker.controller;
 
-import cn.org.gry.chainmaker.domain.entity.PP;
 import cn.org.gry.chainmaker.domain.entity.TradeManagement;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,9 @@ public class TradeManagementController {
     @Autowired
     private TradeManagement tradeManagement;
 
-    @RequestMapping(params = "action=setLotContract")
+    @RequestMapping(params = "action=setPackageLotContract")
     public void setLotContract (@RequestParam("lotAddress") String lotAddress) {
-        tradeManagement.setLotContract(lotAddress);
+        tradeManagement.setPackageLotContract(lotAddress);
     }
 
     @RequestMapping(params = "action=setRawMaterialsContract")

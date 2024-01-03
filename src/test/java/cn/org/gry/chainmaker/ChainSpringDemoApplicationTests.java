@@ -5,29 +5,35 @@ import cn.org.gry.chainmaker.config.InitSystemClient;
 import cn.org.gry.chainmaker.contract.*;
 import cn.org.gry.chainmaker.domain.entity.*;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
+import cn.org.gry.chainmaker.utils.TokenHolder;
+import org.bouncycastle.util.Pack;
 import org.chainmaker.sdk.User;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 
+import javax.xml.ws.Holder;
 import java.math.BigInteger;
 
 @SpringBootTest
 class ChainSpringDemoApplicationTests {
 
     @Autowired
-    private ContractLotEvm contractLot;
+    private ContractPackageLotEvm contractPackageLotEvm;
     @Autowired
     private ContractRawMaterialsEvm contractRawMaterials;
     @Autowired
     private ContractPackagedProductsEvm contractPackagedProducts;
     @Autowired
     private ContractTradeManagementEvm contractTradeManagement;
+    @Autowired
+    private ContractProductLotEvm  contractProductLotEvm;
 
     @Autowired
-    private Lot lot;
+    private PackageLot lot;
 
     @Autowired
     private Tool tool;
@@ -54,11 +60,15 @@ class ChainSpringDemoApplicationTests {
 
 //        contractTool.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3});
 
-        String add_lot = contractLot.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
+        TokenHolder.setToken("1");
+
+        String add_pdlot = contractProductLotEvm.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
+        String add_pklot = contractPackageLotEvm.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
         String add_rm = contractRawMaterials.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
         String add_pp = contractPackagedProducts.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
         String add_TM = contractTradeManagement.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
-        tradeManagement.setLotContract(add_lot);
+        tradeManagement.setPackageLotContract(add_pklot);
+        tradeManagement.setProductLotContract(add_pdlot);
         tradeManagement.setPackagedProductsContract(add_pp);
         tradeManagement.setRawMaterialsContract(add_rm);
 
@@ -70,14 +80,14 @@ class ChainSpringDemoApplicationTests {
         tradeManagement.RegisterUser(Address_1, "YJH_R1");
         tradeManagement.RegisterUser(Address_2, "YJH_C2");
 
-        rm.mint("NACL", "123.123");
-        rm.mint("NACL", "321.321");
-        rm.mint("NACL", "456.4");
-        rm.mint("NACL", "100.1");
+        rm.mint("NACL", "123.123", "食盐");
+        rm.mint("NACL", "321.321", "食盐");
+        rm.mint("NACL", "456.4", "食盐");
+        rm.mint("NACL", "100.1", "食盐");
 
-        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(1));
-        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(2));
-        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(3));
+        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(1), "Lot1");
+        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(2), "Lot2");
+        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(3), "Lot3");
 
 //        tradeManagement.getRawMaterialsNFT(BigInteger.valueOf(1));
 //        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(1));
@@ -113,7 +123,7 @@ class ChainSpringDemoApplicationTests {
 //        v = v.add(v2);
 //        System.out.println(v);
 //        System.out.println(ChainMakerUtils.bigInteger2DoubleString(v));
-        System.out.println(ChainMakerUtils.doubleString2BigInteger("321.321"));
+        System.out.println(ChainMakerUtils.bigInteger2DoubleString(ChainMakerUtils.doubleString2BigInteger("123")));
     }
 
     public static class TEST1 extends DynamicStruct {

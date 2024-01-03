@@ -1,9 +1,8 @@
 package cn.org.gry.chainmaker.controller;
 
-import cn.org.gry.chainmaker.domain.entity.Lot;
 import cn.org.gry.chainmaker.domain.entity.PP;
+import cn.org.gry.chainmaker.domain.entity.PackageLot;
 import cn.org.gry.chainmaker.utils.Result;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,22 +20,22 @@ import java.util.List;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @RestController
-@RequestMapping("/contract/lot.do")
-public class LotController {
+@RequestMapping("/contract/packageLot.do")
+public class PKLotController {
     @Autowired
-    private Lot lot;
+    private PackageLot lot;
 
     @Autowired
     private PP pp;
 
-    @RequestMapping(params = "action=mintForPackages")
-    public Result mintForPackages (
+    @RequestMapping(params = "action=mint")
+    public Result mint (
             @RequestParam("tokenURI") String tokenURI,
-            @RequestParam("childIDs") List<BigInteger> childIDs,
-            @RequestParam("name") String name
+            @RequestParam("name") String name,
+            @RequestParam("childIDs") List<BigInteger> childIDs
     )
     {
-        return lot.mintForPackages(tokenURI, name, childIDs);
+        return lot.mint(tokenURI, name, childIDs);
     }
 
     @RequestMapping(params = "balanceOf")
@@ -47,24 +46,24 @@ public class LotController {
         return lot.balanceOf(owner);
     }
 
-    @RequestMapping(params = "action=transferPackageFrom")
-    public Result transferPackageFrom (
+    @RequestMapping(params = "action=transferFrom")
+    public Result transferFrom (
             @RequestParam("from") String from,
             @RequestParam("to") String to,
             @RequestParam("tokenId") BigInteger tokenId
     )
     {
         pp.approvalTMForAll(true);
-        return lot.transferPackageFrom(from, to, tokenId);
+        return lot.transferFrom(from, to, tokenId);
     }
 
-    @RequestMapping(params = "action=transferPackage")
-    public Result transferPackage (
+    @RequestMapping(params = "action=transfer")
+    public Result transfer (
             @RequestParam("to") String to,
             @RequestParam("tokenId") BigInteger tokenId
     )
     {
         pp.approvalTMForAll(true);
-        return lot.transferPackage(to, tokenId);
+        return lot.transfer(to, tokenId);
     }
 }

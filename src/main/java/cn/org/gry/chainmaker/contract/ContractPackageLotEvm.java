@@ -12,10 +12,9 @@ import org.springframework.stereotype.Component;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @Component
-public class ContractLotEvm extends BaseContractEvm {
-    ContractLotEvm() {
-        this.contractName = "Lot" + super.version;
-        this.EVM_CONTRACT_FILE_PATH = "src/main/resources/contract/Lot.bin";
+public class ContractPackageLotEvm extends BaseContractEvm {
+    ContractPackageLotEvm() {
+        this.contractName = "PackageLot" + super.version;
+        this.EVM_CONTRACT_FILE_PATH = "src/main/resources/contract/PackageLot.bin";
     }
-
 }

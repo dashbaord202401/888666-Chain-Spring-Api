@@ -8,13 +8,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.*;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.DynamicArray;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint128;
 import org.web3j.abi.datatypes.generated.Uint256;
 
@@ -36,8 +38,12 @@ public class TradeManagement {
     @Autowired
     private ContractTradeManagementEvm contractTradeManagementEvm;
 
-    public void setLotContract (String lotAddress) {
-        contractTradeManagementEvm.invokeContract("setLotContract", Arrays.asList(new Address(lotAddress)), Arrays.asList(), Arrays.asList());
+    public void setPackageLotContract (String lotAddress) {
+        contractTradeManagementEvm.invokeContract("setPackageLotContract", Arrays.asList(new Address(lotAddress)), Arrays.asList(), Arrays.asList());
+    }
+
+    public void setProductLotContract (String lotAddress) {
+        contractTradeManagementEvm.invokeContract("setProductLotContract", Arrays.asList(new Address(lotAddress)), Arrays.asList(), Arrays.asList());
     }
 
     public void setRawMaterialsContract (String rawMaterialsAddress) {

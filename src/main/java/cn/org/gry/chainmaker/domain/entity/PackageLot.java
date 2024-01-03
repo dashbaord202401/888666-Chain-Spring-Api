@@ -2,7 +2,7 @@ package cn.org.gry.chainmaker.domain.entity;
 
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
-import cn.org.gry.chainmaker.contract.ContractLotEvm;
+import cn.org.gry.chainmaker.contract.ContractPackageLotEvm;
 import cn.org.gry.chainmaker.utils.Result;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.DynamicArray;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
@@ -32,32 +31,32 @@ import java.util.List;
 @Component
 @Getter
 @Setter
-public class Lot extends ERC721 {
-    private ContractLotEvm contractLotEvm;
+public class PackageLot extends ERC721 {
+    private ContractPackageLotEvm contractLotEvm;
 
     @Autowired
-    public Lot(ContractLotEvm contractLotEvm) {
+    public PackageLot(ContractPackageLotEvm contractLotEvm) {
         this.contractLotEvm = contractLotEvm;
         setBaseContractEvm(contractLotEvm);
     }
 
-    public Result mintForPackages (String tokenURI, String name, List<BigInteger> _childIDs) {
+    public Result mint (String tokenURI, String name, List<BigInteger> _childIDs) {
         List<Uint256> childIDs = new ArrayList<>();
         for (BigInteger childID : _childIDs) {
             childIDs.add(new Uint256(childID));
         }
         DynamicArray<Uint256> dynamicArray = new DynamicArray<>(Uint256.class, childIDs);
-        return contractLotEvm.invokeContract("mintForPackages",
+        return contractLotEvm.invokeContract("mint",
                 Arrays.asList(new Utf8String(tokenURI), new Utf8String(name), dynamicArray),
                 Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("tokenId"));
     }
 
-    public Result transferPackageFrom (String from, String to, BigInteger tokenId) {
-        return contractLotEvm.invokeContract("transferPackageFrom", Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId)), Arrays.asList(), Arrays.asList());
+    public Result transferFrom (String from, String to, BigInteger tokenId) {
+        return contractLotEvm.invokeContract("transferFrom", Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId)), Arrays.asList(), Arrays.asList());
     }
 
-    public Result transferPackage (String to, BigInteger tokenId) {
-        return contractLotEvm.invokeContract("transferPackage", Arrays.asList(new Address(to), new Uint256(tokenId)), Arrays.asList(), Arrays.asList());
+    public Result transfer (String to, BigInteger tokenId) {
+        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(to), new Uint256(tokenId)), Arrays.asList(), Arrays.asList());
     }
 
     @Override
