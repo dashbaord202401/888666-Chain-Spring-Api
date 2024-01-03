@@ -18,7 +18,7 @@ import java.math.BigInteger;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @RestController
-@RequestMapping("/contract/RawMaterials.do")
+@RequestMapping("/echain/contract/RawMaterials.do")
 public class RMController {
     @Autowired
     private RM rm;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @RestController
-@RequestMapping("/contract/system.do")
+@RequestMapping("/echain/contract/system.do")
 public class SystemController {
     @Autowired
     private SystemContract systemContract;

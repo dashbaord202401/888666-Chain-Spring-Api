@@ -20,7 +20,7 @@ import java.util.List;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @RestController
-@RequestMapping("/contract/packageLot.do")
+@RequestMapping("/echain/contract/packageLot.do")
 public class PKLotController {
     @Autowired
     private PackageLot lot;

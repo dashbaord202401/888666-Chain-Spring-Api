@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @RestController
-@RequestMapping("/contract/tool.do")
+@RequestMapping("/echain/contract/tool.do")
 public class ToolController {
     @Autowired
     private Tool tool;
