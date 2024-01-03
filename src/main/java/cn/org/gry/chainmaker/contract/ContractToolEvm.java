@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ContractToolEvm extends BaseContractEvm {
     ContractToolEvm() {
-        this.contractName = "Tool_0.30";
+        this.contractName = "Tool" + super.version;
         this.EVM_CONTRACT_FILE_PATH = "src/main/resources/contract/Tool.bin";
     }
 }
