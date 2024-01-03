@@ -1,6 +1,8 @@
 package cn.org.gry.chainmaker.base;
 
 import cn.org.gry.chainmaker.config.SdkConfigPool;
+import cn.org.gry.chainmaker.domain.entity.UserInfo;
+import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
 import cn.org.gry.chainmaker.utils.TokenHolder;
@@ -59,16 +61,14 @@ public abstract class BaseContractEvm {
     @Autowired
     private SdkConfigPool sdkConfigPool;
 
-    protected String version = "_1.73";
+    @Autowired
+    private UserInfoRepository certKeyOrgReposity;
+
+    protected String version = "_1.85";
 
     // 通过用户id获取链客户端
     public ChainClient getChainClient () throws Exception {
-        String user = TokenHolder.getToken();
-        String USER_TLS_KEY_PATH = "src/main/resources/crypto-config/TestCMorg" + user + "/certs/user/TlsKey.key";
-        String USER_TLS_CERT_PATH = "src/main/resources/crypto-config/TestCMorg" + user + "/certs/user/TlsCert.crt";
-        String USER_KEY_PATH = "src/main/resources/crypto-config/TestCMorg" + user + "/certs/user/SignKey.key";
-        String USER_CERT_PATH = "src/main/resources/crypto-config/TestCMorg" + user + "/certs/user/SignCert.crt";
-        String ORG_ID = "TestCMorg" + user;
+        UserInfo certKeyOrgEntity = certKeyOrgReposity.findByUid(Integer.valueOf(TokenHolder.getToken()));
 
         // 获取配置类
         SdkConfig sdkConfig = sdkConfigPool.acquire();
@@ -76,11 +76,11 @@ public abstract class BaseContractEvm {
         // 获取链配置类
         ChainClientConfig chainClientConfig = sdkConfig.getChainClient();
         // 设置链配置类属性，组织id，用户证书，用户签名证书，用户签名私钥
-        chainClientConfig.setOrg_id(ORG_ID);
-        chainClientConfig.setUserKeyBytes(FileUtils.getResourceFileBytes(USER_TLS_KEY_PATH));
-        chainClientConfig.setUserCrtBytes(FileUtils.getResourceFileBytes(USER_TLS_CERT_PATH));
-        chainClientConfig.setUserSignKeyBytes(FileUtils.getResourceFileBytes(USER_KEY_PATH));
-        chainClientConfig.setUserSignCrtBytes(FileUtils.getResourceFileBytes(USER_CERT_PATH));
+        chainClientConfig.setOrg_id(certKeyOrgEntity.getOrg());
+        chainClientConfig.setUserKeyBytes(certKeyOrgEntity.getTlsKey());
+        chainClientConfig.setUserCrtBytes(certKeyOrgEntity.getTlsCert());
+        chainClientConfig.setUserSignKeyBytes(certKeyOrgEntity.getSignKey());
+        chainClientConfig.setUserSignCrtBytes(certKeyOrgEntity.getSignCert());
         sdkConfig.setChain_client(chainClientConfig);
 
         // 获取链客户端
