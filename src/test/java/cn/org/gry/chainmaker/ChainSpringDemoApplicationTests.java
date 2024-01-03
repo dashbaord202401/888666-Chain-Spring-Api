@@ -31,6 +31,8 @@ class ChainSpringDemoApplicationTests {
     private ContractTradeManagementEvm contractTradeManagement;
     @Autowired
     private ContractProductLotEvm  contractProductLotEvm;
+    @Autowired
+    private ContractToolEvm contractToolEvm;
 
     @Autowired
     private PackageLot lot;
@@ -58,8 +60,6 @@ class ChainSpringDemoApplicationTests {
         String Address_3 = "d9973fef375a08fed8331d82899caed9486c8c31";
         String Address_4 = "3839bcfb4d575a565fae4ae5c50b52d5a616bf2b";
 
-//        contractTool.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3});
-
         TokenHolder.setToken("1");
 
         String add_pdlot = contractProductLotEvm.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
@@ -67,6 +67,7 @@ class ChainSpringDemoApplicationTests {
         String add_rm = contractRawMaterials.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
         String add_pp = contractPackagedProducts.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
         String add_TM = contractTradeManagement.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
+        String add_Tool = contractTool.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
         tradeManagement.setPackageLotContract(add_pklot);
         tradeManagement.setProductLotContract(add_pdlot);
         tradeManagement.setPackagedProductsContract(add_pp);
@@ -88,41 +89,10 @@ class ChainSpringDemoApplicationTests {
         rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(1), "Lot1");
         rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(2), "Lot2");
         rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(3), "Lot3");
-
-//        tradeManagement.getRawMaterialsNFT(BigInteger.valueOf(1));
-//        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(1));
-//        tradeManagement.getRawMaterialsNFT(BigInteger.valueOf(1));
-
-//        pp.mint(BigInteger.valueOf(10), "NACL", Collections.singletonList(BigInteger.valueOf(1)), Collections.singletonList(BigInteger.valueOf(1)));
-//        tradeManagement.getRawMaterialsNFT(BigInteger.valueOf(1));
-//        pp.transferFrom(Address_2, Address_3, BigInteger.valueOf(1), "Dealer");
-//        pp.transferFrom(Address_3, Address_4, BigInteger.valueOf(1), "Wholesaler");
-//        pp.transferFrom(Address_4, Address_1, BigInteger.valueOf(1), "Retailer");
-//        pp.transferFrom(Address_1, Address_2, BigInteger.valueOf(1), "Customer");
-//        tradeManagement.getPackagedProductsNFT(BigInteger.valueOf(1));
     }
 
     @Test
     public void test () {
-//        TEST1 test1 = new TEST1(
-//                new Uint256(BigInteger.valueOf(1)),
-//                new Uint256(BigInteger.valueOf(1)),
-//                new Uint256(BigInteger.valueOf(1)),
-//                new Utf8String("1"),
-//                new Uint256(BigInteger.valueOf(1)),
-//                new Utf8String("1"),
-//                new Uint256(BigInteger.valueOf(1))
-//        );
-//        Uint256DynamicArray array = new Uint256DynamicArray(new Uint256[]{new Uint256(BigInteger.valueOf(1)), new Uint256(BigInteger.valueOf(1))});
-//        System.out.println(DynamicArray.class.isAssignableFrom(array.getClass()));
-//        System.out.println(Hex.toHexString(s.getBytes()));
-//        BigInteger v = ChainMakerUtils.doubleString2BigInteger("12312333333.1111111");
-//        System.out.println(v);
-//        BigInteger v2 = ChainMakerUtils.doubleString2BigInteger("12312333333.9111111");
-//        System.out.println(v2);
-//        v = v.add(v2);
-//        System.out.println(v);
-//        System.out.println(ChainMakerUtils.bigInteger2DoubleString(v));
         System.out.println(ChainMakerUtils.bigInteger2DoubleString(ChainMakerUtils.doubleString2BigInteger("123")));
     }
 
