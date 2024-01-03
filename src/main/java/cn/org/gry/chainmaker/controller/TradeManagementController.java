@@ -1,6 +1,6 @@
 package cn.org.gry.chainmaker.controller;
 
-import cn.org.gry.chainmaker.domain.entity.TradeManagement;
+import cn.org.gry.chainmaker.domain.service.TradeManagement;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package cn.org.gry.chainmaker.domain.entity;
+package cn.org.gry.chainmaker.domain.service;
 
 import cn.org.gry.chainmaker.contract.ContractToolEvm;
 import cn.org.gry.chainmaker.utils.Result;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 /**

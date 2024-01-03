@@ -1,4 +1,4 @@
-package cn.org.gry.chainmaker.domain.entity;
+package cn.org.gry.chainmaker.domain.service;
 
 import cn.org.gry.chainmaker.base.BaseDynamicStruct;
 import cn.org.gry.chainmaker.contract.ContractTradeManagementEvm;
@@ -163,6 +163,7 @@ public class TradeManagement {
                         }),
                 Collections.singletonList("list"));
         Pageable pageable = PageRequest.of(1, 10);
+        ((List<ListElem>)result.getData().get("list")).sort(Comparator.comparing(ListElem::getTokenID));
         result.getData().put("list", new PageImpl<>((List<ListElem>) result.getData().get("list"), pageable, ((List<ListElem>) result.getData().get("list")).size()));
         return result;
     }

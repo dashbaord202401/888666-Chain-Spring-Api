@@ -1,4 +1,4 @@
-package cn.org.gry.chainmaker.domain.entity;
+package cn.org.gry.chainmaker.domain.service;
 
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;

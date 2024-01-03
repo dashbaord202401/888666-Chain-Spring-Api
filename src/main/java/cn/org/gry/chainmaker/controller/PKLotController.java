@@ -1,7 +1,7 @@
 package cn.org.gry.chainmaker.controller;
 
-import cn.org.gry.chainmaker.domain.entity.PP;
-import cn.org.gry.chainmaker.domain.entity.PackageLot;
+import cn.org.gry.chainmaker.domain.service.PP;
+import cn.org.gry.chainmaker.domain.service.PackageLot;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
