@@ -20,8 +20,8 @@ public class ToolController {
     @Autowired
     private Tool tool;
 
-    @RequestMapping(params = "action=getSendAddress")
-    public Result getSendAddress () {
-        return tool.getSendAddress();
+    @RequestMapping(params = "action=getAddress")
+    public Result getAddress () {
+        return tool.getAddress();
     }
 }

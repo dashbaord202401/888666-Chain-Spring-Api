@@ -22,7 +22,7 @@ public class Tool {
     @Autowired
     private ContractToolEvm contractToolEvm;
 
-    public Result getSendAddress () {
-        return contractToolEvm.invokeContract("getSendAddress", Arrays.asList(), Arrays.asList(TypeReference.create(Address.class)), Arrays.asList("address"));
+    public Result getAddress () {
+        return contractToolEvm.invokeContract("getAddress", Arrays.asList(), Arrays.asList(TypeReference.create(Address.class)), Arrays.asList("address"));
     }
 }
