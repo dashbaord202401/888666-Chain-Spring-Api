@@ -32,7 +32,7 @@ contract PackageLot is Base {
         _safeMint(msg.sender, ts);
         // 包装批次
         tradeManagement.checkInAndBelongPackagesMapping(msg.sender, _childIDs);
-        tradeManagement.LinkParentNFT2Packages(msg.sender, ts, name, _childIDs);
+        tradeManagement.LinkParentNFT2Packages(ts, name, _childIDs);
         return ts;
     }
 }
