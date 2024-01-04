@@ -22,7 +22,7 @@ import javax.persistence.Table;
 public class UserInfo {
     @Id
     @Column(name = "uid")
-    private Integer uid;
+    private Long uid;
 
     @Column(name = "signCert")
     private byte[] signCert;
@@ -38,4 +38,7 @@ public class UserInfo {
 
     @Column(name = "org")
     private String org;
+
+    @Column(name = "address")
+    private String address;
 }

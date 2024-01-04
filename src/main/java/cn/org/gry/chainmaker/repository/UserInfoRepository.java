@@ -14,8 +14,8 @@ import org.springframework.stereotype.Repository;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @Repository
-public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
-    UserInfo findByUid(Integer uid);
+public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
+    UserInfo findByUid(Long uid);
 
     @Override
     <S extends UserInfo> S save(S entity);
