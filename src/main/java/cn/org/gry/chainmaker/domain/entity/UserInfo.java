@@ -41,4 +41,7 @@ public class UserInfo {
 
     @Column(name = "address")
     private String address;
+
+    @Column(name = "pwd")
+    private String pwd;
 }
