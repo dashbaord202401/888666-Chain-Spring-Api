@@ -29,7 +29,8 @@ public class TokenAspect {
         HttpServletRequest request = attributes.getRequest();
 
         // 获取Header中的Token
-        String token = request.getHeader("token");
+        String token = request.getParameter("ecafeToken");
+
 
         // 将Token设置进ThreadLocal
         TokenHolder.setToken(token);
