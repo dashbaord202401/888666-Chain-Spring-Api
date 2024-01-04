@@ -46,8 +46,8 @@ public class PKLotController {
 
     @RequestMapping(params = "action=transferFrom")
     public Result transferFrom(
-            @RequestParam("from") String from,
-            @RequestParam("to") String to,
+            @RequestParam("from") Long from,
+            @RequestParam("to") Long to,
             @RequestParam("tokenId") BigInteger tokenId
     ) {
         pp.approvalTMForAll(true);
@@ -56,7 +56,7 @@ public class PKLotController {
 
     @RequestMapping(params = "action=transfer")
     public Result transfer(
-            @RequestParam("to") String to,
+            @RequestParam("to") Long to,
             @RequestParam("tokenId") BigInteger tokenId
     ) {
         pp.approvalTMForAll(true);
