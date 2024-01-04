@@ -2,6 +2,7 @@ package cn.org.gry.chainmaker.domain.service;
 
 import cn.org.gry.chainmaker.base.BaseDynamicStruct;
 import cn.org.gry.chainmaker.contract.ContractTradeManagementEvm;
+import cn.org.gry.chainmaker.domain.enums.NFTType;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -145,11 +146,20 @@ public class TradeManagement {
     }
 
     public Result list(Boolean owner, String type) {
+        String methodName = "listFor";
+        if (type.equals(NFTType.RawMaterial.name())) {
+            methodName += "RawMaterial";
+        } else if (type.equals(NFTType.Product.name())) {
+            methodName += "Product";
+        } else if (type.equals(NFTType.Package.name())) {
+            methodName += "Package";
+        } else {
+            return new Result(0, "type error", "", null);
+        }
         Result result = contractTradeManagementEvm.invokeContract(
-                "list",
+                methodName,
                 Arrays.asList(
-                        new Bool(owner),
-                        new Utf8String(type)),
+                        new Bool(owner)),
                 Collections.singletonList(
                         new TypeReference<DynamicArray<ListElem>>() {
                         }),

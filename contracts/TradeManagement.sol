@@ -434,8 +434,7 @@ contract TradeManagement is IERC721Receiver {
     function recordRawMaterialsTransfer(
         address from,
         address to,
-        uint256 tokenID,
-        string memory lotName
+        uint256 tokenID
     ) external {
         require(
             from == RawMaterialSmartContract.ownerOf(tokenID),
@@ -444,7 +443,6 @@ contract TradeManagement is IERC721Receiver {
         RawMaterialNFT storage nft = RawMaterialNFTMapping[tokenID];
         nft.supplierTime = block.timestamp;
         nft.producerName = Producer[to];
-        nft.lotName = lotName;
     }
 
     // 检查原材料拥有者是否符合
@@ -648,54 +646,49 @@ contract TradeManagement is IERC721Receiver {
     /** 列表查询 **/
 
     // 产品
-    function list(bool isOwner, string memory type_)
-    public
+
+    function listForProduct (bool isOwner) public view returns (ListElement[] memory result) {
+        result = list(isOwner, address(PackagedProductSmartContract));
+        for (uint i = 0; i < result.length; i++)
+            result[i].name = ProductsLotNFTMapping[
+                                PackagedProductNFTMapping[result[i].tokenID].productLotID
+                ].name;
+    }
+
+    // 包装
+
+    function listForPackage (bool isOwner) public view returns (ListElement[] memory result) {
+        result = list(isOwner, address(PackageLotSmartContract));
+        for (uint i = 0; i < result.length; i++) result[i].name = PackagedLotNFTMapping[result[i].tokenID].name;
+    }
+
+    // 原料
+
+    function listForRawMaterial (bool isOwner) public view returns (ListElement[] memory result) {
+        result = list(isOwner, address(RawMaterialSmartContract));
+        for (uint i = 0; i < result.length; i++) result[i].name = RawMaterialNFTMapping[result[i].tokenID].name;
+    }
+
+    function list(bool isOwner, address smartContract)
+    internal
     view
     returns (ListElement[] memory result)
     {
         uint256[] memory tokenIDs;
-        uint256 tag = 0;
-        if (compareStrings(type_, "Product")) tag = 1;
-        else if (compareStrings(type_, "RawMaterial")) tag = 2;
-        else if (compareStrings(type_, "Package")) tag = 3;
         // 判断是否只需要查询自己的
         if (isOwner) {
-            // 获取自己的所有产品NFT
-            if (tag == 1)
-                tokenIDs = PackagedProductSmartContract.getTokensFromOwner(
-                    msg.sender
-                );
-            else if (tag == 2)
-                tokenIDs = RawMaterialSmartContract.getTokensFromOwner(
-                    msg.sender
-                );
-            else if (tag == 3)
-                tokenIDs = PackageLotSmartContract.getTokensFromOwner(
-                    msg.sender
-                );
+            // 获取自己的所有NFT
+            tokenIDs = Base(smartContract).getTokensFromOwner(
+                msg.sender
+            );
         } else {
-            // 获取所有产品NFT
-            if (tag == 1) tokenIDs = PackagedProductSmartContract.getTokens();
-            else if (tag == 2) tokenIDs = RawMaterialSmartContract.getTokens();
-            else if (tag == 3) tokenIDs = PackageLotSmartContract.getTokens();
+            // 获取所有NFT
+            tokenIDs = Base(smartContract).getTokens();
         }
         result = new ListElement[](tokenIDs.length);
         for (uint256 i = 0; i < tokenIDs.length; i++) {
             result[i].tokenID = tokenIDs[i];
-            if (tag == 1) {
-                result[i].name = ProductsLotNFTMapping[
-                                    PackagedProductNFTMapping[tokenIDs[i]].productLotID
-                    ].name;
-                result[i].owner = PackagedProductSmartContract.ownerOf(tokenIDs[i]);
-            } else if (tag == 2) {
-                result[i].name = RawMaterialNFTMapping[tokenIDs[i]].name;
-                result[i].totalSum = RawMaterialNFTMapping[tokenIDs[i]]
-                    .totalSum;
-                result[i].owner = RawMaterialSmartContract.ownerOf(tokenIDs[i]);
-            } else if (tag == 3) {
-                result[i].name = PackagedLotNFTMapping[tokenIDs[i]].name;
-                result[i].owner = PackageLotSmartContract.ownerOf(tokenIDs[i]);
-            }
+            result[i].owner = Base(smartContract).ownerOf(tokenIDs[i]);
             result[i].ownerName = User[result[i].owner];
         }
     }

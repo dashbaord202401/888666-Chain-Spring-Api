@@ -36,7 +36,7 @@ public class PackageLot extends ERC721 {
     private ContractPackageLotEvm contractLotEvm;
 
     @Autowired
-    private UserInfoRepository userInfoRepository;
+    private UserInfoService userInfoService;
 
     @Autowired
     public PackageLot(ContractPackageLotEvm contractLotEvm) {
@@ -56,14 +56,11 @@ public class PackageLot extends ERC721 {
     }
 
     public Result transferFrom(Long from, Long to, BigInteger tokenId) {
-        String fromAddress = userInfoRepository.findByUid(from).getAddress();
-        String toAddress = userInfoRepository.findByUid(to).getAddress();
-        return contractLotEvm.invokeContract("transferFrom", Arrays.asList(new Address(fromAddress), new Address(toAddress), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
+        return contractLotEvm.invokeContract("transferFrom", Arrays.asList(new Address(userInfoService.getAddressByUid(from)), new Address(userInfoService.getAddressByUid(to)), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
     }
 
     public Result transfer(Long to, BigInteger tokenId) {
-        String toAddress = userInfoRepository.findByUid(to).getAddress();
-        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(toAddress), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
+        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(userInfoService.getAddressByUid(to)), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
     }
 
     @Override

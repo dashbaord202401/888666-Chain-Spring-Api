@@ -1,5 +1,6 @@
 package cn.org.gry.chainmaker.controller;
 
+import cn.org.gry.chainmaker.domain.enums.NFTType;
 import cn.org.gry.chainmaker.domain.service.PP;
 import cn.org.gry.chainmaker.domain.service.PackageLot;
 import cn.org.gry.chainmaker.domain.service.RM;
@@ -35,9 +36,6 @@ public class TradeManagementController {
 
     @Autowired
     private PP pp;
-
-    @Autowired
-    private UserInfoRepository userInfoRepository;
 
     @RequestMapping(params = "action=setPackageLotContract")
     public void setLotContract(@RequestParam("lotAddress") String lotAddress) {
@@ -100,15 +98,18 @@ public class TradeManagementController {
     }
 
     @RequestMapping(params = "action=transfer")
-    public void transfer(
+    public Result transfer(
             @RequestParam("type") String type,
             @RequestParam("tokenId") BigInteger tokenId,
             @RequestParam("to") Long to
     ) {
-        if (type.equals("Product")) {
-            pp.transfer(to, tokenId);
-        } else if (type.equals("Package")) {
-            packageLot.transfer(to, tokenId);
+        if (type.equals(NFTType.Product.name())) {
+            return pp.transfer(to, tokenId);
+        } else if (type.equals(NFTType.Package.name())) {
+            return packageLot.transfer(to, tokenId);
+        } else if (type.equals(NFTType.RawMaterial.name())) {
+            return rm.transfer(to, tokenId);
         }
+        return Result.fail("type error", "", null);
     }
 }

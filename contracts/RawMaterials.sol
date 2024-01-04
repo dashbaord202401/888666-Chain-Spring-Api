@@ -10,23 +10,21 @@ contract RawMaterials is Base {
     function transferFrom(
         address from,
         address to,
-        uint256 tokenID,
-        string memory lotName
-    ) public {
+        uint256 tokenID
+    ) public override (ERC721, IERC721) {
         // 验证用户身份
         tradeManagement.onlySupplier(from);
         tradeManagement.onlyProducer(to);
         // 记录
-        tradeManagement.recordRawMaterialsTransfer(from, to, tokenID, lotName);
+        tradeManagement.recordRawMaterialsTransfer(from, to, tokenID);
         super.transferFrom(from, to, tokenID);
     }
 
     function transfer(
         address to,
-        uint256 tokenID,
-        string memory lotName
+        uint256 tokenID
     ) public {
-        transferFrom(msg.sender, to, tokenID, lotName);
+        transferFrom(msg.sender, to, tokenID);
     }
 
     // 供应商铸造原材料NFT并记录其URI
