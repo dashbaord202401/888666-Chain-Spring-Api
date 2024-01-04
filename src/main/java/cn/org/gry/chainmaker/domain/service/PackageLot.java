@@ -3,6 +3,7 @@ package cn.org.gry.chainmaker.domain.service;
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractPackageLotEvm;
+import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.Result;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,9 @@ public class PackageLot extends ERC721 {
     private ContractPackageLotEvm contractLotEvm;
 
     @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
     public PackageLot(ContractPackageLotEvm contractLotEvm) {
         this.contractLotEvm = contractLotEvm;
         setBaseContractEvm(contractLotEvm);
@@ -51,12 +55,15 @@ public class PackageLot extends ERC721 {
                 Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("tokenId"));
     }
 
-    public Result transferFrom(String from, String to, BigInteger tokenId) {
-        return contractLotEvm.invokeContract("transferFrom", Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
+    public Result transferFrom(Long from, Long to, BigInteger tokenId) {
+        String fromAddress = userInfoRepository.findByUid(from).getAddress();
+        String toAddress = userInfoRepository.findByUid(to).getAddress();
+        return contractLotEvm.invokeContract("transferFrom", Arrays.asList(new Address(fromAddress), new Address(toAddress), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public Result transfer(String to, BigInteger tokenId) {
-        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(to), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
+    public Result transfer(Long to, BigInteger tokenId) {
+        String toAddress = userInfoRepository.findByUid(to).getAddress();
+        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(toAddress), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
     }
 
     @Override

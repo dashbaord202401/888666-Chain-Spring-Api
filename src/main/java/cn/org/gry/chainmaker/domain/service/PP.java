@@ -3,6 +3,7 @@ package cn.org.gry.chainmaker.domain.service;
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractPackagedProductsEvm;
+import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ import java.util.List;
 @Component
 public class PP extends ERC721 {
     private final ContractPackagedProductsEvm contractPackagedProductsEvm;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     @Autowired
     public PP(ContractPackagedProductsEvm contractPackagedProductsEvm) {
@@ -70,12 +74,14 @@ public class PP extends ERC721 {
         );
     }
 
-    public Result transferFrom(String from, String to, BigInteger tokenId) {
+    public Result transferFrom(Long from, Long to, BigInteger tokenId) {
+        String fromAddress = userInfoRepository.findByUid(from).getAddress();
+        String toAddress = userInfoRepository.findByUid(to).getAddress();
         return contractPackagedProductsEvm.invokeContract(
                 "transferFrom",
                 Arrays.asList(
-                        new Address(from),
-                        new Address(to),
+                        new Address(fromAddress),
+                        new Address(toAddress),
                         new Uint256(tokenId)
                 ),
                 Collections.emptyList(),
@@ -83,11 +89,12 @@ public class PP extends ERC721 {
         );
     }
 
-    public Result transfer(String to, BigInteger tokenId) {
+    public Result transfer(Long to, BigInteger tokenId) {
+        String toAddress = userInfoRepository.findByUid(to).getAddress();
         return contractPackagedProductsEvm.invokeContract(
                 "transfer",
                 Arrays.asList(
-                        new Address(to),
+                        new Address(toAddress),
                         new Uint256(tokenId)
                 ),
                 Collections.emptyList(),

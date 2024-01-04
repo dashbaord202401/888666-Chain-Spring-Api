@@ -3,6 +3,7 @@ package cn.org.gry.chainmaker.domain.service;
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractRawMaterialsEvm;
+import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class RM extends ERC721 {
     private final ContractRawMaterialsEvm contractRawMaterialsEvm;
 
     @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
     public RM(ContractRawMaterialsEvm contractRawMaterialsEvm) {
         this.contractRawMaterialsEvm = contractRawMaterialsEvm;
         setBaseContractEvm(contractRawMaterialsEvm);
@@ -46,18 +50,21 @@ public class RM extends ERC721 {
                 Collections.singletonList("token"));
     }
 
-    public Result transferFrom(String from, String to, BigInteger tokenId, String lotName) {
+    public Result transferFrom(Long from, Long to, BigInteger tokenId, String lotName) {
+        String fromAddress = userInfoRepository.findByUid(from).getAddress();
+        String toAddress = userInfoRepository.findByUid(to).getAddress();
         return contractRawMaterialsEvm.invokeContract(
                 "transferFrom",
-                Arrays.asList(new Address(from), new Address(to), new Uint256(tokenId), new Utf8String(lotName)),
+                Arrays.asList(new Address(fromAddress), new Address(toAddress), new Uint256(tokenId), new Utf8String(lotName)),
                 Collections.emptyList(),
                 Collections.emptyList());
     }
 
-    public Result transfer(String to, BigInteger tokenId, String lotName) {
+    public Result transfer(Long to, BigInteger tokenId, String lotName) {
+        String toAddress = userInfoRepository.findByUid(to).getAddress();
         return contractRawMaterialsEvm.invokeContract(
                 "transfer",
-                Arrays.asList(new Address(to), new Uint256(tokenId), new Utf8String(lotName)),
+                Arrays.asList(new Address(toAddress), new Uint256(tokenId), new Utf8String(lotName)),
                 Collections.emptyList(),
                 Collections.emptyList());
     }

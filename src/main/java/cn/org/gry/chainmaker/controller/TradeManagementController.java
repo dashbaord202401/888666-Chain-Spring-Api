@@ -1,6 +1,10 @@
 package cn.org.gry.chainmaker.controller;
 
+import cn.org.gry.chainmaker.domain.service.PP;
+import cn.org.gry.chainmaker.domain.service.PackageLot;
+import cn.org.gry.chainmaker.domain.service.RM;
 import cn.org.gry.chainmaker.domain.service.TradeManagement;
+import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +26,18 @@ import java.math.BigInteger;
 public class TradeManagementController {
     @Autowired
     private TradeManagement tradeManagement;
+
+    @Autowired
+    private PackageLot packageLot;
+
+    @Autowired
+    private RM rm;
+
+    @Autowired
+    private PP pp;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     @RequestMapping(params = "action=setPackageLotContract")
     public void setLotContract(@RequestParam("lotAddress") String lotAddress) {
@@ -81,5 +97,18 @@ public class TradeManagementController {
     @RequestMapping(params = "action=getProductsLotNFT")
     public Result getProductsLotNFT(@RequestParam("lotId") BigInteger lotId) {
         return tradeManagement.getProductsLotNFT(lotId);
+    }
+
+    @RequestMapping(params = "action=transfer")
+    public void transfer(
+            @RequestParam("type") String type,
+            @RequestParam("tokenId") BigInteger tokenId,
+            @RequestParam("to") Long to
+    ) {
+        if (type.equals("Product")) {
+            pp.transfer(to, tokenId);
+        } else if (type.equals("Package")) {
+            packageLot.transfer(to, tokenId);
+        }
     }
 }

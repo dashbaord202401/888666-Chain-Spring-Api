@@ -31,8 +31,8 @@ public class RMController {
     }
 
     @RequestMapping(params = "action=transferFrom")
-    public Result transferFrom(@RequestParam("from") String from,
-                               @RequestParam("to") String to,
+    public Result transferFrom(@RequestParam("from") Long from,
+                               @RequestParam("to") Long to,
                                @RequestParam("tokenId") BigInteger tokenId,
                                @RequestParam("lotName") String lotName) {
         return rm.transferFrom(from, to, tokenId, lotName);
@@ -40,7 +40,7 @@ public class RMController {
 
     @RequestMapping(params = "action=transfer")
     public Result transfer(
-            @RequestParam("to") String to,
+            @RequestParam("to") Long to,
             @RequestParam("tokenId") BigInteger tokenId,
             @RequestParam("lotName") String lotName
     ) {

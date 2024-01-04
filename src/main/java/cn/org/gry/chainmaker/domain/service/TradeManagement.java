@@ -74,7 +74,6 @@ public class TradeManagement {
                         TypeReference.create(Bool.class),
                         TypeReference.create(Utf8String.class),
                         TypeReference.create(RMNFT.class),
-                        TypeReference.create(Utf8String.class),
                         new TypeReference<DynamicArray<Uint256>>() {
                         },
                         new TypeReference<DynamicArray<Uint128>>() {
@@ -84,7 +83,6 @@ public class TradeManagement {
                         "success",
                         "msg",
                         "NFT",
-                        "name",
                         "productLots",
                         "resumes"
                 ));
@@ -106,9 +104,7 @@ public class TradeManagement {
                         TypeReference.create(Utf8String.class),
                         new TypeReference<PPNFT>() {
                         },
-                        TypeReference.create(Utf8String.class),
-                        TypeReference.create(Utf8String.class),
-                        new TypeReference<DynamicArray<TradeUser>>() {
+                        new TypeReference<DynamicArray<Trade>>() {
                         },
                         new TypeReference<DynamicArray<RMInPP>>() {
                         }
@@ -117,8 +113,6 @@ public class TradeManagement {
                         "success",
                         "msg",
                         "NFT",
-                        "name",
-                        "producerName",
                         "tradeUsers",
                         "rawMaterials"
                 ));
@@ -129,13 +123,11 @@ public class TradeManagement {
                 "getProductsFromPackages",
                 Collections.singletonList(new Uint256(tokenId)),
                 Arrays.asList(
-                        TypeReference.create(Uint256.class),
-                        TypeReference.create(Utf8String.class),
-                        TypeReference.create(Utf8String.class),
-                        TypeReference.create(Bool.class),
+                        new TypeReference<PKLNFT>() {
+                        },
                         new TypeReference<DynamicArray<Uint256>>() {
                         }),
-                Arrays.asList("tokenId", "name", "owner", "isBinding", "childIDs"));
+                Arrays.asList("nft", "productIds"));
     }
 
     public Result getStatist() {
@@ -235,37 +227,80 @@ public class TradeManagement {
         private BigInteger packageLotID;
         private Boolean isBinding;
         private String owner;
+        private String ownerName;
+        private String producerName;
+        private String name;
 
         public PPNFT(
                 Uint256 tokenID,
                 Uint256 productLotID,
                 Uint256 packageLotID,
                 Bool isBinding,
-                Utf8String owner
+                Address owner,
+                Utf8String ownerName,
+                Utf8String producerName,
+                Utf8String name
         ) {
-            super(tokenID, productLotID, packageLotID, isBinding, owner);
+            super(tokenID, productLotID, packageLotID, isBinding, owner, ownerName, producerName, name);
             this.tokenID = tokenID.getValue();
             this.productLotID = productLotID.getValue();
             this.packageLotID = packageLotID.getValue();
             this.isBinding = isBinding.getValue();
             this.owner = owner.getValue();
+            this.ownerName = ownerName.getValue();
+            this.producerName = producerName.getValue();
+            this.name = name.getValue();
         }
     }
 
     @Getter
     @Setter
-    public static class TradeUser extends BaseDynamicStruct {
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-        private Date timestamp;
+    public static class PKLNFT extends BaseDynamicStruct {
+        private BigInteger tokenID;
+        private Boolean isBinding;
+        private String owner;
+        private String ownerName;
         private String name;
 
-        public TradeUser(
-                Uint256 timestamp,
+        public PKLNFT(
+                Uint256 tokenID,
+                Bool isBinding,
+                Address owner,
+                Utf8String ownerName,
                 Utf8String name
         ) {
-            super(timestamp, name);
-            this.timestamp = new Date(timestamp.getValue().longValue() * 1000);
+            super(tokenID, isBinding, owner, ownerName, name);
+            this.tokenID = tokenID.getValue();
+            this.isBinding = isBinding.getValue();
+            this.owner = owner.getValue();
+            this.ownerName = ownerName.getValue();
             this.name = name.getValue();
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class Trade extends BaseDynamicStruct {
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+        private Date timestamp;
+        private String from;
+        private String to;
+        private String fromName;
+        private String toName;
+
+        public Trade (
+                Uint256 timestamp,
+                Address from,
+                Address to,
+                Utf8String fromName,
+                Utf8String toName
+        ) {
+            super(timestamp, from, to, fromName, toName);
+            this.timestamp = new Date(timestamp.getValue().longValue() * 1000);
+            this.from = from.getValue();
+            this.to = to.getValue();
+            this.fromName = fromName.getValue();
+            this.toName = toName.getValue();
         }
     }
 
@@ -293,6 +328,8 @@ public class TradeManagement {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
         private Date produceTime;
         private String producerName;
+        private String owner;
+        private String ownerName;
         private String name;
 
         public PLNFT(
@@ -300,14 +337,18 @@ public class TradeManagement {
                 Utf8String lotName,
                 Uint256 produceTime,
                 Utf8String producerName,
+                Address owner,
+                Utf8String ownerName,
                 Utf8String name
         ) {
-            super(tokenID, lotName, produceTime, producerName, name);
+            super(tokenID, lotName, produceTime, producerName, owner, ownerName, name);
             this.tokenID = tokenID.getValue();
             this.lotName = lotName.getValue();
             if (!produceTime.getValue().equals(BigInteger.valueOf(0)))
                 this.produceTime = new Date(produceTime.getValue().longValue() * 1000);
             this.producerName = producerName.getValue();
+            this.owner = owner.getValue();
+            this.ownerName = ownerName.getValue();
             this.name = name.getValue();
         }
     }
@@ -316,20 +357,23 @@ public class TradeManagement {
     @Setter
     public static class ListElem extends BaseDynamicStruct {
         private BigInteger tokenID;
-        private String owner;
         private String name;
+        private String owner;
+        private String ownerName;
         private String totalSum;
 
         public ListElem(
                 Uint256 tokenID,
                 Utf8String name,
-                Utf8String owner,
+                Address owner,
+                Utf8String ownerName,
                 Uint256 totalSum
         ) {
-            super(tokenID, name, owner, totalSum);
+            super(tokenID, name, owner, ownerName, totalSum);
             this.tokenID = tokenID.getValue();
             this.name = name.getValue();
             this.owner = owner.getValue();
+            this.ownerName = ownerName.getValue();
             this.totalSum = ChainMakerUtils.bigInteger2DoubleString(totalSum.getValue());
         }
     }
