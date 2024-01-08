@@ -3,9 +3,12 @@ package cn.org.gry.chainmaker;
 
 import cn.org.gry.chainmaker.config.InitSystemClient;
 import cn.org.gry.chainmaker.contract.*;
+import cn.org.gry.chainmaker.domain.entity.UserInfo;
 import cn.org.gry.chainmaker.domain.service.*;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.TokenHolder;
+import cn.org.gry.chainmaker.domain.service.UserInfoService;
+import org.chainmaker.sdk.ChainClient;
 import org.chainmaker.sdk.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 @SpringBootTest
 class ChainSpringDemoApplicationTests {
@@ -49,6 +55,9 @@ class ChainSpringDemoApplicationTests {
     @Autowired
     private ContractToolEvm contractTool;
 
+    @Autowired
+    private UserInfoService userInfoService;
+
 
     @Test
     void contextLoads() {
@@ -57,7 +66,7 @@ class ChainSpringDemoApplicationTests {
         String Address_3 = "d9973fef375a08fed8331d82899caed9486c8c31";
         String Address_4 = "3839bcfb4d575a565fae4ae5c50b52d5a616bf2b";
 
-        TokenHolder.setToken("1");
+        TokenHolder.put("uid", "1");
 
         String add_pdlot = contractProductLotEvm.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
         String add_pklot = contractPackageLotEvm.createEvmContract(InitSystemClient.admin1, new User[]{InitSystemClient.admin1, InitSystemClient.admin2, InitSystemClient.admin3}).getAddress();
@@ -72,26 +81,40 @@ class ChainSpringDemoApplicationTests {
 
         tradeManagement.RegisterSupplier(Address_1, "YJH_S1");
         tradeManagement.RegisterProducer(Address_2, "YJH_P2");
-        tradeManagement.RegisterProducer(Address_1, "YJH_P1");
         tradeManagement.RegisterUser(Address_3, "YJH_D3");
-        tradeManagement.RegisterUser(Address_4, "YJH_W4");
-        tradeManagement.RegisterUser(Address_1, "YJH_R1");
-        tradeManagement.RegisterUser(Address_2, "YJH_C2");
+        tradeManagement.RegisterRepository(Address_2, Address_4, "YJH_R4");
+        TokenHolder.put("uid", "4");
+        pp.setApprovalForAll(Address_2, true);
+        TokenHolder.put("uid", "1");
 
         rm.mint("NACL", "123.123", "食盐");
         rm.mint("NACL", "321.321", "食盐");
         rm.mint("NACL", "456.4", "食盐");
         rm.mint("NACL", "100.1", "食盐");
 
-        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(1), "Lot1");
-        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(2), "Lot2");
-        rm.transferFrom(Address_1, Address_2, BigInteger.valueOf(3), "Lot3");
+        rm.transfer(2L, BigInteger.valueOf(1));
+        rm.transfer(2L, BigInteger.valueOf(2));
+        rm.transfer(2L, BigInteger.valueOf(3));
+
+        TokenHolder.put("uid", "2");
+        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（小杯）","PP1", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1", "1", "1"));
+        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（中杯）","PP2", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1.5", "1.5", "1.5"));
+        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（大杯）","PP3", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("2", "2", "2"));
+        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（超大杯）","PP4", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("2.5", "2.5", "2.5"));
+        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（小杯）","PP5", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1", "1", "1"));
+        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（中杯）","PP6", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1.5", "1.5", "1.5"));
     }
 
     @Test
-    public void test () {
-        System.out.println(ChainMakerUtils.bigInteger2DoubleString(ChainMakerUtils.doubleString2BigInteger("123")));
+    public void test () throws NoSuchAlgorithmException, IOException {
+//        System.out.println(ChainMakerUtils.bigInteger2DoubleString(ChainMakerUtils.doubleString2BigInteger("123")));
+//        System.out.println(userInfoService.encodePwd("123456"));
+        UserInfo userInfo = new UserInfo();
+        userInfo.setEuid(10089L);
+        userInfoService.registerUser(userInfo);
+//        System.out.println(ChainMakerUtils.makeAddrFromCert(InitSystemClient.admin1));
     }
+
 
     public static class TEST1 extends DynamicStruct {
         public TEST1 (

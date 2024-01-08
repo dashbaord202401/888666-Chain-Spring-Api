@@ -1,5 +1,7 @@
 package cn.org.gry.chainmaker.utils;
 
+import java.util.Map;
+
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
  * @version 1.0
@@ -10,14 +12,17 @@ package cn.org.gry.chainmaker.utils;
  */
 public class TokenHolder {
 
-    private static final ThreadLocal<String> tokenThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, String>> tokenThreadLocal = new ThreadLocal<>();
 
-    public static String getToken() {
-        return tokenThreadLocal.get();
+    public static String get(String key) {
+        return tokenThreadLocal.get().get(key);
     }
 
-    public static void setToken(String token) {
-        tokenThreadLocal.set(token);
+    public static void put(String key, String value) {
+        if (tokenThreadLocal.get() == null) {
+            tokenThreadLocal.set(new java.util.HashMap<>());
+        }
+        tokenThreadLocal.get().put(key, value);
     }
 
     public static void clearToken() {

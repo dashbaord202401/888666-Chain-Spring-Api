@@ -51,9 +51,11 @@ public class TokenAspect {
 
         // 获取Header中的Token
         String token = request.getParameter("ecafeToken");
-
+        // TODO token转euid
+        String euid = token;
+        TokenHolder.put("euid", euid);
         // 将Token设置进ThreadLocal
-        TokenHolder.setToken(token);
+        TokenHolder.put("uid", userInfoService.getUid().getData().get("uid").toString());
     }
 }
 
