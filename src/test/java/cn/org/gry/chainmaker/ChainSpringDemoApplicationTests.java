@@ -110,9 +110,17 @@ class ChainSpringDemoApplicationTests {
 //        System.out.println(ChainMakerUtils.bigInteger2DoubleString(ChainMakerUtils.doubleString2BigInteger("123")));
 //        System.out.println(userInfoService.encodePwd("123456"));
         UserInfo userInfo = new UserInfo();
-        userInfo.setEuid(10089L);
+        userInfo.setEuid(11121L);
         userInfoService.registerUser(userInfo);
 //        System.out.println(ChainMakerUtils.makeAddrFromCert(InitSystemClient.admin1));
+//        Map<String, String> map = new HashMap();
+//        map.put("a", "b");
+//        map.put("c", "d");
+//        System.out.println(JSONObject.toJSON(map));
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.addProperty("userType", "client");
+//        jsonObject.addProperty("certUsage", "tls-sign");
+//        System.out.println(jsonObject);
     }
 
 

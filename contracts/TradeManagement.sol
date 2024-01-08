@@ -14,9 +14,9 @@ contract TradeManagement is IERC721Receiver {
     // 授权者 -> 合约创建者
     address public FoodAuthority;
     // 供应商
-    mapping(address => string) public Supplier;
+    mapping(address => bool) public Supplier;
     // 生产商
-    mapping(address => string) public Producer;
+    mapping(address => bool) public Producer;
     // 用户（不区分角色）
     mapping(address => string) public User;
     // 批次TOKEN => 原料TOKEN[]
@@ -29,7 +29,7 @@ contract TradeManagement is IERC721Receiver {
     mapping(uint256 => ProductsLotNFT) internal ProductsLotNFTMapping;
     // TOKEN => 包装批次NFT
     mapping(uint256 => PackagedLotNFT) internal PackagedLotNFTMapping;
-    //
+    // 仓库
     mapping(address => address[]) internal RepositoryMapping;
 
     // 白名单
@@ -201,7 +201,7 @@ contract TradeManagement is IERC721Receiver {
     // 验证调用者是否为供应商
     function onlySupplier(address user) external view {
         require(
-            bytes(Supplier[user]).length != 0,
+            Supplier[user],
             "Only authorized suppliers are allowed to run this function"
         );
     }
@@ -209,7 +209,7 @@ contract TradeManagement is IERC721Receiver {
     // 验证调用者是否为生产商
     function onlyProducer(address user) external view {
         require(
-            bytes(Producer[user]).length != 0,
+            Producer[user],
             "Only authorized producers are allowed to run this function"
         );
     }
@@ -224,7 +224,7 @@ contract TradeManagement is IERC721Receiver {
     onlyFoodAuthority
     {
         User[_producer] = name;
-        Producer[_producer] = name;
+        Producer[_producer] = true;
     }
 
     // 注册生产商
@@ -233,7 +233,7 @@ contract TradeManagement is IERC721Receiver {
     onlyFoodAuthority
     {
         User[_supplier] = name;
-        Supplier[_supplier] = name;
+        Supplier[_supplier] = true;
     }
 
     // 注册仓库用户
@@ -287,7 +287,7 @@ contract TradeManagement is IERC721Receiver {
         ProductsLotNFT storage productsLotNft = ProductsLotNFTMapping[lotID];
         // 设置TOKENID、生产厂商、生产时间以及生产批次
         productsLotNft.tokenID = lotID;
-        productsLotNft.producerName = Producer[from];
+        productsLotNft.producerName = User[from];
         productsLotNft.produceTime = block.timestamp;
         productsLotNft.lotName = productLot;
         productsLotNft.name = name;
@@ -435,7 +435,7 @@ contract TradeManagement is IERC721Receiver {
         RawMaterialNFT storage nft = RawMaterialNFTMapping[tokenID];
         // 设置生产厂商以及生产时间
         nft.tokenID = tokenID;
-        nft.supplierName = Supplier[from];
+        nft.supplierName = User[from];
         nft.produceTime = block.timestamp;
         nft.totalSum = initSum;
         nft.name = name;
@@ -453,7 +453,7 @@ contract TradeManagement is IERC721Receiver {
         );
         RawMaterialNFT storage nft = RawMaterialNFTMapping[tokenID];
         nft.supplierTime = block.timestamp;
-        nft.producerName = Producer[to];
+        nft.producerName = User[to];
     }
 
     // 检查原材料拥有者是否符合
