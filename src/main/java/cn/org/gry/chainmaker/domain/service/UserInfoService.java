@@ -40,7 +40,7 @@ public class UserInfoService {
         }
     }
 
-    public void registerUser (UserInfo userInfo) {
+    public UserInfo registerUser (UserInfo userInfo) {
         userInfo.setOrg(caService.getCaServiceOrg());
         userInfo.setPwd(encodePwd(userInfo.getPwd()));
         userInfo = userInfoRepository.save(userInfo);
@@ -63,7 +63,7 @@ public class UserInfoService {
         TokenHolder.put("uid", userInfo.getUid().toString());
 
         userInfo.setAddress(tool.getAddress().getData().get("address").toString());
-        userInfoRepository.save(userInfo);
+        return userInfoRepository.save(userInfo);
     }
 
     public Result getUid() {
