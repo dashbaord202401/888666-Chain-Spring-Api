@@ -7,3 +7,7 @@ spring:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+ca:
+  url: http://192.168.60.128:8090/api/ca
+  org: TestCMorg1
