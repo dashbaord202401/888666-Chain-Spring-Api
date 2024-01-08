@@ -17,7 +17,6 @@ import java.util.List;
 
 @Configuration
 public class InitSystemClient {
-
     // 管理员1签名证书及密钥
     static final String ADMIN1_KEY_PATH = "src/main/resources/crypto-config/TestCMorg1/certs/user/SignKey.key";
     static final String ADMIN1_CERT_PATH = "src/main/resources/crypto-config/TestCMorg1/certs/user/SignCert.crt";

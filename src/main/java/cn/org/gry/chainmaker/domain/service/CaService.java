@@ -31,12 +31,27 @@ public class CaService {
     @Value("${ca.url}")
     private String caServiceUrl;
 
+    @Value("${ca.username}")
+    private String caServiceUsername;
+
+    @Value("${ca.password}")
+    private String caServicePassword;
+
     @Value("${ca.org}")
     private String caServiceOrg;
 
+    @Value("${ca.country}")
+    private String caServiceCountry;
+
+    @Value("${ca.locality}")
+    private String caServiceLocality;
+
+    @Value("${ca.province}")
+    private String caServiceProvince;
+
     // 生成证书
     public byte[][] genCert (Long uid) throws IOException {
-        String token = login("admin1", "passw0rd");
+        String token = login();
         HttpClient httpClient = HttpClients.createDefault();
 
         HttpPost httpPost = new HttpPost(caServiceUrl + "/gencert");
@@ -46,9 +61,9 @@ public class CaService {
                 "  \"userType\": \"client\",\n" +
                 "  \"certUsage\": \"tls-sign\",\n" +
                 "  \"privateKeyPwd\": \"\",\n" +
-                "  \"country\": \"CN\",\n" +
-                "  \"locality\": \"GZ\",\n" +
-                "  \"province\": \"GD\",\n" +
+                "  \"country\": \"" + caServiceCountry + "\",\n" +
+                "  \"locality\": \"" + caServiceLocality + "\",\n" +
+                "  \"province\": \"" + caServiceProvince + "\",\n" +
                 "  \"token\": \"" + token + "\"\n" +
                 "}";
         httpPost.setEntity(new StringEntity(jsonCertString));
@@ -60,14 +75,14 @@ public class CaService {
     }
 
     // 获取token
-    public String login (String username, String password) throws IOException {
+    public String login () throws IOException {
         // 创建默认的httpClient实例
         CloseableHttpClient httpClient = HttpClients.createDefault();
         // 创建httppost
         HttpPost httpPost = new HttpPost(caServiceUrl + "/login");
         String jsonLoginString = "{\n" +
-                "    \"appId\": \"" + username + "\",\n" +
-                "    \"appKey\": \"" + password + "\"\n" +
+                "    \"appId\": \"" + caServiceUsername + "\",\n" +
+                "    \"appKey\": \"" + caServicePassword + "\"\n" +
                 "}";
         httpPost.setEntity(new StringEntity(jsonLoginString));
         httpPost.setHeader("Content-type", "application/json");
