@@ -55,20 +55,20 @@ public class TradeManagement {
         contractTradeManagementEvm.invokeContract("setPackagedProductsContract", Collections.singletonList(new Address(packagedProductsAddress)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void RegisterSupplier(String supplierAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterSupplier", Arrays.asList(new Address(supplierAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
+    public Result RegisterSupplier(String supplierAddress, String name) {
+        return contractTradeManagementEvm.invokeContract("RegisterSupplier", Arrays.asList(new Address(supplierAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void RegisterProducer(String producerAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterProducer", Arrays.asList(new Address(producerAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
+    public Result RegisterProducer(String producerAddress, String name) {
+        return contractTradeManagementEvm.invokeContract("RegisterProducer", Arrays.asList(new Address(producerAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void RegisterUser(String userAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterUser", Arrays.asList(new Address(userAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
+    public Result RegisterUser(String userAddress, String name) {
+       return contractTradeManagementEvm.invokeContract("RegisterUser", Arrays.asList(new Address(userAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
     }
 
-    public void RegisterRepository (String parentAddress, String repositoryAddress, String name) {
-        contractTradeManagementEvm.invokeContract("RegisterRepository", Arrays.asList(new Address(parentAddress), new Address(repositoryAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
+    public Result RegisterRepository (String parentAddress, String repositoryAddress, String name) {
+        return contractTradeManagementEvm.invokeContract("RegisterRepository", Arrays.asList(new Address(parentAddress), new Address(repositoryAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
     }
 
     public Result getRawMaterialsNFT(BigInteger rawMaterialsId) {
