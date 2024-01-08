@@ -24,7 +24,7 @@ contract RawMaterials is Base {
         address to,
         uint256 tokenID
     ) public {
-        transferFrom(msg.sender, to, tokenID);
+        transferFrom(ownerOf(tokenID), to, tokenID);
     }
 
     // 供应商铸造原材料NFT并记录其URI

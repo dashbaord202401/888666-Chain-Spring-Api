@@ -29,6 +29,8 @@ contract TradeManagement is IERC721Receiver {
     mapping(uint256 => ProductsLotNFT) internal ProductsLotNFTMapping;
     // TOKEN => 包装批次NFT
     mapping(uint256 => PackagedLotNFT) internal PackagedLotNFTMapping;
+    //
+    mapping(address => address[]) internal RepositoryMapping;
 
     // 白名单
     mapping(address => bool) whiteList;
@@ -232,6 +234,15 @@ contract TradeManagement is IERC721Receiver {
     {
         User[_supplier] = name;
         Supplier[_supplier] = name;
+    }
+
+    // 注册仓库用户
+    function RegisterRepository(address parent, address _repository, string memory name)
+    external
+    onlyFoodAuthority
+    {
+        User[_repository] = name;
+        RepositoryMapping[parent].push(_repository);
     }
 
     // 注册消费者
@@ -706,6 +717,16 @@ contract TradeManagement is IERC721Receiver {
         uint256
     )
     {
+        uint256 rmBalance = RawMaterialSmartContract.balanceOf(msg.sender);
+        uint256 ppBalance = PackagedProductSmartContract.balanceOf(msg.sender);
+        uint256 pkBalance = PackageLotSmartContract.balanceOf(msg.sender);
+        address[] memory repositorys = RepositoryMapping[msg.sender];
+        for (uint i = 0; i < repositorys.length; i++) {
+            address repository = repositorys[i];
+            rmBalance += RawMaterialSmartContract.balanceOf(repository);
+            ppBalance += PackagedProductSmartContract.balanceOf(repository);
+            pkBalance += PackageLotSmartContract.balanceOf(repository);
+        }
         return (
         // 原材料NFT总数量
             RawMaterialSmartContract.totalSupply(),
@@ -714,11 +735,11 @@ contract TradeManagement is IERC721Receiver {
         // 包装批次总数量
             PackageLotSmartContract.totalSupply(),
         // 发送者拥有的原材料NFT数量
-            RawMaterialSmartContract.balanceOf(msg.sender),
+            rmBalance,
         // 发送者拥有的产品NFT数量
-            PackagedProductSmartContract.balanceOf(msg.sender),
+            ppBalance,
         // 发送者拥有的包装NFT数量
-            PackageLotSmartContract.balanceOf(msg.sender)
+            pkBalance
         );
     }
 

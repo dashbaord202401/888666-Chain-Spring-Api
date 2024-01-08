@@ -16,7 +16,7 @@ contract PackageLot is Base {
     }
 
     function transfer(address to, uint256 tokenID) public {
-        transferFrom(msg.sender, to, tokenID);
+        transferFrom(ownerOf(tokenID), to, tokenID);
     }
 
     // 铸币批次NFT
