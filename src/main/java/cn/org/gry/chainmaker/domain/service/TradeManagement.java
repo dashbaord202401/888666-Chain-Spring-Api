@@ -67,6 +67,10 @@ public class TradeManagement {
         contractTradeManagementEvm.invokeContract("RegisterUser", Arrays.asList(new Address(userAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
     }
 
+    public void RegisterRepository (String parentAddress, String repositoryAddress, String name) {
+        contractTradeManagementEvm.invokeContract("RegisterRepository", Arrays.asList(new Address(parentAddress), new Address(repositoryAddress), new Utf8String(name)), Collections.emptyList(), Collections.emptyList());
+    }
+
     public Result getRawMaterialsNFT(BigInteger rawMaterialsId) {
         Result result = contractTradeManagementEvm.invokeContract(
                 "getRawMaterialsNFT",
@@ -114,7 +118,7 @@ public class TradeManagement {
                         "success",
                         "msg",
                         "NFT",
-                        "tradeUsers",
+                        "trade",
                         "rawMaterials"
                 ));
     }
