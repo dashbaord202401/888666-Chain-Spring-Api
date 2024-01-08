@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
  * @version 1.0
- * @description
+ * @description 包装批次智能合约
  * @since 2023/12/18 9:36
  * Copyright (C) 2022-2023 CASEEDER, All Rights Reserved.
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的

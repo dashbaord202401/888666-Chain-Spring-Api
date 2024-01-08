@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
  * @version 1.0
- * @description
+ * @description 基础合约类，所有合约类都继承该类
  * @since 2023/12/6 13:37
  * Copyright (C) 2022-2023 CASEEDER, All Rights Reserved.
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
@@ -56,16 +56,18 @@ public abstract class BaseContractEvm {
     protected String contractName;
     // 合约文件路径
     protected String EVM_CONTRACT_FILE_PATH = "";
-    protected String version = "_1.85";
+    // 版本号
+    protected String version = "_2.00";
     // 配置类池
     @Autowired
     private SdkConfigPool sdkConfigPool;
+    // 用户信息DAO
     @Autowired
-    private UserInfoRepository certKeyOrgReposity;
+    private UserInfoRepository userInfoRepository;
 
     // 通过用户id获取链客户端
     public ChainClient getChainClient() throws Exception {
-        UserInfo certKeyOrgEntity = certKeyOrgReposity.findByUid(Integer.valueOf(TokenHolder.getToken()));
+        UserInfo certKeyOrgEntity = userInfoRepository.findByUid(Long.valueOf(TokenHolder.get("uid")));
 
         // 获取配置类
         SdkConfig sdkConfig = sdkConfigPool.acquire();
