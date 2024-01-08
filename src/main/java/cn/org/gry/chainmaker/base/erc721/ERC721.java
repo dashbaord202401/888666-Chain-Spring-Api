@@ -4,6 +4,7 @@ import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.utils.Result;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.generated.Uint256;
 
 import java.math.BigInteger;
@@ -37,5 +38,9 @@ public abstract class ERC721 {
 
     public Result totalSupply() {
         return baseContractEvm.invokeContract("totalSupply", Collections.emptyList(), Collections.singletonList(TypeReference.create(Uint256.class)), Collections.singletonList("totalSupply"));
+    }
+
+    public Result setApprovalForAll (String operator, boolean approved) {
+        return baseContractEvm.invokeContract("setApprovalForAll", Arrays.asList(new Address(operator), new Bool(approved)), Collections.emptyList(), Collections.emptyList());
     }
 }
