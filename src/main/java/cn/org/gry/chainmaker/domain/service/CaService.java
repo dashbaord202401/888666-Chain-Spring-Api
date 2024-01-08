@@ -1,6 +1,7 @@
 package cn.org.gry.chainmaker.domain.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.http.HttpResponse;
@@ -55,18 +56,17 @@ public class CaService {
         HttpClient httpClient = HttpClients.createDefault();
 
         HttpPost httpPost = new HttpPost(caServiceUrl + "/gencert");
-        String jsonCertString = "{\n" +
-                "  \"orgId\": \"" + caServiceOrg + "\",\n" +
-                "  \"userId\": \"" + uid + "\",\n" +
-                "  \"userType\": \"client\",\n" +
-                "  \"certUsage\": \"tls-sign\",\n" +
-                "  \"privateKeyPwd\": \"\",\n" +
-                "  \"country\": \"" + caServiceCountry + "\",\n" +
-                "  \"locality\": \"" + caServiceLocality + "\",\n" +
-                "  \"province\": \"" + caServiceProvince + "\",\n" +
-                "  \"token\": \"" + token + "\"\n" +
-                "}";
-        httpPost.setEntity(new StringEntity(jsonCertString));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("orgId", caServiceOrg);
+        jsonObject.addProperty("userId", uid.toString());
+        jsonObject.addProperty("userType", "client");
+        jsonObject.addProperty("certUsage", "tls-sign");
+        jsonObject.addProperty("privateKeyPwd", "");
+        jsonObject.addProperty("country", caServiceCountry);
+        jsonObject.addProperty("locality", caServiceLocality);
+        jsonObject.addProperty("province", caServiceProvince);
+        jsonObject.addProperty("token", token);
+        httpPost.setEntity(new StringEntity(jsonObject.toString()));
         Map<String, Object> resultMap = (Map<String, Object>)new ObjectMapper().readValue(EntityUtils.toString(httpClient.execute(httpPost).getEntity()), Map.class).get("data");
         byte[][] result = new byte[2][];
         result[0] = resultMap.get("cert").toString().getBytes();
