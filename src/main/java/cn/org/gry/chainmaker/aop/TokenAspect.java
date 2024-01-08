@@ -35,7 +35,7 @@ public class TokenAspect {
         HttpServletRequest request = attributes.getRequest();
 
         // 获取Header中的Token
-        String token = request.getParameter("ecafeToken");
+        String token = request.getParameter("id");
         String pwd = request.getParameter("pwd");
 
         if (!userInfoService.verifyPwd(Long.valueOf(token), pwd)) {
@@ -49,11 +49,8 @@ public class TokenAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
-        // 获取Header中的Token
-        String token = request.getParameter("ecafeToken");
-        // TODO token转euid
-        String euid = token;
-        TokenHolder.put("euid", euid);
+        // 获取RequestBody中的id，并将其存为euid
+        TokenHolder.put("euid", request.getParameter("id"));
         // 将Token设置进ThreadLocal
         TokenHolder.put("uid", userInfoService.getUid().getData().get("uid").toString());
     }
