@@ -751,4 +751,5 @@ contract TradeManagement is IERC721Receiver {
     ) public pure returns (bytes4) {
         return this.onERC721Received.selector;
     }
+
 }

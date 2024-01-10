@@ -46,4 +46,5 @@ contract RawMaterials is Base {
         // 返回NFT的ID
         return (ts);
     }
+
 }

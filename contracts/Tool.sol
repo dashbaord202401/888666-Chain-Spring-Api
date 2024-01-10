@@ -7,4 +7,5 @@ contract Tool {
     function getAddress() public view returns (address) {
         return address(msg.sender);
     }
+
 }

@@ -35,4 +35,5 @@ contract PackageLot is Base {
         tradeManagement.LinkParentNFT2Packages(ts, name, _childIDs);
         return ts;
     }
+
 }

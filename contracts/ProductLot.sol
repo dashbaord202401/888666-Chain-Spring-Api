@@ -21,4 +21,5 @@ contract ProductLot is Base {
         tradeManagement.LinkParentNFT2Products(ts, childIDs);
         return ts;
     }
+
 }

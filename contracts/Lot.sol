@@ -168,4 +168,5 @@ contract Lot is ERC721Enumerable, ERC721URIStorage, Ownable {
     {
         return super.tokenURI(tokenID);
     }
+
 }

@@ -66,4 +66,5 @@ contract PackagedProducts is Base {
     function approvalTMForAll (bool tag) public {
         setApprovalForAll(address(tradeManagement), tag);
     }
+
 }
