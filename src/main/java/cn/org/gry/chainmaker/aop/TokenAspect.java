@@ -15,6 +15,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,21 +29,22 @@ public class TokenAspect {
     @Autowired
     private UserInfoService userInfoService;
 
-    @Before("execution(* cn.org.gry.chainmaker.controller.*.transfer*(..))")
+    @Order(1)
+    @Before("execution(* cn.org.gry.chainmaker.controller.*.transfer*(..)) || execution(* cn.org.gry.chainmaker.controller.*.mint*(..))")
     public void beforeControllerTransfer(JoinPoint joinPoint) {
         // 获取HttpServletRequest
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
         // 获取Header中的Token
-        String token = request.getParameter("id");
         String pwd = request.getParameter("pwd");
 
-        if (!userInfoService.verifyPwd(Long.valueOf(token), pwd)) {
+        if (!userInfoService.verifyPwd(Long.valueOf(TokenHolder.get("uid")), pwd)) {
             throw new RuntimeException("密码错误");
         }
     }
 
+    @Order(0)
     @Before("execution(* cn.org.gry.chainmaker.controller.*.*(..))")
     public void beforeControllerMethod(JoinPoint joinPoint) {
         // 获取HttpServletRequest
