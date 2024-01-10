@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
@@ -18,16 +19,27 @@ import java.math.BigInteger;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @RestController
-@RequestMapping("/contract/RawMaterials.do")
+@RequestMapping("/contract/rawMaterial.do")
 public class RMController {
     @Autowired
     private RM rm;
 
-    @RequestMapping(params = "action=mint")
-    public Result mint(@RequestParam("tokenURI") String tokenURI,
-                       @RequestParam("initSum") String initSum,
-                       @RequestParam("name") String name) {
-        return rm.mint(tokenURI, initSum, name);
+    @RequestMapping(params = "action=mintBySuppler")
+    public Result mintBySuppler(@RequestParam("tokenURI") String tokenURI,
+                                @RequestParam("initSum") String initSum,
+                                @RequestParam("name") String name
+    ) {
+        return rm.mint(tokenURI, initSum, "", new Date(0), name);
+    }
+
+    @RequestMapping(params = "action=mintByProducer")
+    public Result mintByProducer(@RequestParam("tokenURI") String tokenURI,
+                               @RequestParam("initSum") String initSum,
+                               @RequestParam("supplyName") String supplyName,
+                               @RequestParam("produceTime") Long produceTime,
+                               @RequestParam("name") String name
+    ) {
+        return rm.mint(tokenURI, initSum, supplyName, new Date(produceTime), name);
     }
 
     @RequestMapping(params = "action=transferFrom")

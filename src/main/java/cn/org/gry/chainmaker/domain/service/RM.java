@@ -16,6 +16,7 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
@@ -38,12 +39,14 @@ public class RM extends ERC721 {
         setBaseContractEvm(contractRawMaterialsEvm);
     }
 
-    public Result mint(String tokenURI, String initSum, String name) {
+    public Result mint(String tokenURI, String initSum, String supplyName, Date produceTime, String name) {
         return contractRawMaterialsEvm.invokeContract(
                 "mint",
                 Arrays.asList(
                         new Utf8String(tokenURI),
                         new Uint128(ChainMakerUtils.doubleString2BigInteger(initSum)),
+                        new Utf8String(supplyName),
+                        new Uint256(produceTime.getTime() / 1000),
                         new Utf8String(name)),
                 Collections.singletonList(TypeReference.create(Uint256.class)),
                 Collections.singletonList("token"));

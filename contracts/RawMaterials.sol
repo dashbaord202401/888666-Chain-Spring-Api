@@ -11,7 +11,7 @@ contract RawMaterials is Base {
         address from,
         address to,
         uint256 tokenID
-    ) public override (ERC721, IERC721) {
+    ) public override(ERC721, IERC721) {
         // 验证用户身份
         tradeManagement.onlySupplier(from);
         tradeManagement.onlyProducer(to);
@@ -20,18 +20,16 @@ contract RawMaterials is Base {
         super.transferFrom(from, to, tokenID);
     }
 
-    function transfer(
-        address to,
-        uint256 tokenID
-    ) public {
+    function transfer(address to, uint256 tokenID) public {
         transferFrom(ownerOf(tokenID), to, tokenID);
     }
 
     // 供应商铸造原材料NFT并记录其URI
-    function mint(string memory _tokenURI, uint128 initSum, string memory name)
-    external
-    returns (uint256)
-    {
+    function mint(
+        string memory _tokenURI,
+        uint128 initSum,
+        string memory name
+    ) external returns (uint256) {
         tradeManagement.onlySupplier(msg.sender);
 
         uint256 ts = totalSupply() + 1;
@@ -41,10 +39,46 @@ contract RawMaterials is Base {
         _setTokenURI(ts, _tokenURI);
 
         // 初始化原料NFT
-        tradeManagement.InitRawMaterialsNFT(msg.sender, ts, initSum, name);
+        tradeManagement.InitRawMaterialsNFT(
+            msg.sender,
+            ts,
+            initSum,
+            "",
+            0,
+            name
+        );
 
         // 返回NFT的ID
         return (ts);
     }
 
+    // 生产商提供供应商名称铸造原材料NFT并记录其URI
+    function mint(
+        string memory _tokenURI,
+        uint128 initSum,
+        string memory supplyName,
+        uint256 produceTime,
+        string memory name
+    ) external returns (uint256) {
+        tradeManagement.onlyProducer(msg.sender);
+
+        uint256 ts = totalSupply() + 1;
+
+        // 铸造NFT并记录其URI
+        _safeMint(msg.sender, ts);
+        _setTokenURI(ts, _tokenURI);
+
+        // 初始化原料NFT
+        tradeManagement.InitRawMaterialsNFT(
+            msg.sender,
+            ts,
+            initSum,
+            supplyName,
+            produceTime,
+            name
+        );
+
+        // 返回NFT的ID
+        return (ts);
+    }
 }

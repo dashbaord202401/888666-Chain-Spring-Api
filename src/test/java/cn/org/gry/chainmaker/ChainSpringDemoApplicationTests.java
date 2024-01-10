@@ -5,21 +5,20 @@ import cn.org.gry.chainmaker.config.InitSystemClient;
 import cn.org.gry.chainmaker.contract.*;
 import cn.org.gry.chainmaker.domain.entity.UserInfo;
 import cn.org.gry.chainmaker.domain.service.*;
-import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.TokenHolder;
-import cn.org.gry.chainmaker.domain.service.UserInfoService;
-import org.chainmaker.sdk.ChainClient;
 import org.chainmaker.sdk.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.web3j.abi.datatypes.*;
+import org.web3j.abi.datatypes.DynamicStruct;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Date;
 
 @SpringBootTest
 class ChainSpringDemoApplicationTests {
@@ -85,18 +84,13 @@ class ChainSpringDemoApplicationTests {
         tradeManagement.RegisterRepository(Address_2, Address_4, "YJH_R4");
         TokenHolder.put("uid", "4");
         pp.setApprovalForAll(Address_2, true);
-        TokenHolder.put("uid", "1");
-
-        rm.mint("NACL", "123.123", "食盐");
-        rm.mint("NACL", "321.321", "食盐");
-        rm.mint("NACL", "456.4", "食盐");
-        rm.mint("NACL", "100.1", "食盐");
-
-        rm.transfer(2L, BigInteger.valueOf(1));
-        rm.transfer(2L, BigInteger.valueOf(2));
-        rm.transfer(2L, BigInteger.valueOf(3));
-
         TokenHolder.put("uid", "2");
+
+        rm.mint("NACL", "123.123", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
+        rm.mint("NACL", "321.321", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
+        rm.mint("NACL", "456.4", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
+        rm.mint("NACL", "100.1", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
+
         pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（小杯）","PP1", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1", "1", "1"));
         pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（中杯）","PP2", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1.5", "1.5", "1.5"));
         pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（大杯）","PP3", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("2", "2", "2"));

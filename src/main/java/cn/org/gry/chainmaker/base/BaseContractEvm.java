@@ -57,7 +57,7 @@ public abstract class BaseContractEvm {
     // 合约文件路径
     protected String EVM_CONTRACT_FILE_PATH = "";
     // 版本号
-    protected String version = "_2.00";
+    protected String version = "_2.02";
     // 配置类池
     @Autowired
     private SdkConfigPool sdkConfigPool;

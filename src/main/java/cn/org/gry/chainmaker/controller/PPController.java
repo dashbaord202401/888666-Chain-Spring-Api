@@ -19,7 +19,7 @@ import java.util.List;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @RestController
-@RequestMapping("/contract/PackagedProducts.do")
+@RequestMapping("/contract/packagedProduct.do")
 public class PPController {
     @Autowired
     private PP pp;

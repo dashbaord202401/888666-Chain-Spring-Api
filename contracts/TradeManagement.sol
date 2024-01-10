@@ -237,10 +237,11 @@ contract TradeManagement is IERC721Receiver {
     }
 
     // 注册仓库用户
-    function RegisterRepository(address parent, address _repository, string memory name)
-    external
-    onlyFoodAuthority
-    {
+    function RegisterRepository(
+        address parent,
+        address _repository,
+        string memory name
+    ) external onlyFoodAuthority {
         User[_repository] = name;
         RepositoryMapping[parent].push(_repository);
     }
@@ -397,13 +398,7 @@ contract TradeManagement is IERC721Receiver {
         nft.ownerName = User[nft.owner];
         nft.name = ProductsLotNFTMapping[nft.productLotID].name;
         nft.producerName = ProductsLotNFTMapping[nft.productLotID].producerName;
-        return (
-            true,
-            "Success",
-            nft,
-            nft.trade,
-            rawMaterials
-        );
+        return (true, "Success", nft, nft.trade, rawMaterials);
     }
 
     // 获取指定下生产批次的信息
@@ -429,14 +424,23 @@ contract TradeManagement is IERC721Receiver {
         address from,
         uint256 tokenID,
         uint128 initSum,
+        string memory supplyName,
+        uint256 produceTime,
         string memory name
     ) external {
         // 获取NFT
         RawMaterialNFT storage nft = RawMaterialNFTMapping[tokenID];
         // 设置生产厂商以及生产时间
         nft.tokenID = tokenID;
-        nft.supplierName = User[from];
-        nft.produceTime = block.timestamp;
+        if (isEmptyString(supplyName)) {
+            nft.supplierName = User[from];
+            nft.produceTime = block.timestamp;
+        } else {
+            nft.supplierName = supplyName;
+            nft.produceTime = produceTime;
+            nft.supplierTime = block.timestamp;
+            nft.producerName = User[from];
+        }
         nft.totalSum = initSum;
         nft.name = name;
     }
@@ -498,21 +502,8 @@ contract TradeManagement is IERC721Receiver {
         nft = RawMaterialNFTMapping[tokenID];
         // 如果不存在则取消
         if (nft.tokenID == 0x0)
-            return (
-                false,
-                "The tokenID is not exist",
-                nft,
-                products,
-                resumes
-            );
-        else
-            return (
-                true,
-                "Success",
-                nft,
-                nft.productLots,
-                nft.resumeLots
-            );
+            return (false, "The tokenID is not exist", nft, products, resumes);
+        else return (true, "Success", nft, nft.productLots, nft.resumeLots);
     }
 
     /** 批次业务逻辑 **/
@@ -618,10 +609,7 @@ contract TradeManagement is IERC721Receiver {
     function getProductsFromPackages(uint256 tokenID)
     public
     view
-    returns (
-        PackagedLotNFT memory nft,
-        uint256[] memory
-    )
+    returns (PackagedLotNFT memory nft, uint256[] memory)
     {
         nft = PackagedLotNFTMapping[tokenID];
         nft.owner = PackageLotSmartContract.ownerOf(tokenID);
@@ -658,9 +646,13 @@ contract TradeManagement is IERC721Receiver {
 
     // 产品
 
-    function listForProduct (bool isOwner) public view returns (ListElement[] memory result) {
+    function listForProduct(bool isOwner)
+    public
+    view
+    returns (ListElement[] memory result)
+    {
         result = list(isOwner, address(PackagedProductSmartContract));
-        for (uint i = 0; i < result.length; i++)
+        for (uint256 i = 0; i < result.length; i++)
             result[i].name = ProductsLotNFTMapping[
                                 PackagedProductNFTMapping[result[i].tokenID].productLotID
                 ].name;
@@ -668,16 +660,26 @@ contract TradeManagement is IERC721Receiver {
 
     // 包装
 
-    function listForPackage (bool isOwner) public view returns (ListElement[] memory result) {
+    function listForPackage(bool isOwner)
+    public
+    view
+    returns (ListElement[] memory result)
+    {
         result = list(isOwner, address(PackageLotSmartContract));
-        for (uint i = 0; i < result.length; i++) result[i].name = PackagedLotNFTMapping[result[i].tokenID].name;
+        for (uint256 i = 0; i < result.length; i++)
+            result[i].name = PackagedLotNFTMapping[result[i].tokenID].name;
     }
 
     // 原料
 
-    function listForRawMaterial (bool isOwner) public view returns (ListElement[] memory result) {
+    function listForRawMaterial(bool isOwner)
+    public
+    view
+    returns (ListElement[] memory result)
+    {
         result = list(isOwner, address(RawMaterialSmartContract));
-        for (uint i = 0; i < result.length; i++) result[i].name = RawMaterialNFTMapping[result[i].tokenID].name;
+        for (uint256 i = 0; i < result.length; i++)
+            result[i].name = RawMaterialNFTMapping[result[i].tokenID].name;
     }
 
     function list(bool isOwner, address smartContract)
@@ -689,9 +691,7 @@ contract TradeManagement is IERC721Receiver {
         // 判断是否只需要查询自己的
         if (isOwner) {
             // 获取自己的所有NFT
-            tokenIDs = Base(smartContract).getTokensFromOwner(
-                msg.sender
-            );
+            tokenIDs = Base(smartContract).getTokensFromOwner(msg.sender);
         } else {
             // 获取所有NFT
             tokenIDs = Base(smartContract).getTokens();
@@ -721,7 +721,7 @@ contract TradeManagement is IERC721Receiver {
         uint256 ppBalance = PackagedProductSmartContract.balanceOf(msg.sender);
         uint256 pkBalance = PackageLotSmartContract.balanceOf(msg.sender);
         address[] memory repositorys = RepositoryMapping[msg.sender];
-        for (uint i = 0; i < repositorys.length; i++) {
+        for (uint256 i = 0; i < repositorys.length; i++) {
             address repository = repositorys[i];
             rmBalance += RawMaterialSmartContract.balanceOf(repository);
             ppBalance += PackagedProductSmartContract.balanceOf(repository);
@@ -751,5 +751,4 @@ contract TradeManagement is IERC721Receiver {
     ) public pure returns (bytes4) {
         return this.onERC721Received.selector;
     }
-
 }
