@@ -30,7 +30,7 @@ public class TokenAspect {
     private UserInfoService userInfoService;
 
     @Order(1)
-    @Before("execution(* cn.org.gry.chainmaker.controller.*.transfer*(..)) || execution(* cn.org.gry.chainmaker.controller.*.mint*(..))")
+    @Before("execution(* cn.org.gry.chainmaker.controller.*.transfer*(..))")
     public void beforeControllerTransfer(JoinPoint joinPoint) {
         // 获取HttpServletRequest
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
