@@ -57,6 +57,7 @@ public class SystemContract {
         if (txInfo != null) {
             Map<String, Object> data = new HashMap<>();
             // TODO 填信息
+            data.put("blockHeight", txInfo.getBlockHeight());
             result = Result.success("交易信息", txId, data);
         } else {
             result = Result.fail("交易信息", txId, null);
