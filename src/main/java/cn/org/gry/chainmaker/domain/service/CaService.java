@@ -1,5 +1,6 @@
 package cn.org.gry.chainmaker.domain.service;
 
+import cn.org.gry.chainmaker.domain.entity.UserInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -51,14 +52,14 @@ public class CaService {
     private String caServiceProvince;
 
     // 生成证书
-    public byte[][] genCert (Long uid) throws IOException {
+    public byte[][] genCert (UserInfo userInfo) throws IOException {
         String token = login();
         HttpClient httpClient = HttpClients.createDefault();
 
         HttpPost httpPost = new HttpPost(caServiceUrl + "/gencert");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("orgId", caServiceOrg);
-        jsonObject.addProperty("userId", uid.toString());
+        jsonObject.addProperty("userId", userInfo.getType() + userInfo.getEuid());
         jsonObject.addProperty("userType", "client");
         jsonObject.addProperty("certUsage", "tls-sign");
         jsonObject.addProperty("privateKeyPwd", "");
