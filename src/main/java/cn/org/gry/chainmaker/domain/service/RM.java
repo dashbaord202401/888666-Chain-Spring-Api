@@ -3,6 +3,8 @@ package cn.org.gry.chainmaker.domain.service;
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractRawMaterialsEvm;
+import cn.org.gry.chainmaker.domain.entity.RawMaterialInfo;
+import cn.org.gry.chainmaker.repository.RawMaterialRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +36,16 @@ public class RM extends ERC721 {
     private UserInfoService userInfoService;
 
     @Autowired
+    private RawMaterialRepository rawMaterialRepository;
+
+    @Autowired
     public RM(ContractRawMaterialsEvm contractRawMaterialsEvm) {
         this.contractRawMaterialsEvm = contractRawMaterialsEvm;
         setBaseContractEvm(contractRawMaterialsEvm);
     }
 
     public Result mint(String tokenURI, String initSum, String supplyName, Date produceTime, String name) {
-        return contractRawMaterialsEvm.invokeContract(
+        Result result = contractRawMaterialsEvm.invokeContract(
                 "mint",
                 Arrays.asList(
                         new Utf8String(tokenURI),
@@ -50,6 +55,11 @@ public class RM extends ERC721 {
                         new Utf8String(name)),
                 Collections.singletonList(TypeReference.create(Uint256.class)),
                 Collections.singletonList("token"));
+        RawMaterialInfo rawMaterialInfo = new RawMaterialInfo();
+        rawMaterialInfo.setTokenURI(Long.valueOf(tokenURI));
+        rawMaterialInfo.setTokenID((BigInteger) result.getData().get("token"));
+        rawMaterialRepository.save(rawMaterialInfo);
+        return result;
     }
 
     public Result transferFrom(Long from, Long to, BigInteger tokenId) {
