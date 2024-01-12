@@ -21,6 +21,8 @@ public class RepositoryInfoDTO {
 
     private Long tokenURI;
 
+    private String name;
+
     public UserInfo getUserInfo() {
         UserInfo userInfo = new UserInfo();
         userInfo.setEuid(this.tokenURI);

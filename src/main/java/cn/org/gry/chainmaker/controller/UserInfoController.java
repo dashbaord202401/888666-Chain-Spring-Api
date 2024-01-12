@@ -59,12 +59,12 @@ public class UserInfoController {
     }
 
     @RequestMapping(params = "action=registerRepository")
-    public Result registerRepository(RepositoryInfoDTO repositoryInfo, @RequestParam("name") String name) {
+    public Result registerRepository(RepositoryInfoDTO repositoryInfo) {
         UserInfo userInfo = userInfoService.registerUser(repositoryInfo.getUserInfo());
         Long uid = Long.valueOf(TokenHolder.get("uid"));
         TokenHolder.put("uid", userInfo.getUid().toString());
         pp.setApprovalForAll(userInfoService.getAddressByUid(uid), true);
         TokenHolder.put("uid", "1");
-        return tradeManagement.RegisterRepository(userInfoService.getAddressByUid(uid), userInfo.getAddress(), name);
+        return tradeManagement.RegisterRepository(userInfoService.getAddressByUid(uid), userInfo.getAddress(), repositoryInfo.getName());
     }
 }
