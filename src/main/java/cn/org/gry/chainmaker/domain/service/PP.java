@@ -3,6 +3,8 @@ package cn.org.gry.chainmaker.domain.service;
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractPackagedProductsEvm;
+import cn.org.gry.chainmaker.domain.dto.PackagedProductInfoDTO;
+import cn.org.gry.chainmaker.repository.RawMaterialRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,33 +39,32 @@ public class PP extends ERC721 {
     private UserInfoService userInfoService;
 
     @Autowired
+    private RawMaterialRepository rawMaterialRepository;
+
+    @Autowired
     public PP(ContractPackagedProductsEvm contractPackagedProductsEvm) {
         this.contractPackagedProductsEvm = contractPackagedProductsEvm;
         setBaseContractEvm(contractPackagedProductsEvm);
     }
 
     public Result mint(
-            BigInteger numberOfTokens,
-            String tokenURI,
-            String name,
-            String productLot,
-            List<BigInteger> childIDs,
-            List<String> resumes) {
+            PackagedProductInfoDTO packagedProductInfoDTO
+    ) {
         List<Uint256> _childIDs = new ArrayList<>();
         List<Uint128> _resumes = new ArrayList<>();
-        for (BigInteger childID : childIDs) {
-            _childIDs.add(new Uint256(childID));
+        for (BigInteger childID : packagedProductInfoDTO.getChildIDs()) {
+            _childIDs.add(new Uint256(rawMaterialRepository.findByTokenURI(childID.longValue()).getTokenID()));
         }
-        for (String resume : resumes) {
+        for (String resume : packagedProductInfoDTO.getResumes()) {
             _resumes.add(new Uint128(ChainMakerUtils.doubleString2BigInteger(resume)));
         }
         return contractPackagedProductsEvm.invokeContract(
                 "mint",
                 Arrays.asList(
-                        new Uint256(numberOfTokens),
-                        new Utf8String(tokenURI),
-                        new Utf8String(name),
-                        new Utf8String(productLot),
+                        new Uint256(packagedProductInfoDTO.getNumberOfTokens()),
+                        new Utf8String(packagedProductInfoDTO.getTokenURI()),
+                        new Utf8String(packagedProductInfoDTO.getName()),
+                        new Utf8String(packagedProductInfoDTO.getProductLot()),
                         new DynamicArray<Uint256>(Uint256.class, _childIDs),
                         new DynamicArray<Uint128>(Uint128.class, _resumes)
                 ),
@@ -90,7 +91,7 @@ public class PP extends ERC721 {
         return contractPackagedProductsEvm.invokeContract(
                 "transfer",
                 Arrays.asList(
-                        new Address(userInfoService.getAddressByUid(to)),
+                        new Address(userInfoService.getAddressByEuid(to)),
                         new Uint256(tokenId)
                 ),
                 Collections.emptyList(),
