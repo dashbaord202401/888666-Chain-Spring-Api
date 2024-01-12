@@ -238,6 +238,7 @@ public class TradeManagement {
 
         private BigInteger tokenID;
         private BigInteger productLotID;
+        private String productLotName;
         private BigInteger packageLotID;
         private Boolean isBinding;
         private String owner;
@@ -248,6 +249,7 @@ public class TradeManagement {
         public PPNFT(
                 Uint256 tokenID,
                 Uint256 productLotID,
+                Utf8String productLotName,
                 Uint256 packageLotID,
                 Bool isBinding,
                 Address owner,
@@ -255,9 +257,10 @@ public class TradeManagement {
                 Utf8String producerName,
                 Utf8String name
         ) {
-            super(tokenID, productLotID, packageLotID, isBinding, owner, ownerName, producerName, name);
+            super(tokenID, productLotID, productLotName, packageLotID, isBinding, owner, ownerName, producerName, name);
             this.tokenID = tokenID.getValue();
             this.productLotID = productLotID.getValue();
+            this.productLotName = productLotName.getValue();
             this.packageLotID = packageLotID.getValue();
             this.isBinding = isBinding.getValue();
             this.owner = owner.getValue();

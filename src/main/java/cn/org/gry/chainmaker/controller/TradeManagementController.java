@@ -23,7 +23,7 @@ import java.math.BigInteger;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 @RestController
-@RequestMapping("/contract/trademanagement.do")
+@RequestMapping("/contract/tradeManagement.do")
 public class TradeManagementController {
     @Autowired
     private TradeManagement tradeManagement;
