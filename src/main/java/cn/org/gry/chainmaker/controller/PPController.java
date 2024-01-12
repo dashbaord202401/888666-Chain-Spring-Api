@@ -1,5 +1,6 @@
 package cn.org.gry.chainmaker.controller;
 
+import cn.org.gry.chainmaker.domain.dto.PackagedProductInfoDTO;
 import cn.org.gry.chainmaker.domain.service.PP;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +27,9 @@ public class PPController {
 
     @RequestMapping(params = "action=mint")
     public Result mint(
-            @RequestParam("numberOfTokens") BigInteger numberOfTokens,
-            @RequestParam("tokenURI") String tokenURI,
-            @RequestParam("name") String name,
-            @RequestParam("productLot") String productLot,
-            @RequestParam("childIDs") List<BigInteger> childIDs,
-            @RequestParam("resumes") List<String> resumes
+        PackagedProductInfoDTO packagedProductInfoDTO
     ) {
-        return pp.mint(numberOfTokens, tokenURI, name, productLot, childIDs, resumes);
+        return pp.mint(packagedProductInfoDTO);
     }
 
     @RequestMapping(params = "action=transferFrom")
