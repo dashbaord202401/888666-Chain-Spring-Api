@@ -1,6 +1,6 @@
 package cn.org.gry.chainmaker.controller;
 
-import cn.org.gry.chainmaker.domain.entity.RepositoryInfo;
+import cn.org.gry.chainmaker.domain.dto.RepositoryInfoDTO;
 import cn.org.gry.chainmaker.domain.entity.UserInfo;
 import cn.org.gry.chainmaker.domain.service.PP;
 import cn.org.gry.chainmaker.domain.service.TradeManagement;
@@ -59,7 +59,7 @@ public class UserInfoController {
     }
 
     @RequestMapping(params = "action=registerRepository")
-    public Result registerRepository(RepositoryInfo repositoryInfo, @RequestParam("name") String name) {
+    public Result registerRepository(RepositoryInfoDTO repositoryInfo, @RequestParam("name") String name) {
         UserInfo userInfo = userInfoService.registerUser(repositoryInfo.getUserInfo());
         Long uid = Long.valueOf(TokenHolder.get("uid"));
         TokenHolder.put("uid", userInfo.getUid().toString());
