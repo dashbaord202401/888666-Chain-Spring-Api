@@ -1,6 +1,7 @@
 package cn.org.gry.chainmaker.domain.service;
 
 import cn.org.gry.chainmaker.domain.entity.UserInfo;
+import cn.org.gry.chainmaker.domain.enums.UserType;
 import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.Result;
 import cn.org.gry.chainmaker.utils.TokenHolder;
@@ -40,13 +41,22 @@ public class UserInfoService {
         }
     }
 
+    public String getAddressByEuid (Long euid) {
+        UserInfo userInfo = userInfoRepository.findByEuid(euid);
+        try {
+            return userInfo.getAddress();
+        } catch (Exception e) {
+            throw new RuntimeException("用户不存在");
+        }
+    }
+
     public UserInfo registerUser (UserInfo userInfo) {
         userInfo.setOrg(caService.getCaServiceOrg());
         userInfo.setPwd(encodePwd(userInfo.getPwd()));
         userInfo = userInfoRepository.save(userInfo);
         byte[][] val1;
         try {
-             val1 = caService.genCert(userInfo.getUid());
+             val1 = caService.genCert(userInfo);
         } catch (Exception e) {
             throw new RuntimeException("证书生成失败");
         }

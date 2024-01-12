@@ -1,5 +1,6 @@
 package cn.org.gry.chainmaker.domain.entity;
 
+import cn.org.gry.chainmaker.domain.enums.UserType;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -26,6 +27,9 @@ public class UserInfo {
     // echain用户id
     @Column(name = "euid")
     private Long euid;
+
+    @Column(name = "type")
+    private String type;
 
     // 签名证书
     @Column(name = "signCert")
