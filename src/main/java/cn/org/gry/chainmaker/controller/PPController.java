@@ -41,6 +41,15 @@ public class PPController {
         return pp.transferFrom(from, to, tokenId);
     }
 
+    @RequestMapping(params = "action=transferBatch")
+    public Result transferBatch(
+            @RequestParam("to") Long to,
+            @RequestParam("tokenId") BigInteger tokenId,
+            @RequestParam("num") BigInteger num
+    ) {
+        return pp.transferBatch(to, tokenId, num);
+    }
+
     @RequestMapping(params = "action=balanceOf")
     public Result balanceOf(
             @RequestParam("owner") String owner

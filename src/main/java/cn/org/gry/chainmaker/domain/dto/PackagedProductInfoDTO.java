@@ -21,6 +21,7 @@ public class PackagedProductInfoDTO {
     private String tokenURI;
     private String name;
     private String productLot;
+    private BigInteger produceTime;
     private List<BigInteger> childIDs;
     private List<String> resumes;
 }

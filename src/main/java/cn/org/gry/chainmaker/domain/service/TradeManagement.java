@@ -245,6 +245,8 @@ public class TradeManagement {
         private String ownerName;
         private String producerName;
         private String name;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+        private Date produceTime;
 
         public PPNFT(
                 Uint256 tokenID,
@@ -255,9 +257,10 @@ public class TradeManagement {
                 Address owner,
                 Utf8String ownerName,
                 Utf8String producerName,
-                Utf8String name
+                Utf8String name,
+                Uint256 produceTime
         ) {
-            super(tokenID, productLotID, productLotName, packageLotID, isBinding, owner, ownerName, producerName, name);
+            super(tokenID, productLotID, productLotName, packageLotID, isBinding, owner, ownerName, producerName, name, produceTime);
             this.tokenID = tokenID.getValue();
             this.productLotID = productLotID.getValue();
             this.productLotName = productLotName.getValue();
@@ -267,6 +270,9 @@ public class TradeManagement {
             this.ownerName = ownerName.getValue();
             this.producerName = producerName.getValue();
             this.name = name.getValue();
+            if (!produceTime.getValue().equals(BigInteger.valueOf(0))) {
+                this.produceTime = new Date(produceTime.getValue().longValue() * 1000);
+            }
         }
     }
 

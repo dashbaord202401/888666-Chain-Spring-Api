@@ -4,9 +4,11 @@ import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractPackagedProductsEvm;
 import cn.org.gry.chainmaker.domain.dto.PackagedProductInfoDTO;
+import cn.org.gry.chainmaker.domain.enums.UserType;
 import cn.org.gry.chainmaker.repository.RawMaterialRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
+import cn.org.gry.chainmaker.utils.TokenHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.TypeReference;
@@ -65,6 +67,7 @@ public class PP extends ERC721 {
                         new Utf8String(packagedProductInfoDTO.getTokenURI()),
                         new Utf8String(packagedProductInfoDTO.getName()),
                         new Utf8String(packagedProductInfoDTO.getProductLot()),
+                        new Uint256(packagedProductInfoDTO.getProduceTime()),
                         new DynamicArray<Uint256>(Uint256.class, _childIDs),
                         new DynamicArray<Uint128>(Uint128.class, _resumes)
                 ),
@@ -91,8 +94,21 @@ public class PP extends ERC721 {
         return contractPackagedProductsEvm.invokeContract(
                 "transfer",
                 Arrays.asList(
-                        new Address(userInfoService.getAddressByEuid(to)),
+                        new Address(userInfoService.getAddressByEuidAndType(to, TokenHolder.get("toType"))),
                         new Uint256(tokenId)
+                ),
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+    }
+
+    public Result transferBatch(Long to, BigInteger tokenId, BigInteger numberOfTokens) {
+        return contractPackagedProductsEvm.invokeContract(
+                "transferBatch",
+                Arrays.asList(
+                        new Address(userInfoService.getAddressByEuidAndType(to, TokenHolder.get("toType"))),
+                        new Uint256(tokenId),
+                        new Uint256(numberOfTokens)
                 ),
                 Collections.emptyList(),
                 Collections.emptyList()
