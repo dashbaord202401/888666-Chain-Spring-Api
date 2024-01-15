@@ -49,6 +49,8 @@ contract TradeManagement is IERC721Receiver {
         uint256 tokenID;
         // 生产批次ID
         uint256 productLotID;
+        // 生产批次名
+        string productLotName;
         // 包装批次ID
         uint256 packageLotID;
         // 是否绑定
@@ -61,6 +63,8 @@ contract TradeManagement is IERC721Receiver {
         string producerName;
         // 产品名称 懒加载
         string name;
+        // 生产日期
+        uint256 produceTime;
         // 交易对象记录
         Trade[] trade;
     }
@@ -276,6 +280,8 @@ contract TradeManagement is IERC721Receiver {
         string memory name,
     // 生产批次
         string memory productLot,
+    // 生产时间
+        uint produceTime,
     // 原料NFT
         uint256[] memory _childIDs,
     // 消耗量
@@ -289,7 +295,7 @@ contract TradeManagement is IERC721Receiver {
         // 设置TOKENID、生产厂商、生产时间以及生产批次
         productsLotNft.tokenID = lotID;
         productsLotNft.producerName = User[from];
-        productsLotNft.produceTime = block.timestamp;
+        productsLotNft.produceTime = produceTime;
         productsLotNft.lotName = productLot;
         productsLotNft.name = name;
 
@@ -398,6 +404,8 @@ contract TradeManagement is IERC721Receiver {
         nft.ownerName = User[nft.owner];
         nft.name = ProductsLotNFTMapping[nft.productLotID].name;
         nft.producerName = ProductsLotNFTMapping[nft.productLotID].producerName;
+        nft.productLotName = ProductsLotNFTMapping[nft.productLotID].lotName;
+        nft.produceTime = ProductsLotNFTMapping[nft.productLotID].produceTime;
         return (true, "Success", nft, nft.trade, rawMaterials);
     }
 
@@ -434,13 +442,12 @@ contract TradeManagement is IERC721Receiver {
         nft.tokenID = tokenID;
         if (isEmptyString(supplyName)) {
             nft.supplierName = User[from];
-            nft.produceTime = block.timestamp;
         } else {
             nft.supplierName = supplyName;
-            nft.produceTime = produceTime;
             nft.supplierTime = block.timestamp;
             nft.producerName = User[from];
         }
+        nft.produceTime = produceTime;
         nft.totalSum = initSum;
         nft.name = name;
     }

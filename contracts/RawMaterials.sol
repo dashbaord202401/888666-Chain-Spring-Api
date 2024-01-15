@@ -28,6 +28,7 @@ contract RawMaterials is Base {
     function mint(
         string memory _tokenURI,
         uint128 initSum,
+        uint256 produceTime,
         string memory name
     ) external returns (uint256) {
         tradeManagement.onlySupplier(msg.sender);
@@ -44,7 +45,7 @@ contract RawMaterials is Base {
             ts,
             initSum,
             "",
-            0,
+            produceTime,
             name
         );
 

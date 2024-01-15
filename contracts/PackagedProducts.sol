@@ -26,12 +26,19 @@ contract PackagedProducts is Base {
         transferFrom(ownerOf(tokenID), to, tokenID);
     }
 
+    function transferBatch (address to, uint256 tokenID, uint num) public {
+        for (uint i = 0; i < num; i++) {
+            transferFrom(ownerOf(tokenID + i), to, tokenID + i);
+        }
+    }
+
     // 铸币
     function mint(
         uint256 numberOfTokens,
         string memory _tokenURI,
         string memory name,
         string memory productLot,
+        uint produceTime,
         uint256[] memory _childIDs,
         uint128[] memory resumes
     ) public payable returns (uint256[] memory tokens) {
@@ -56,6 +63,7 @@ contract PackagedProducts is Base {
             tokens,
             name,
             productLot,
+            produceTime,
             _childIDs,
             resumes
         );
