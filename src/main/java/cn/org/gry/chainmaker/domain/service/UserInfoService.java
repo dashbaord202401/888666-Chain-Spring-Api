@@ -41,8 +41,8 @@ public class UserInfoService {
         }
     }
 
-    public String getAddressByEuid (Long euid) {
-        UserInfo userInfo = userInfoRepository.findByEuid(euid);
+    public String getAddressByEuidAndType (Long euid, String userType) {
+        UserInfo userInfo = userInfoRepository.findByEuidAndType(euid, userType);
         try {
             return userInfo.getAddress();
         } catch (Exception e) {
@@ -70,14 +70,16 @@ public class UserInfoService {
         userInfo.setTlsKey(key);
 
         userInfo = userInfoRepository.save(userInfo);
+        String uid = TokenHolder.get("uid");
         TokenHolder.put("uid", userInfo.getUid().toString());
 
         userInfo.setAddress(tool.getAddress().getData().get("address").toString());
+        TokenHolder.put("uid", uid);
         return userInfoRepository.save(userInfo);
     }
 
     public Result getUid() {
-        UserInfo userInfo = userInfoRepository.findByEuid(Long.valueOf(TokenHolder.get("euid")));
+        UserInfo userInfo = userInfoRepository.findByEuidAndType(Long.valueOf(TokenHolder.get("euid")), TokenHolder.get("operatorType"));
         try {
             HashMap<String, String> map = new HashMap<>();
             map.put("uid", userInfo.getUid().toString());

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
     UserInfo findByUid(Long uid);
 
-    UserInfo findByEuid (Long euid);
+    UserInfo findByEuidAndType (Long euid, String type);
 
     @Override
     <S extends UserInfo> S save(S entity);

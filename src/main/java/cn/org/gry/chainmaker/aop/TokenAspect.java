@@ -29,15 +29,16 @@ public class TokenAspect {
     @Autowired
     private UserInfoService userInfoService;
 
+    private HttpServletRequest request;
+
     @Order(1)
     @Before("execution(* cn.org.gry.chainmaker.controller.*.transfer*(..))")
     public void beforeControllerTransfer(JoinPoint joinPoint) {
-        // 获取HttpServletRequest
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
-
         // 获取Header中的Token
         String pwd = request.getParameter("pwd");
+
+        // 将toType设置进ThreadLocal
+        TokenHolder.put("toType", request.getParameter("toType"));
 
         if (!userInfoService.verifyPwd(Long.valueOf(TokenHolder.get("uid")), pwd)) {
             throw new RuntimeException("密码错误");
@@ -49,8 +50,10 @@ public class TokenAspect {
     public void beforeControllerMethod(JoinPoint joinPoint) {
         // 获取HttpServletRequest
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
+        request = attributes.getRequest();
 
+        // 将OperatorType设置进ThreadLocal
+        TokenHolder.put("operatorType", request.getParameter("operatorType"));
         // 获取RequestBody中的id，并将其存为euid
         TokenHolder.put("euid", request.getParameter("id"));
         // 将Token设置进ThreadLocal
