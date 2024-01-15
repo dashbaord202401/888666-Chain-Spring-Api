@@ -3,6 +3,7 @@ package cn.org.gry.chainmaker;
 
 import cn.org.gry.chainmaker.config.InitSystemClient;
 import cn.org.gry.chainmaker.contract.*;
+import cn.org.gry.chainmaker.domain.dto.PackagedProductInfoDTO;
 import cn.org.gry.chainmaker.domain.entity.UserInfo;
 import cn.org.gry.chainmaker.domain.service.*;
 import cn.org.gry.chainmaker.utils.TokenHolder;
@@ -86,17 +87,28 @@ class ChainSpringDemoApplicationTests {
         pp.setApprovalForAll(Address_2, true);
         TokenHolder.put("uid", "2");
 
-        rm.mint("NACL", "123.123", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
-        rm.mint("NACL", "321.321", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
-        rm.mint("NACL", "456.4", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
-        rm.mint("NACL", "100.1", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
+        rm.mint("1", "123.123", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
+        rm.mint("2", "321.321", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
+        rm.mint("3", "456.4", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
+        rm.mint("4", "100.1", "YJH_S", new Date(System.currentTimeMillis() / 1000), "食盐");
 
-        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（小杯）","PP1", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1", "1", "1"));
-        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（中杯）","PP2", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1.5", "1.5", "1.5"));
-        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（大杯）","PP3", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("2", "2", "2"));
-        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（超大杯）","PP4", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("2.5", "2.5", "2.5"));
-        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（小杯）","PP5", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1", "1", "1"));
-        pp.mint(BigInteger.valueOf(10L), "NACL", "一袋食盐（中杯）","PP6", Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)), Arrays.asList("1.5", "1.5", "1.5"));
+        PackagedProductInfoDTO packagedProductInfoDTO = new PackagedProductInfoDTO();
+        packagedProductInfoDTO.setNumberOfTokens(BigInteger.valueOf(20L));
+        packagedProductInfoDTO.setTokenURI("NACL");
+        packagedProductInfoDTO.setName("一袋食盐（小杯）");
+        packagedProductInfoDTO.setProductLot("PP1");
+        packagedProductInfoDTO.setChildIDs(Arrays.asList(BigInteger.valueOf(1), BigInteger.valueOf(2), BigInteger.valueOf(3)));
+        packagedProductInfoDTO.setResumes(Arrays.asList("1", "1", "1"));
+        packagedProductInfoDTO.setProduceTime(BigInteger.valueOf(System.currentTimeMillis() / 1000));
+        pp.mint(packagedProductInfoDTO);
+        packagedProductInfoDTO.setName("一袋食盐（中杯）");
+        packagedProductInfoDTO.setProductLot("PP2");
+        packagedProductInfoDTO.setResumes(Arrays.asList("1.5", "1.5", "1.5"));
+        pp.mint(packagedProductInfoDTO);
+        packagedProductInfoDTO.setName("一袋食盐（大杯）");
+        packagedProductInfoDTO.setProductLot("PP3");
+        packagedProductInfoDTO.setResumes(Arrays.asList("2", "2", "2"));
+        pp.mint(packagedProductInfoDTO);
     }
 
     @Test
