@@ -64,4 +64,12 @@ public class PPController {
     ) {
         return pp.transfer(to, tokenId);
     }
+
+    @RequestMapping(params = "action=burn")
+    public Result burn(
+            @RequestParam("tokenId") BigInteger tokenId,
+            @RequestParam("finalName") String finalName
+    ) {
+        return pp.burn(tokenId, finalName);
+    }
 }

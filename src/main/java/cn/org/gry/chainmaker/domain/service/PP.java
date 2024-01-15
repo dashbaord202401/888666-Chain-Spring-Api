@@ -115,6 +115,18 @@ public class PP extends ERC721 {
         );
     }
 
+    public Result burn (BigInteger tokenId, String finalName) {
+        return contractPackagedProductsEvm.invokeContract(
+                "burn",
+                Arrays.asList(
+                        new Uint256(tokenId),
+                        new Utf8String(finalName)
+                ),
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+    }
+
     public Result approvalTMForAll(boolean approved) {
         return contractPackagedProductsEvm.invokeContract("approvalTMForAll", Collections.singletonList(new Bool(approved)), Collections.emptyList(), Collections.emptyList());
     }
