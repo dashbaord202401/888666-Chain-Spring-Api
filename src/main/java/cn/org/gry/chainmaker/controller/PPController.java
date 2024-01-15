@@ -67,10 +67,9 @@ public class PPController {
 
     @RequestMapping(params = "action=burn")
     public Result burn(
-            @RequestParam("tokenId") BigInteger tokenId,
-            @RequestParam("finalName") String finalName,
-            @RequestParam("num") BigInteger num
+            @RequestParam("tokenIds") List<BigInteger> tokenIds,
+            @RequestParam("finalName") String finalName
     ) {
-        return pp.burn(tokenId, finalName, num);
+        return pp.burn(tokenIds, finalName);
     }
 }

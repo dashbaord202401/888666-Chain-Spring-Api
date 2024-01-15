@@ -115,13 +115,19 @@ public class PP extends ERC721 {
         );
     }
 
-    public Result burn (BigInteger tokenId, String finalName, BigInteger num) {
+    public Result burn (List<BigInteger> tokenIds, String finalName) {
+        List<Uint256> _tokenIds = new ArrayList<>();
+        for (BigInteger id : tokenIds) {
+            _tokenIds.add(new Uint256(id));
+        }
         return contractPackagedProductsEvm.invokeContract(
                 "burn",
                 Arrays.asList(
-                        new Uint256(tokenId),
-                        new Utf8String(finalName),
-                        new Uint256(num)
+                        new DynamicArray<>(
+                            Uint256.class,
+                            _tokenIds
+                        ),
+                        new Utf8String(finalName)
                 ),
                 Collections.emptyList(),
                 Collections.emptyList()
