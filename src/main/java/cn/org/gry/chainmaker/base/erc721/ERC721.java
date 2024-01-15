@@ -5,6 +5,8 @@ import cn.org.gry.chainmaker.utils.Result;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.DynamicArray;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.generated.Uint256;
 
 import java.math.BigInteger;
@@ -46,5 +48,15 @@ public abstract class ERC721 {
     // 设置操作所有NFT的权限给指定钱包
     public Result setApprovalForAll (String operator, boolean approved) {
         return baseContractEvm.invokeContract("setApprovalForAll", Arrays.asList(new Address(operator), new Bool(approved)), Collections.emptyList(), Collections.emptyList());
+    }
+
+    public Result getTokensFromOwner (String owner) {
+        return baseContractEvm.invokeContract(
+                "getTokensFromOwner",
+                Collections.singletonList(new Address(owner)),
+                Collections.singletonList(new TypeReference<DynamicArray<Uint256>>() {
+                }),
+                Collections.singletonList("tokens")
+        );
     }
 }

@@ -35,7 +35,6 @@ contract Base is ERC721Enumerable, ERC721URIStorage, Ownable {
     function getTokensFromOwner(address owner)
     external
     view
-    onlyTM
     returns (uint256[] memory tokens)
     {
         uint256 count = balanceOf(owner);
@@ -50,7 +49,6 @@ contract Base is ERC721Enumerable, ERC721URIStorage, Ownable {
     function getTokens()
     external
     view
-    onlyTM
     returns (uint256[] memory tokens)
     {
         uint256 count = totalSupply();
