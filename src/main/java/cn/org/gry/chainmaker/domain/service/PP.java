@@ -115,12 +115,13 @@ public class PP extends ERC721 {
         );
     }
 
-    public Result burn (BigInteger tokenId, String finalName) {
+    public Result burn (BigInteger tokenId, String finalName, BigInteger num) {
         return contractPackagedProductsEvm.invokeContract(
                 "burn",
                 Arrays.asList(
                         new Uint256(tokenId),
-                        new Utf8String(finalName)
+                        new Utf8String(finalName),
+                        new Uint256(num)
                 ),
                 Collections.emptyList(),
                 Collections.emptyList()

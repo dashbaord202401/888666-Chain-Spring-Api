@@ -32,9 +32,11 @@ contract PackagedProducts is Base {
         }
     }
 
-    function burn (uint256 tokenID, string memory finalName) public {
-        transferFrom(ownerOf(tokenID), address(tradeManagement), tokenID);
-        tradeManagement.burnPackagedProduct(tokenID, finalName);
+    function burn (uint256 tokenID, string memory finalName, uint256 num) public {
+        for (uint i = 0; i < num; i++) {
+            transferFrom(ownerOf(tokenID + i), address(tradeManagement), tokenID + i);
+            tradeManagement.burnPackagedProduct(tokenID + i, finalName);
+        }
     }
 
     // 铸币
