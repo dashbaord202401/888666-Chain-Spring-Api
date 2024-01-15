@@ -2,7 +2,9 @@ package cn.org.gry.chainmaker.controller;
 
 import cn.org.gry.chainmaker.domain.dto.PackagedProductInfoDTO;
 import cn.org.gry.chainmaker.domain.service.PP;
+import cn.org.gry.chainmaker.domain.service.UserInfoService;
 import cn.org.gry.chainmaker.utils.Result;
+import cn.org.gry.chainmaker.utils.TokenHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +26,9 @@ import java.util.List;
 public class PPController {
     @Autowired
     private PP pp;
+
+    @Autowired
+    private UserInfoService userInfoService;
 
     @RequestMapping(params = "action=mint")
     public Result mint(
@@ -71,5 +76,12 @@ public class PPController {
             @RequestParam("finalName") String finalName
     ) {
         return pp.burn(tokenIds, finalName);
+    }
+
+    @RequestMapping(params = "action=getTokensFromOwner")
+    public Result getTokensFromOwner(
+            @RequestParam("owner") Long owner
+    ) {
+        return pp.getTokensFromOwner(userInfoService.getAddressByEuidAndType(owner, TokenHolder.get("toType")));
     }
 }
