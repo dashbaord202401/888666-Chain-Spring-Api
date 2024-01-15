@@ -750,6 +750,11 @@ contract TradeManagement is IERC721Receiver {
         );
     }
 
+    function burnPackagedProduct (uint256 tokenID, string memory finalName) external {
+        PackagedProductsNFT storage nft = PackagedProductNFTMapping[tokenID];
+        nft.trade[nft.trade.length - 1].toName = finalName;
+    }
+
     function onERC721Received(
         address,
         address,
