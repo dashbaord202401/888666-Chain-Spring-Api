@@ -37,9 +37,6 @@ public class TokenAspect {
         // 获取Header中的Token
         String pwd = request.getParameter("pwd");
 
-        // 将toType设置进ThreadLocal
-        TokenHolder.put("toType", request.getParameter("toType"));
-
         if (!userInfoService.verifyPwd(Long.valueOf(TokenHolder.get("uid")), pwd)) {
             throw new RuntimeException("密码错误");
         }
@@ -52,6 +49,8 @@ public class TokenAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         request = attributes.getRequest();
 
+        // 将toType设置进ThreadLocal
+        TokenHolder.put("toType", request.getParameter("toType"));
         // 将OperatorType设置进ThreadLocal
         TokenHolder.put("operatorType", request.getParameter("operatorType"));
         // 获取RequestBody中的id，并将其存为euid
