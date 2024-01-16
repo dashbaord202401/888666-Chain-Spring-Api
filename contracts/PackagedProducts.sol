@@ -44,17 +44,11 @@ contract PackagedProducts is Base {
         uint256 numberOfTokens,
         string memory _tokenURI,
         string memory name,
-        string memory productLot,
-        uint produceTime,
-        uint256[] memory _childIDs,
-        uint128[] memory resumes
+        uint256 productLot,
+        uint produceTime
     ) public payable returns (uint256[] memory tokens) {
         tradeManagement.onlyProducer(msg.sender);
         uint256 ts = totalSupply() + 1;
-        // 验证是否拥有权限消耗原料,即是原料的拥有者
-        tradeManagement.checkRawMaterialsOwner(msg.sender, _childIDs);
-        // 验证是否消耗量足够
-        tradeManagement.checkRawMaterialsTotalSum(_childIDs, resumes);
         tokens = new uint256[](numberOfTokens);
         // 购买代币
         for (uint256 i = 0; i < numberOfTokens; i++) {
@@ -70,9 +64,7 @@ contract PackagedProducts is Base {
             tokens,
             name,
             productLot,
-            produceTime,
-            _childIDs,
-            resumes
+            produceTime
         );
 
         return tokens;

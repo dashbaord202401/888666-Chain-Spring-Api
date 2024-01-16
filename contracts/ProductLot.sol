@@ -10,15 +10,22 @@ contract ProductLot is Base {
     function mint(
         string memory tokenURI,
         string memory name,
-        uint256[] memory childIDs
-    ) external override (Base) returns (uint256) {
+        string memory lotName,
+        uint256 produceTime,
+        uint256[] memory childIDs,
+        uint128[] memory resumes
+    ) external returns (uint256) {
         uint256 ts = totalSupply() + 1;
+        // 验证是否拥有权限消耗原料,即是原料的拥有者
+        tradeManagement.checkRawMaterialsOwner(msg.sender, childIDs);
+        // 验证是否消耗量足够
+        tradeManagement.checkRawMaterialsTotalSum(childIDs, resumes);
         // 设置URI
         _setTokenURI(ts, tokenURI);
         // 发放代币
         _safeMint(msg.sender, ts);
         // 生产批次
-        tradeManagement.LinkParentNFT2Products(ts, childIDs);
+        tradeManagement.InitProductNFT(ts, msg.sender, name, lotName, produceTime, childIDs, resumes);
         return ts;
     }
 

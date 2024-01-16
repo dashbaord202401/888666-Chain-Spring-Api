@@ -24,7 +24,7 @@ contract PackageLot is Base {
         string memory tokenURI,
         string memory name,
         uint256[] memory _childIDs
-    ) external override (Base) returns (uint256) {
+    ) external returns (uint256) {
         uint256 ts = totalSupply() + 1;
         // 设置URI
         _setTokenURI(ts, tokenURI);

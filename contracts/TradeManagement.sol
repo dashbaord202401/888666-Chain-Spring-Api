@@ -279,41 +279,21 @@ contract TradeManagement is IERC721Receiver {
     // 产品名称
         string memory name,
     // 生产批次
-        string memory productLot,
+        uint256 productLot,
     // 生产时间
-        uint produceTime,
-    // 原料NFT
-        uint256[] memory _childIDs,
-    // 消耗量
-        uint128[] memory resumes
+        uint produceTime
     ) external {
-        // 打包生产批次NFT
-        uint256 lotID = ProductLotSmartContract.mint(productLot, "", tokenIDs);
-
-        // 初始化生产批次NFT
-        ProductsLotNFT storage productsLotNft = ProductsLotNFTMapping[lotID];
-        // 设置TOKENID、生产厂商、生产时间以及生产批次
-        productsLotNft.tokenID = lotID;
-        productsLotNft.producerName = User[from];
-        productsLotNft.produceTime = produceTime;
-        productsLotNft.lotName = productLot;
-        productsLotNft.name = name;
-
         for (uint256 i = 0; i < tokenIDs.length; i++) {
             // 设置每个产品的NFT
-            PackagedProductNFTMapping[tokenIDs[i]].tokenID = tokenIDs[i];
+            PackagedProductsNFT storage nft = PackagedProductNFTMapping[tokenIDs[i]];
+            nft.tokenID = tokenIDs[i];
+            nft.productLotID = productLot;
+            nft.name = name;
+            nft.produceTime = produceTime;
+            nft.owner = from;
+            nft.ownerName = User[from];
             // 添加产品NFT进生产批次里面
-            productsLotNft.products.push(tokenIDs[i]);
-        }
-
-        for (uint256 i = 0; i < _childIDs.length; i++) {
-            // 添加原料NFT进生产批次里面
-            productsLotNft.rawMaterials.push(_childIDs[i]);
-            RawMaterialNFT storage nft = RawMaterialNFTMapping[_childIDs[i]];
-            // 添加原料的生产记录、原料的消耗量以及扣除总量
-            nft.productLots.push(lotID);
-            nft.resumeLots.push(resumes[i]);
-            nft.totalSum -= resumes[i];
+            ProductsLotNFTMapping[productLot].products.push(tokenIDs[i]);
         }
     }
 
@@ -401,11 +381,10 @@ contract TradeManagement is IERC721Receiver {
             rawMaterials[i].tokenID = rawMaterialIDs[i];
         }
         nft.owner = PackagedProductSmartContract.ownerOf(tokenID);
-        nft.ownerName = User[nft.owner];
-        nft.name = ProductsLotNFTMapping[nft.productLotID].name;
+        if (!isEmptyString(User[nft.owner])) nft.ownerName = User[nft.owner];
+        else nft.ownerName = PackagedProductNFTMapping[nft.tokenID].trade[PackagedProductNFTMapping[nft.tokenID].trade.length - 1].toName;
         nft.producerName = ProductsLotNFTMapping[nft.productLotID].producerName;
         nft.productLotName = ProductsLotNFTMapping[nft.productLotID].lotName;
-        nft.produceTime = ProductsLotNFTMapping[nft.productLotID].produceTime;
         return (true, "Success", nft, nft.trade, rawMaterials);
     }
 
@@ -569,6 +548,35 @@ contract TradeManagement is IERC721Receiver {
         }
     }
 
+    function InitProductNFT(
+        uint256 tokenID,
+        address from,
+        string memory name,
+        string memory lotName,
+        uint256 produceTime,
+        uint256[] memory childIDs,
+        uint128[] memory resumes
+    )
+    external
+    {
+        ProductsLotNFT storage nft = ProductsLotNFTMapping[tokenID];
+        nft.tokenID = tokenID;
+        nft.name = name;
+        nft.lotName = lotName;
+        nft.produceTime = produceTime;
+        nft.producerName = User[from];
+        nft.rawMaterials = childIDs;
+
+        for (uint256 i = 0; i < childIDs.length; i++) {
+            // 添加原料NFT进生产批次里面
+            RawMaterialNFT storage rawNft = RawMaterialNFTMapping[childIDs[i]];
+            // 添加原料的生产记录、原料的消耗量以及扣除总量
+            rawNft.productLots.push(tokenID);
+            rawNft.resumeLots.push(resumes[i]);
+            rawNft.totalSum -= resumes[i];
+        }
+    }
+
     /** 包装 **/
 
     // 检查是否符合条件
@@ -678,7 +686,6 @@ contract TradeManagement is IERC721Receiver {
     }
 
     // 原料
-
     function listForRawMaterial(bool isOwner)
     public
     view
