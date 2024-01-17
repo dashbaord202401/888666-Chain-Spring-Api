@@ -80,11 +80,12 @@ public class TradeManagementController {
 
     @RequestMapping(params = "action=list")
     public Result list(
+            @RequestParam("owner") Long owner,
             @RequestParam("isOwner") Boolean isOwner,
             @RequestParam("tokenId") BigInteger tokenId,
             @RequestParam("type") String type
     ) {
-        return tradeManagement.list(isOwner, tokenId, type);
+        return tradeManagement.list(owner, isOwner, tokenId, type);
     }
 
     @RequestMapping(params = "action=getStatist")

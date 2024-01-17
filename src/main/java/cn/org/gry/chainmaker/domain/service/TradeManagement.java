@@ -3,8 +3,10 @@ package cn.org.gry.chainmaker.domain.service;
 import cn.org.gry.chainmaker.base.BaseDynamicStruct;
 import cn.org.gry.chainmaker.contract.ContractTradeManagementEvm;
 import cn.org.gry.chainmaker.domain.enums.NFTType;
+import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
+import cn.org.gry.chainmaker.utils.TokenHolder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +40,9 @@ import java.util.*;
 public class TradeManagement {
     @Autowired
     private ContractTradeManagementEvm contractTradeManagementEvm;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     public void setPackageLotContract(String lotAddress) {
         contractTradeManagementEvm.invokeContract("setPackageLotContract", Collections.singletonList(new Address(lotAddress)), Collections.emptyList(), Collections.emptyList());
@@ -149,7 +154,7 @@ public class TradeManagement {
                 Arrays.asList("totalRM", "totalPP", "totalPKL", "balanceOfRM", "balanceOfPP", "balanceOfPKL"));
     }
 
-    public Result list(Boolean owner, BigInteger tokenId, String type) {
+    public Result list(Long owner, Boolean isOwner, BigInteger tokenId, String type) {
         String methodName = "listFor";
         if (type.equals(NFTType.RawMaterial.name())) {
             methodName += "RawMaterial";
@@ -160,10 +165,11 @@ public class TradeManagement {
         } else {
             return new Result(0, "type error", "", null);
         }
+        TokenHolder.put("uid", userInfoRepository.findByEuidAndType(owner, TokenHolder.get("toType")).getUid().toString());
         Result result = contractTradeManagementEvm.invokeContract(
                 methodName,
                 Arrays.asList(
-                        new Bool(owner),
+                        new Bool(isOwner),
                         new Uint256(tokenId)),
                 Collections.singletonList(
                         new TypeReference<DynamicArray<ListElem>>() {
