@@ -22,15 +22,6 @@ contract Base is ERC721Enumerable, ERC721URIStorage, Ownable {
         tradeManagement = TradeManagement(_trademgmtsc);
     }
 
-    // 铸币批次NFT
-    function mint(
-        string memory tokenURI,
-        string memory name,
-        uint256[] memory childIDs
-    ) external virtual onlyTM returns (uint256) {
-
-    }
-
     // 获取指定地址的代币
     function getTokensFromOwner(address owner)
     external
@@ -42,6 +33,21 @@ contract Base is ERC721Enumerable, ERC721URIStorage, Ownable {
         for (uint256 i = 0; i < count; i++) {
             tokens[i] = tokenOfOwnerByIndex(owner, i);
         }
+        return tokens;
+    }
+
+    // 获取指定地址以及授权管理的代币
+    function getTokensFromOwnerAndAuth(address owner, address[] memory auths)
+    external
+    view
+    returns (uint256[] memory tokens)
+    {
+        uint256 count = balanceOf(owner);
+        for (uint256 i = 0; i < auths.length; i++) {
+            count += balanceOf(auths[i]);
+        }
+        tokens = new uint256[](count);
+
         return tokens;
     }
 

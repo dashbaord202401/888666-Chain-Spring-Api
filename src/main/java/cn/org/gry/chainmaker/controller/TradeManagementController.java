@@ -5,7 +5,6 @@ import cn.org.gry.chainmaker.domain.service.PP;
 import cn.org.gry.chainmaker.domain.service.PackageLot;
 import cn.org.gry.chainmaker.domain.service.RM;
 import cn.org.gry.chainmaker.domain.service.TradeManagement;
-import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,8 +66,8 @@ public class TradeManagementController {
         return tradeManagement.getRawMaterialsNFT(rawMaterialsId);
     }
 
-    @RequestMapping(params = "action=getPackagedProductsNFT")
-    public Result getPackagedProductsNFT(@RequestParam("packagedProductsId") BigInteger packagedProductsId) {
+    @RequestMapping(params = "action=getPackagedProductNFT")
+    public Result getPackagedProductsNFT(@RequestParam("tokenId") BigInteger packagedProductsId) {
         return tradeManagement.getPackagedProductsNFT(packagedProductsId);
     }
 
@@ -82,9 +81,10 @@ public class TradeManagementController {
     @RequestMapping(params = "action=list")
     public Result list(
             @RequestParam("isOwner") Boolean isOwner,
+            @RequestParam("tokenId") BigInteger tokenId,
             @RequestParam("type") String type
     ) {
-        return tradeManagement.list(isOwner, type);
+        return tradeManagement.list(isOwner, tokenId, type);
     }
 
     @RequestMapping(params = "action=getStatist")

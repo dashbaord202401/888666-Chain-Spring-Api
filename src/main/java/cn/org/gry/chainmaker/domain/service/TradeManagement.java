@@ -149,7 +149,7 @@ public class TradeManagement {
                 Arrays.asList("totalRM", "totalPP", "totalPKL", "balanceOfRM", "balanceOfPP", "balanceOfPKL"));
     }
 
-    public Result list(Boolean owner, String type) {
+    public Result list(Boolean owner, BigInteger tokenId, String type) {
         String methodName = "listFor";
         if (type.equals(NFTType.RawMaterial.name())) {
             methodName += "RawMaterial";
@@ -163,7 +163,8 @@ public class TradeManagement {
         Result result = contractTradeManagementEvm.invokeContract(
                 methodName,
                 Arrays.asList(
-                        new Bool(owner)),
+                        new Bool(owner),
+                        new Uint256(tokenId)),
                 Collections.singletonList(
                         new TypeReference<DynamicArray<ListElem>>() {
                         }),
