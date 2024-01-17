@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
@@ -20,8 +19,6 @@ public class PackagedProductInfoDTO {
     private BigInteger numberOfTokens;
     private String tokenURI;
     private String name;
-    private String productLot;
+    private BigInteger productLot;
     private BigInteger produceTime;
-    private List<BigInteger> childIDs;
-    private List<String> resumes;
 }
