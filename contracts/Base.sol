@@ -48,6 +48,19 @@ contract Base is ERC721Enumerable, ERC721URIStorage, Ownable {
         }
         tokens = new uint256[](count);
 
+        uint i = 0;
+
+        for (; i < balanceOf(owner); i++) {
+            tokens[i] = tokenOfOwnerByIndex(owner, i);
+        }
+
+        for (uint j = 0; j < auths.length; j++) {
+            for (uint k = 0; k < balanceOf(auths[j]); k++) {
+                tokens[i] = tokenOfOwnerByIndex(auths[j], k);
+                i++;
+            }
+        }
+
         return tokens;
     }
 
