@@ -31,16 +31,16 @@ public class TokenAspect {
 
     private HttpServletRequest request;
 
-    @Order(1)
-    @Before("execution(* cn.org.gry.chainmaker.controller.*.transfer*(..))")
-    public void beforeControllerTransfer(JoinPoint joinPoint) {
-        // 获取Header中的Token
-        String pwd = request.getParameter("pwd");
-
-        if (!userInfoService.verifyPwd(Long.valueOf(TokenHolder.get("uid")), pwd)) {
-            throw new RuntimeException("密码错误");
-        }
-    }
+//    @Order(1)
+//    @Before("execution(* cn.org.gry.chainmaker.controller.*.transfer*(..))")
+//    public void beforeControllerTransfer(JoinPoint joinPoint) {
+//        // 获取Header中的Token
+//        String pwd = request.getParameter("pwd");
+//
+//        if (!userInfoService.verifyPwd(Long.valueOf(TokenHolder.get("uid")), pwd)) {
+//            throw new RuntimeException("密码错误");
+//        }
+//    }
 
     @Order(0)
     @Before("execution(* cn.org.gry.chainmaker.controller.*.*(..))")

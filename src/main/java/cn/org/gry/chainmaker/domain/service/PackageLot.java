@@ -3,8 +3,8 @@ package cn.org.gry.chainmaker.domain.service;
 import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractPackageLotEvm;
-import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.Result;
+import cn.org.gry.chainmaker.utils.TokenHolder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class PackageLot extends ERC721 {
     }
 
     public Result transfer(Long to, BigInteger tokenId) {
-        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(userInfoService.getAddressByUid(to)), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
+        return contractLotEvm.invokeContract("transfer", Arrays.asList(new Address(userInfoService.getAddressByEuidAndType(to, TokenHolder.get("toType"))), new Uint256(tokenId)), Collections.emptyList(), Collections.emptyList());
     }
 
     @Override

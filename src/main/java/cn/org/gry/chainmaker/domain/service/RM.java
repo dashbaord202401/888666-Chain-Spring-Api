@@ -7,6 +7,7 @@ import cn.org.gry.chainmaker.domain.entity.RawMaterialInfo;
 import cn.org.gry.chainmaker.repository.RawMaterialRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
+import cn.org.gry.chainmaker.utils.TokenHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.TypeReference;
@@ -73,7 +74,7 @@ public class RM extends ERC721 {
     public Result transfer(Long to, BigInteger tokenId) {
         return contractRawMaterialsEvm.invokeContract(
                 "transfer",
-                Arrays.asList(new Address(userInfoService.getAddressByUid(to)), new Uint256(tokenId)),
+                Arrays.asList(new Address(userInfoService.getAddressByEuidAndType(to, TokenHolder.get("toType"))), new Uint256(tokenId)),
                 Collections.emptyList(),
                 Collections.emptyList());
     }
