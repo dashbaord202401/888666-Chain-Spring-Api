@@ -11,7 +11,7 @@ import lombok.Getter;
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
  */
 public enum NFTType {
-    Product("产品"),
+    PackagedProduct("产品"),
     RawMaterial("原料"),
     Package("包装");
 
