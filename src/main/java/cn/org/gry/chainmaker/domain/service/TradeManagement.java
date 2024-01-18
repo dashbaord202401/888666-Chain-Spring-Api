@@ -2,7 +2,11 @@ package cn.org.gry.chainmaker.domain.service;
 
 import cn.org.gry.chainmaker.base.BaseDynamicStruct;
 import cn.org.gry.chainmaker.contract.ContractTradeManagementEvm;
+import cn.org.gry.chainmaker.domain.criteria.NFTInfoCriteria;
+import cn.org.gry.chainmaker.domain.entity.ProductLotRelation;
 import cn.org.gry.chainmaker.domain.enums.NFTType;
+import cn.org.gry.chainmaker.repository.ProductLotRelationRepository;
+import cn.org.gry.chainmaker.repository.RawMaterialRepository;
 import cn.org.gry.chainmaker.repository.UserInfoRepository;
 import cn.org.gry.chainmaker.utils.ChainMakerUtils;
 import cn.org.gry.chainmaker.utils.Result;
@@ -10,6 +14,7 @@ import cn.org.gry.chainmaker.utils.TokenHolder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +48,12 @@ public class TradeManagement {
 
     @Autowired
     private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private ProductLotRelationRepository productLotRelationRepository;
+
+    @Autowired
+    private RawMaterialRepository rawMaterialRepository;
 
     public void setPackageLotContract(String lotAddress) {
         contractTradeManagementEvm.invokeContract("setPackageLotContract", Collections.singletonList(new Address(lotAddress)), Collections.emptyList(), Collections.emptyList());
@@ -154,23 +165,34 @@ public class TradeManagement {
                 Arrays.asList("totalRM", "totalPP", "totalPKL", "balanceOfRM", "balanceOfPP", "balanceOfPKL"));
     }
 
-    public Result list(Long owner, Boolean isOwner, BigInteger tokenId, String type) {
+    public Result list(NFTInfoCriteria criteria) {
         String methodName = "listFor";
-        if (type.equals(NFTType.RawMaterial.name())) {
+        List<Uint256> _tokenIds = new ArrayList<>();
+        if (criteria.getType().equals(NFTType.RawMaterial.name())) {
             methodName += "RawMaterial";
-        } else if (type.equals(NFTType.Product.name())) {
+            if (ObjectUtils.isNotEmpty(criteria.getTokenIds())) {
+                for (BigInteger tokenId : criteria.getTokenIds()) {
+                    _tokenIds.add(new Uint256(rawMaterialRepository.findByTokenURI(tokenId.longValue()).getTokenID()));
+                }
+            }
+        } else if (criteria.getType().equals(NFTType.PackagedProduct.name())) {
             methodName += "Product";
-        } else if (type.equals(NFTType.Package.name())) {
+            if (ObjectUtils.isNotEmpty(criteria.getTokenIds())) {
+                for (BigInteger tokenId : criteria.getTokenIds()) {
+                    _tokenIds.add(new Uint256(tokenId));
+                }
+            }
+        } else if (criteria.getType().equals(NFTType.Package.name())) {
             methodName += "Package";
         } else {
-            return new Result(0, "type error", "", null);
+            return Result.fail("type error", "", new HashMap<>());
         }
-        TokenHolder.put("uid", userInfoRepository.findByEuidAndType(owner, TokenHolder.get("toType")).getUid().toString());
+        TokenHolder.put("uid", userInfoRepository.findByEuidAndType(criteria.getOwner(), TokenHolder.get("toType")).getUid().toString());
         Result result = contractTradeManagementEvm.invokeContract(
                 methodName,
                 Arrays.asList(
-                        new Bool(isOwner),
-                        new Uint256(tokenId)),
+                        new Bool(criteria.getIsOwner()),
+                        new DynamicArray<>(Uint256.class, _tokenIds)),
                 Collections.singletonList(
                         new TypeReference<DynamicArray<ListElem>>() {
                         }),
@@ -181,10 +203,14 @@ public class TradeManagement {
         return result;
     }
 
-    public Result getProductsLotNFT(BigInteger lotId) {
+    public Result getProductsLotNFT(Long lotId) {
+        ProductLotRelation productLotRelation = productLotRelationRepository.findByEid(lotId);
+        if (productLotRelation == null) {
+            return Result.fail( "lotId error", "", new HashMap());
+        }
         return contractTradeManagementEvm.invokeContract(
                 "getProductsLotNFT",
-                Collections.singletonList(new Uint256(lotId)),
+                Collections.singletonList(new Uint256(productLotRelation.getTokenID())),
                 Arrays.asList(
                         TypeReference.create(PLNFT.class),
                         new TypeReference<DynamicArray<Uint256>>() {

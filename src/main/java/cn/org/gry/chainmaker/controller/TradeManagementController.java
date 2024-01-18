@@ -1,10 +1,13 @@
 package cn.org.gry.chainmaker.controller;
 
+import cn.org.gry.chainmaker.domain.criteria.NFTInfoCriteria;
+import cn.org.gry.chainmaker.domain.entity.ProductLotRelation;
 import cn.org.gry.chainmaker.domain.enums.NFTType;
 import cn.org.gry.chainmaker.domain.service.PP;
 import cn.org.gry.chainmaker.domain.service.PackageLot;
 import cn.org.gry.chainmaker.domain.service.RM;
 import cn.org.gry.chainmaker.domain.service.TradeManagement;
+import cn.org.gry.chainmaker.repository.ProductLotRelationRepository;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
@@ -80,12 +84,9 @@ public class TradeManagementController {
 
     @RequestMapping(params = "action=list")
     public Result list(
-            @RequestParam("owner") Long owner,
-            @RequestParam("isOwner") Boolean isOwner,
-            @RequestParam("tokenId") BigInteger tokenId,
-            @RequestParam("type") String type
+           NFTInfoCriteria criteria
     ) {
-        return tradeManagement.list(owner, isOwner, tokenId, type);
+        return tradeManagement.list(criteria);
     }
 
     @RequestMapping(params = "action=getStatist")
@@ -94,7 +95,7 @@ public class TradeManagementController {
     }
 
     @RequestMapping(params = "action=getProductsLotNFT")
-    public Result getProductsLotNFT(@RequestParam("lotId") BigInteger lotId) {
+    public Result getProductsLotNFT(@RequestParam("lotId") Long lotId) {
         return tradeManagement.getProductsLotNFT(lotId);
     }
 
@@ -104,7 +105,7 @@ public class TradeManagementController {
             @RequestParam("tokenId") BigInteger tokenId,
             @RequestParam("to") Long to
     ) {
-        if (type.equals(NFTType.Product.name())) {
+        if (type.equals(NFTType.PackagedProduct.name())) {
             return pp.transfer(to, tokenId);
         } else if (type.equals(NFTType.Package.name())) {
             return packageLot.transfer(to, tokenId);
