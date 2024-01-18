@@ -661,12 +661,12 @@ contract TradeManagement is IERC721Receiver {
 
     // 产品
 
-    function listForProduct(bool isOwner, uint256 tokenId)
+    function listForProduct(bool isOwner, uint256[] memory tokenIds)
     public
     view
     returns (ListElement[] memory result)
     {
-        result = list(isOwner, tokenId, address(PackagedProductSmartContract));
+        result = list(isOwner, tokenIds, address(PackagedProductSmartContract));
         for (uint256 i = 0; i < result.length; i++)
             result[i].name = ProductsLotNFTMapping[
                                 PackagedProductNFTMapping[result[i].tokenID].productLotID
@@ -675,57 +675,50 @@ contract TradeManagement is IERC721Receiver {
 
     // 包装
 
-    function listForPackage(bool isOwner, uint256 tokenId)
+    function listForPackage(bool isOwner, uint256[] memory tokenIds)
     public
     view
     returns (ListElement[] memory result)
     {
-        result = list(isOwner, tokenId, address(PackageLotSmartContract));
+        result = list(isOwner, tokenIds, address(PackageLotSmartContract));
         for (uint256 i = 0; i < result.length; i++)
             result[i].name = PackagedLotNFTMapping[result[i].tokenID].name;
     }
 
     // 原料
-    function listForRawMaterial(bool isOwner, uint256 tokenId)
+    function listForRawMaterial(bool isOwner, uint256[] memory tokenIds)
     public
     view
     returns (ListElement[] memory result)
     {
-        result = list(isOwner, tokenId, address(RawMaterialSmartContract));
-        for (uint256 i = 0; i < result.length; i++)
+        result = list(isOwner, tokenIds, address(RawMaterialSmartContract));
+        for (uint256 i = 0; i < result.length; i++) {
             result[i].name = RawMaterialNFTMapping[result[i].tokenID].name;
+            result[i].totalSum = RawMaterialNFTMapping[result[i].tokenID].totalSum;
+        }
     }
 
-    function list(bool isOwner, uint256 tokenId, address smartContract)
+    function list(bool isOwner, uint256[] memory tokenIds, address smartContract)
     internal
     view
     returns (ListElement[] memory result)
     {
-        uint256[] memory tokenIDs;
         // 判断是否查询单个
-        if (tokenId != 0) {
-            // 如果查询所有者且不是所有者则取消
-            address owner = Base(smartContract).ownerOf(tokenId);
-            if (isOwner && (owner != msg.sender || Base(smartContract).isApprovedForAll(owner, msg.sender))) {
-                return result;
-            }
-            tokenIDs = new uint256[](1);
-            tokenIDs[0] = tokenId;
-        } else {
+        if (tokenIds.length == 0) {
             if (isOwner) {
                 // 获取自己的所有NFT
-                tokenIDs = Base(smartContract).getTokensFromOwnerAndAuth(msg.sender, RepositoryMapping[msg.sender]);
+                tokenIds = Base(smartContract).getTokensFromOwnerAndAuth(msg.sender, RepositoryMapping[msg.sender]);
             } else {
                 // 获取所有NFT
-                tokenIDs = Base(smartContract).getTokens();
+                tokenIds = Base(smartContract).getTokens();
             }
         }
 
         // 构建返回结果
-        result = new ListElement[](tokenIDs.length);
-        for (uint256 i = 0; i < tokenIDs.length; i++) {
-            result[i].tokenID = tokenIDs[i];
-            result[i].owner = Base(smartContract).ownerOf(tokenIDs[i]);
+        result = new ListElement[](tokenIds.length);
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            result[i].tokenID = tokenIds[i];
+            result[i].owner = Base(smartContract).ownerOf(tokenIds[i]);
             result[i].ownerName = User[result[i].owner];
         }
     }
