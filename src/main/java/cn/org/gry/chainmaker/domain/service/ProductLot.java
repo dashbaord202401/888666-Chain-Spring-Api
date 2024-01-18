@@ -4,6 +4,8 @@ import cn.org.gry.chainmaker.base.BaseContractEvm;
 import cn.org.gry.chainmaker.base.erc721.ERC721;
 import cn.org.gry.chainmaker.contract.ContractProductLotEvm;
 import cn.org.gry.chainmaker.domain.dto.ProductLotInfoDTO;
+import cn.org.gry.chainmaker.domain.entity.ProductLotRelation;
+import cn.org.gry.chainmaker.repository.ProductLotRelationRepository;
 import cn.org.gry.chainmaker.repository.RawMaterialRepository;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,11 @@ import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint128;
 import org.web3j.abi.datatypes.generated.Uint256;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
@@ -34,6 +38,9 @@ public class ProductLot extends ERC721 {
     private RawMaterialRepository rawMaterialRepository;
 
     @Autowired
+    private ProductLotRelationRepository productLotRelationRepository;
+
+    @Autowired
     public ProductLot (ContractProductLotEvm contractProductLotEvm) {
         this.contractProductLotEvm = contractProductLotEvm;
         setBaseContractEvm(contractProductLotEvm);
@@ -46,7 +53,7 @@ public class ProductLot extends ERC721 {
         for (int i = 0; i < productLotInfoDTO.getChildIDs().size(); i++) {
             childIDs.add(new Uint256(rawMaterialRepository.findByTokenURI(productLotInfoDTO.getChildIDs().get(i)).getTokenID()));
         }
-        return contractProductLotEvm.invokeContract(
+        Result result = contractProductLotEvm.invokeContract(
                 "mint",
                 Arrays.asList(
                         new Utf8String(productLotInfoDTO.getTokenURI()),
@@ -58,7 +65,12 @@ public class ProductLot extends ERC721 {
                 ),
                 Arrays.asList(TypeReference.create(Uint256.class)),
                 Arrays.asList("tokenId")
-                );
+        );
+        ProductLotRelation productLotRelation = new ProductLotRelation();
+        productLotRelation.setEid(Long.valueOf(productLotInfoDTO.getTokenURI()));
+        productLotRelation.setTokenID((BigInteger)result.getData().get("tokenId"));
+        productLotRelationRepository.save(productLotRelation);
+        return result;
     }
 
     @Override
