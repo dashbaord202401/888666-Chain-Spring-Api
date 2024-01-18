@@ -27,7 +27,7 @@ public class Result<T> {
     // 返回数据
     private Map<String, T> data;
 
-    public Result(Integer code, String message, String txId, Map<String, T> data) {
+    private Result(Integer code, String message, String txId, Map<String, T> data) {
         this.code = code;
         this.message = message;
         this.txId = txId;
