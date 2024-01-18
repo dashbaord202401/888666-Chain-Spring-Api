@@ -50,9 +50,10 @@ public class TokenAspect {
         request = attributes.getRequest();
 
         // 将toType设置进ThreadLocal
-        TokenHolder.put("toType", request.getParameter("toType"));
+        TokenHolder.put("toType", request.getParameter("toType").replace("\"", ""));
         // 将OperatorType设置进ThreadLocal
-        TokenHolder.put("operatorType", request.getParameter("operatorType"));
+        // 去除两边"
+        TokenHolder.put("operatorType", request.getParameter("operatorType").replace("\"", ""));
         // 获取RequestBody中的id，并将其存为euid
         TokenHolder.put("euid", request.getParameter("id"));
         // 将Token设置进ThreadLocal
