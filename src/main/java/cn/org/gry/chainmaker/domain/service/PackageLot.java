@@ -46,6 +46,7 @@ public class PackageLot extends ERC721 {
 
     public Result mint(String tokenURI, String name, List<BigInteger> _childIDs) {
         List<Uint256> childIDs = new ArrayList<>();
+        // 将BigInteger类型的childID转换为Uint256类型
         for (BigInteger childID : _childIDs) {
             childIDs.add(new Uint256(childID));
         }

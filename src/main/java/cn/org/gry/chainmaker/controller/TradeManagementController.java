@@ -1,13 +1,11 @@
 package cn.org.gry.chainmaker.controller;
 
 import cn.org.gry.chainmaker.domain.criteria.NFTInfoCriteria;
-import cn.org.gry.chainmaker.domain.entity.ProductLotRelation;
 import cn.org.gry.chainmaker.domain.enums.NFTType;
 import cn.org.gry.chainmaker.domain.service.PP;
 import cn.org.gry.chainmaker.domain.service.PackageLot;
 import cn.org.gry.chainmaker.domain.service.RM;
 import cn.org.gry.chainmaker.domain.service.TradeManagement;
-import cn.org.gry.chainmaker.repository.ProductLotRelationRepository;
 import cn.org.gry.chainmaker.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
  * @version 1.0
- * @description
+ * @description 交易管理Controller
  * @since 2023/12/20 11:09
  * Copyright (C) 2022-2023 CASEEDER, All Rights Reserved.
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的

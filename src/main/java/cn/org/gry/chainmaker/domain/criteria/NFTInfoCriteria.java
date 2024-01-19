@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
  * @version 1.0
- * @description
+ * @description NFT信息查询条件
  * @since 2024/1/18 9:19
  * Copyright (C) 2022-2023 CASEEDER, All Rights Reserved.
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的

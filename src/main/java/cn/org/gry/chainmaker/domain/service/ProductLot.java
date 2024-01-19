@@ -20,7 +20,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
@@ -66,6 +65,7 @@ public class ProductLot extends ERC721 {
                 Arrays.asList(TypeReference.create(Uint256.class)),
                 Arrays.asList("tokenId")
         );
+        // 保存生产批次的关联关系
         ProductLotRelation productLotRelation = new ProductLotRelation();
         productLotRelation.setEid(Long.valueOf(productLotInfoDTO.getTokenURI()));
         productLotRelation.setTokenID((BigInteger)result.getData().get("tokenId"));

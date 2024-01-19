@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author yejinhua  Email:yejinhua@gzis.ac.cn
  * @version 1.0
- * @description
+ * @description 产品批次NFTController
  * @since 2024/1/16 17:07
  * Copyright (C) 2022-2023 CASEEDER, All Rights Reserved.
  * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的

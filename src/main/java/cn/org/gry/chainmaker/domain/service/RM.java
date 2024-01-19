@@ -56,6 +56,7 @@ public class RM extends ERC721 {
                         new Utf8String(name)),
                 Collections.singletonList(TypeReference.create(Uint256.class)),
                 Collections.singletonList("token"));
+        // 保存原料关联关系
         RawMaterialInfo rawMaterialInfo = new RawMaterialInfo();
         rawMaterialInfo.setTokenURI(Long.valueOf(tokenURI));
         rawMaterialInfo.setTokenID((BigInteger) result.getData().get("token"));

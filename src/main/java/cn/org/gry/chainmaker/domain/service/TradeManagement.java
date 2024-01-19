@@ -4,6 +4,7 @@ import cn.org.gry.chainmaker.base.BaseDynamicStruct;
 import cn.org.gry.chainmaker.contract.ContractTradeManagementEvm;
 import cn.org.gry.chainmaker.domain.criteria.NFTInfoCriteria;
 import cn.org.gry.chainmaker.domain.entity.ProductLotRelation;
+import cn.org.gry.chainmaker.domain.entity.RawMaterialInfo;
 import cn.org.gry.chainmaker.domain.enums.NFTType;
 import cn.org.gry.chainmaker.repository.ProductLotRelationRepository;
 import cn.org.gry.chainmaker.repository.RawMaterialRepository;
@@ -107,6 +108,7 @@ public class TradeManagement {
                         "productLots",
                         "resumes"
                 ));
+        // 将BigInteger转换为String （转换成浮点数）
         List<BigInteger> _resumes = (List<BigInteger>) result.getData().get("resumes");
         List<String> resumes = new ArrayList<>();
         for (BigInteger _resume : _resumes) {
@@ -172,7 +174,10 @@ public class TradeManagement {
             methodName += "RawMaterial";
             if (ObjectUtils.isNotEmpty(criteria.getTokenIds())) {
                 for (BigInteger tokenId : criteria.getTokenIds()) {
-                    _tokenIds.add(new Uint256(rawMaterialRepository.findByTokenURI(tokenId.longValue()).getTokenID()));
+                    RawMaterialInfo rawMaterialInfo = rawMaterialRepository.findByTokenURI(tokenId.longValue());
+                    if (ObjectUtils.isNotEmpty(rawMaterialInfo)) {
+                        _tokenIds.add(new Uint256(rawMaterialInfo.getTokenID()));
+                    }
                 }
             }
         } else if (criteria.getType().equals(NFTType.PackagedProduct.name())) {
@@ -225,6 +230,9 @@ public class TradeManagement {
                 ));
     }
 
+    /***
+     * 原料NFT信息
+     */
     @Getter
     @Setter
     public static class RMNFT extends BaseDynamicStruct {
@@ -265,10 +273,12 @@ public class TradeManagement {
         }
     }
 
+    /***
+     * 产品NFT信息
+     */
     @Getter
     @Setter
     public static class PPNFT extends BaseDynamicStruct {
-
         private BigInteger tokenID;
         private BigInteger productLotID;
         private String productLotName;
@@ -309,6 +319,9 @@ public class TradeManagement {
         }
     }
 
+    /***
+     * 包装批次NFT信息
+     */
     @Getter
     @Setter
     public static class PKLNFT extends BaseDynamicStruct {
@@ -334,6 +347,9 @@ public class TradeManagement {
         }
     }
 
+    /***
+     * 交易信息
+     */
     @Getter
     @Setter
     public static class Trade extends BaseDynamicStruct {
@@ -360,6 +376,9 @@ public class TradeManagement {
         }
     }
 
+    /***
+     * 产品内的原料信息
+     */
     @Getter
     @Setter
     public static class RMInPP extends BaseDynamicStruct {
@@ -376,6 +395,9 @@ public class TradeManagement {
         }
     }
 
+    /***
+     * 生产批次NFT信息
+     */
     @Getter
     @Setter
     public static class PLNFT extends BaseDynamicStruct {
@@ -409,6 +431,9 @@ public class TradeManagement {
         }
     }
 
+    /***
+     * 列表元素信息
+     */
     @Getter
     @Setter
     public static class ListElem extends BaseDynamicStruct {

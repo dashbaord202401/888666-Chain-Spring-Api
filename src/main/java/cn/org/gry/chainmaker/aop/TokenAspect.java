@@ -11,6 +11,7 @@ package cn.org.gry.chainmaker.aop;
 
 import cn.org.gry.chainmaker.domain.service.UserInfoService;
 import cn.org.gry.chainmaker.utils.TokenHolder;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -50,7 +51,9 @@ public class TokenAspect {
         request = attributes.getRequest();
 
         // 将toType设置进ThreadLocal
-        TokenHolder.put("toType", request.getParameter("toType").replace("\"", ""));
+        if (!StringUtils.isBlank(request.getParameter("toType"))) {
+            TokenHolder.put("toType", request.getParameter("toType").replace("\"", ""));
+        }
         // 将OperatorType设置进ThreadLocal
         // 去除两边"
         TokenHolder.put("operatorType", request.getParameter("operatorType").replace("\"", ""));

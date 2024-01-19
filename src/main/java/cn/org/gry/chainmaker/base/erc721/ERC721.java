@@ -6,7 +6,6 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.DynamicArray;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.generated.Uint256;
 
 import java.math.BigInteger;
@@ -50,6 +49,7 @@ public abstract class ERC721 {
         return baseContractEvm.invokeContract("setApprovalForAll", Arrays.asList(new Address(operator), new Bool(approved)), Collections.emptyList(), Collections.emptyList());
     }
 
+    // 获取指定钱包地址的NFT
     public Result getTokensFromOwner (String owner) {
         return baseContractEvm.invokeContract(
                 "getTokensFromOwner",
