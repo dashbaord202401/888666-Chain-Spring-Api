@@ -32,7 +32,7 @@ public class PKLotController {
     public Result mint(
             @RequestParam("tokenURI") String tokenURI,
             @RequestParam("name") String name,
-            @RequestParam("childIDs") List<BigInteger> childIDs
+            @RequestParam("tokenIds") List<BigInteger> childIDs
     ) {
         return lot.mint(tokenURI, name, childIDs);
     }
