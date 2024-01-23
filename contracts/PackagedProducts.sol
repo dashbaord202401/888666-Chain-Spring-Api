@@ -32,6 +32,12 @@ contract PackagedProducts is Base {
         }
     }
 
+    function transferBatch2 (address to, uint256[] memory tokenIDs) public {
+        for (uint i = 0; i < tokenIDs.length; i++) {
+            transferFrom(ownerOf(tokenIDs[i]), to, tokenIDs[i]);
+        }
+    }
+
     function burn (uint256[] memory tokenIDs, string memory finalName) public {
         for (uint i = 0; i < tokenIDs.length; i++) {
             transferFrom(ownerOf(tokenIDs[i]), address(tradeManagement), tokenIDs[i]);
