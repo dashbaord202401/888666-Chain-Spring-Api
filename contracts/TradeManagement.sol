@@ -193,7 +193,7 @@ contract TradeManagement is IERC721Receiver {
     }
 
     //** Modifiers **//
-    // 验证调用者是否为食品安全局
+    // 验证调用者是否为合约创建者
     modifier onlyFoodAuthority() {
         require(
             msg.sender == FoodAuthority,
@@ -681,8 +681,10 @@ contract TradeManagement is IERC721Receiver {
     returns (ListElement[] memory result)
     {
         result = list(isOwner, tokenIds, address(PackageLotSmartContract));
-        for (uint256 i = 0; i < result.length; i++)
+        for (uint256 i = 0; i < result.length; i++) {
             result[i].name = PackagedLotNFTMapping[result[i].tokenID].name;
+            result[i].totalSum = PackagedLotNFTMapping[result[i].tokenID].products.length;
+        }
     }
 
     // 原料

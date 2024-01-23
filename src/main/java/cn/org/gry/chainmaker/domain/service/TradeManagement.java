@@ -169,6 +169,28 @@ public class TradeManagement {
 
     public Result list(NFTInfoCriteria criteria) {
         String methodName = "listFor";
+        ArrayList<Uint256> _tokenIds = new ArrayList<>();
+        for (BigInteger tokenId : criteria.getTokenIds()) {
+            _tokenIds.add(new Uint256(tokenId));
+        }
+        TokenHolder.put("uid", userInfoRepository.findByEuidAndType(criteria.getOwner(), TokenHolder.get("toType")).getUid().toString());
+        Result result = contractTradeManagementEvm.invokeContract(
+                methodName,
+                Arrays.asList(
+                        new Bool(criteria.getIsOwner()),
+                        new DynamicArray<>(Uint256.class, _tokenIds)),
+                Collections.singletonList(
+                        new TypeReference<DynamicArray<ListElem>>() {
+                        }),
+                Collections.singletonList("list"));
+        Pageable pageable = PageRequest.of(1, 10);
+        ((List<ListElem>)result.getData().get("list")).sort(Comparator.comparing(ListElem::getTokenID));
+        result.getData().put("list", new PageImpl<>((List<ListElem>) result.getData().get("list"), pageable, ((List<ListElem>) result.getData().get("list")).size()));
+        return result;
+    }
+
+    public Result getInfo(NFTInfoCriteria criteria) {
+        String methodName = "listFor";
         List<Uint256> _tokenIds = new ArrayList<>();
         if (criteria.getType().equals(NFTType.RawMaterial.name())) {
             methodName += "RawMaterial";
@@ -191,6 +213,9 @@ public class TradeManagement {
             methodName += "Package";
         } else {
             return Result.fail("type error", "", new HashMap<>());
+        }
+        if (_tokenIds.isEmpty()) {
+            return Result.fail("tokenIds error", "", new HashMap<>());
         }
         TokenHolder.put("uid", userInfoRepository.findByEuidAndType(criteria.getOwner(), TokenHolder.get("toType")).getUid().toString());
         Result result = contractTradeManagementEvm.invokeContract(
