@@ -591,7 +591,9 @@ contract TradeManagement is IERC721Receiver {
             require(tokenID != 0x0, "PackagedProducts not exist");
             // 检查用户是否为TOKEN的所有者
             require(
-                PackagedProductSmartContract.ownerOf(tokenID) == owner,
+                PackagedProductSmartContract.ownerOf(tokenID) == owner
+                ||
+                PackageLotSmartContract.isApprovedForAll(PackageLotSmartContract.ownerOf(tokenID), owner),
                 "user is not owner"
             );
             // 检查该TOKEN是否已绑定其他批次
@@ -683,7 +685,7 @@ contract TradeManagement is IERC721Receiver {
         result = list(isOwner, tokenIds, address(PackageLotSmartContract));
         for (uint256 i = 0; i < result.length; i++) {
             result[i].name = PackagedLotNFTMapping[result[i].tokenID].name;
-            result[i].totalSum = PackagedLotNFTMapping[result[i].tokenID].products.length;
+            result[i].totalSum = PackagedLotNFTMapping[result[i].tokenID].products.length * 10000000000;
         }
     }
 
