@@ -86,6 +86,13 @@ public class TradeManagementController {
         return tradeManagement.list(criteria);
     }
 
+    @RequestMapping(params = "action=getInfo")
+    public Result getInfo(
+            NFTInfoCriteria criteria
+    ) {
+        return tradeManagement.getInfo(criteria);
+    }
+
     @RequestMapping(params = "action=getStatist")
     public Result getStatist() {
         return tradeManagement.getStatist();
