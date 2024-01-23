@@ -170,8 +170,19 @@ public class TradeManagement {
     public Result list(NFTInfoCriteria criteria) {
         String methodName = "listFor";
         ArrayList<Uint256> _tokenIds = new ArrayList<>();
-        for (BigInteger tokenId : criteria.getTokenIds()) {
-            _tokenIds.add(new Uint256(tokenId));
+        if (ObjectUtils.isNotEmpty(criteria.getTokenIds())) {
+            for (BigInteger tokenId : criteria.getTokenIds()) {
+                _tokenIds.add(new Uint256(tokenId));
+            }
+        }
+        if (criteria.getType().equals(NFTType.RawMaterial.name())) {
+            methodName += "RawMaterial";
+        } else if (criteria.getType().equals(NFTType.PackagedProduct.name())) {
+            methodName += "Product";
+        } else if (criteria.getType().equals(NFTType.Package.name())) {
+            methodName += "Package";
+        } else {
+            return Result.fail("type error", "", new HashMap<>());
         }
         TokenHolder.put("uid", userInfoRepository.findByEuidAndType(criteria.getOwner(), TokenHolder.get("toType")).getUid().toString());
         Result result = contractTradeManagementEvm.invokeContract(
@@ -184,6 +195,10 @@ public class TradeManagement {
                         }),
                 Collections.singletonList("list"));
         Pageable pageable = PageRequest.of(1, 10);
+        if (ObjectUtils.isEmpty(result.getData().get("list"))) {
+            result.getData().put("list", new PageImpl<>(new ArrayList<>(), pageable, 0));
+            return result;
+        }
         ((List<ListElem>)result.getData().get("list")).sort(Comparator.comparing(ListElem::getTokenID));
         result.getData().put("list", new PageImpl<>((List<ListElem>) result.getData().get("list"), pageable, ((List<ListElem>) result.getData().get("list")).size()));
         return result;
